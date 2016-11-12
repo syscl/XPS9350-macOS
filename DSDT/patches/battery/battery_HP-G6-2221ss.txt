@@ -1,0 +1,470 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-G6-2221ss.txt
+
+# created by RehabMan 2013-09-26
+# created originally for damnit_boy
+# additional patches for dv6-3165sf provided by chihab222
+
+# works for:
+#  HP G6 2221ss
+#  HP dv7t-4100
+#  HP Envy 14 Spectre 14t-3000
+#  HP Pavilion dv6-3165sf
+#  HP Pavilion G6 2231tx
+#  HP 14-b030tu
+#  HP 14-3100er
+#  HP G62 120eg
+#  HP Pavilion 17-e019dx
+#  HP Pavilion Sleekbook 14-b000de
+#  HP Pavilion Sleekbook 14-b120dx
+#  HP Envy 15t (Haswell, per faithie999)
+#  HP Pavilion 15-p199sa (per TashDev)
+#  HP Pavilion 17-f158nr (per y023rus)
+#  HP Envy 15-k111nl
+#  HP Pavilion G6 1205sq (per Mr.D)
+#  HP Envy 15-k301tu (per Mackindows/YangXu)
+#  HP Pavilion 17 e040us (per locomacg6)
+
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+#                        SMD0,   256, 
+#                        BFCC,   16, 
+#                        MCUR,   16, f
+#                        MBRM,   16, 
+#                        MBCV,   16, 
+#                        SMW0,   16
+#                        FLD1,   128
+#                        FLD2,   192
+#                        FLD3,   256
+
+# deal with 256-bit SMD0
+into device label EC0 code_regex SMD0,\s+256 replace_matched 
+begin
+//SMD0, 256,\n
+SD00,8,SD01,8,SD02,8,SD03,8,\n
+SD04,8,SD05,8,SD06,8,SD07,8,\n
+SD08,8,SD09,8,SD0A,8,SD0B,8,\n
+SD0C,8,SD0D,8,SD0E,8,SD0F,8,\n
+SD10,8,SD11,8,SD12,8,SD13,8,\n
+SD14,8,SD15,8,SD16,8,SD17,8,\n
+SD18,8,SD19,8,SD1A,8,SD1B,8,\n
+SD1C,8,SD1D,8,SD1E,8,SD1F,8
+end;
+
+# 16-bit EC registers
+into device label EC0 code_regex MFCA,\s+16 replace_matched begin FCA0,8,FCA1,8 end;
+into device label EC0 code_regex BFCC,\s+16 replace_matched begin FCC0,8,FCC1,8 end;
+into device label EC0 code_regex MCUR,\s+16 replace_matched begin CUR0,8,CUR1,8 end;
+into device label EC0 code_regex MBRM,\s+16 replace_matched begin BRM0,8,BRM1,8 end;
+into device label EC0 code_regex MBCV,\s+16 replace_matched begin BCV0,8,BCV1,8 end;
+into device label EC0 code_regex SMW0,\s+16 replace_matched begin SMWX,8,SMWY,8 end;
+into device label EC0 code_regex BADC,\s+16 replace_matched begin ADC0,8,ADC1,8 end;
+
+# deal with 64-bit FLD0
+into device label EC0 code_regex FLD0,\s+64 replace_matched
+begin
+//FLD0, 64,\n
+F000,8,F001,8,F002,8,F003,8,\n
+F004,8,F005,8,F006,8,F007,8,\n
+end;
+
+# deal with 128-bit FLD1
+into device label EC0 code_regex FLD1,\s+128 replace_matched 
+begin
+//FLD1, 128,\n
+F100,8,F101,8,F102,8,F103,8,\n
+F104,8,F105,8,F106,8,F107,8,\n
+F108,8,F109,8,F10A,8,F10B,8,\n
+F10C,8,F10D,8,F10E,8,F10F,8,\n
+end;
+
+# deal with 192-bit FLD2
+into device label EC0 code_regex FLD2,\s+192 replace_matched 
+begin
+//FLD2, 192,\n
+F200,8,F201,8,F202,8,F203,8,\n
+F204,8,F205,8,F206,8,F207,8,\n
+F208,8,F209,8,F20A,8,F20B,8,\n
+F20C,8,F20D,8,F20E,8,F20F,8,\n
+F210,8,F211,8,F212,8,F213,8,\n
+F214,8,F215,8,F216,8,F217,8,\n
+end;
+
+# deal with 256-bit FLD3
+into device label EC0 code_regex FLD3,\s+256 replace_matched 
+begin
+//FLD3, 256,\n
+F300,8,F301,8,F302,8,F303,8,\n
+F304,8,F305,8,F306,8,F307,8,\n
+F308,8,F309,8,F30A,8,F30B,8,\n
+F30C,8,F30D,8,F30E,8,F30F,8,\n
+F310,8,F311,8,F312,8,F313,8,\n
+F314,8,F315,8,F316,8,F317,8,\n
+F318,8,F319,8,F31A,8,F31B,8,\n
+F31C,8,F31D,8,F31E,8,F31F,8
+end;
+
+# 16-bit method access
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.MFCA, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.FCA0,^^PCI0.LPCB.EC0.FCA1), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.BFCC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.FCC0,^^PCI0.LPCB.EC0.FCC1), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.BADC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.ADC0,^^PCI0.LPCB.EC0.ADC1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.CUR0,^^PCI0.LPCB.EC0.CUR1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BRM0,^^PCI0.LPCB.EC0.BRM1), end;
+into method label UPBC code_regex \(\^\^PCI0\.LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BRM0,^^PCI0.LPCB.EC0.BRM1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBCV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BCV0,^^PCI0.LPCB.EC0.BCV1), end;
+into method label CLRI code_regex \(\^\^LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(^^LPCB.EC0.BRM0,^^LPCB.EC0.BRM1), end;
+into method label GBIF code_regex \(\^\^PCI0\.LPCB\.EC0\.BFCC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.FCC0,^^PCI0.LPCB.EC0.FCC1), end;
+into method label UPBC code_regex \^\^PCI0\.LPCB\.EC0\.BFCC, replaceall_matched begin B1B2(^^PCI0.LPCB.EC0.FCC0,^^PCI0.LPCB.EC0.FCC1), end;
+into method label GBCO code_regex \(\^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.CUR0,^^PCI0.LPCB.EC0.CUR1), end;
+
+# deal with SMD0
+
+into device label EC0 insert
+begin
+Method (RSMD, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (SD00, Index(TEMP, 0x00))\n
+    Store (SD01, Index(TEMP, 0x01))\n
+    Store (SD02, Index(TEMP, 0x02))\n
+    Store (SD03, Index(TEMP, 0x03))\n
+    Store (SD04, Index(TEMP, 0x04))\n
+    Store (SD05, Index(TEMP, 0x05))\n
+    Store (SD06, Index(TEMP, 0x06))\n
+    Store (SD07, Index(TEMP, 0x07))\n
+    Store (SD08, Index(TEMP, 0x08))\n
+    Store (SD09, Index(TEMP, 0x09))\n
+    Store (SD0A, Index(TEMP, 0x0A))\n
+    Store (SD0B, Index(TEMP, 0x0B))\n
+    Store (SD0C, Index(TEMP, 0x0C))\n
+    Store (SD0D, Index(TEMP, 0x0D))\n
+    Store (SD0E, Index(TEMP, 0x0E))\n
+    Store (SD0F, Index(TEMP, 0x0F))\n
+    Store (SD10, Index(TEMP, 0x10))\n
+    Store (SD11, Index(TEMP, 0x11))\n
+    Store (SD12, Index(TEMP, 0x12))\n
+    Store (SD13, Index(TEMP, 0x13))\n
+    Store (SD14, Index(TEMP, 0x14))\n
+    Store (SD15, Index(TEMP, 0x15))\n
+    Store (SD16, Index(TEMP, 0x16))\n
+    Store (SD17, Index(TEMP, 0x17))\n
+    Store (SD18, Index(TEMP, 0x18))\n
+    Store (SD19, Index(TEMP, 0x19))\n
+    Store (SD1A, Index(TEMP, 0x1A))\n
+    Store (SD1B, Index(TEMP, 0x1B))\n
+    Store (SD1C, Index(TEMP, 0x1C))\n
+    Store (SD1D, Index(TEMP, 0x1D))\n
+    Store (SD1E, Index(TEMP, 0x1E))\n
+    Store (SD1F, Index(TEMP, 0x1F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (WSMD, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), SD00)\n
+    Store (DerefOf(Index(TEMP, 0x01)), SD01)\n
+    Store (DerefOf(Index(TEMP, 0x02)), SD02)\n
+    Store (DerefOf(Index(TEMP, 0x03)), SD03)\n
+    Store (DerefOf(Index(TEMP, 0x04)), SD04)\n
+    Store (DerefOf(Index(TEMP, 0x05)), SD05)\n
+    Store (DerefOf(Index(TEMP, 0x06)), SD06)\n
+    Store (DerefOf(Index(TEMP, 0x07)), SD07)\n
+    Store (DerefOf(Index(TEMP, 0x08)), SD08)\n
+    Store (DerefOf(Index(TEMP, 0x09)), SD09)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), SD0A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), SD0B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), SD0C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), SD0D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), SD0E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), SD0F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), SD10)\n
+    Store (DerefOf(Index(TEMP, 0x11)), SD11)\n
+    Store (DerefOf(Index(TEMP, 0x12)), SD12)\n
+    Store (DerefOf(Index(TEMP, 0x13)), SD13)\n
+    Store (DerefOf(Index(TEMP, 0x14)), SD14)\n
+    Store (DerefOf(Index(TEMP, 0x15)), SD15)\n
+    Store (DerefOf(Index(TEMP, 0x16)), SD16)\n
+    Store (DerefOf(Index(TEMP, 0x17)), SD17)\n
+    Store (DerefOf(Index(TEMP, 0x18)), SD18)\n
+    Store (DerefOf(Index(TEMP, 0x19)), SD19)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), SD1A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), SD1B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), SD1C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), SD1D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), SD1E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), SD1F)\n
+}\n
+end;
+
+into method label SMRD code_regex \(SMW0 replaceall_matched begin (B1B2(SMWX,SMWY) end;
+into method label SMWR code_regex Store\s+\((.*),\s+SMW0\) replaceall_matched
+begin
+// Store(%1, SMW0)\n
+Store(%1, SMWX) Store(ShiftRight(%1, 8), SMWY) 
+end;
+into method label SMRD code_regex \(SMD0, replaceall_matched begin (RSMD(), end;
+into method label SMWR code_regex Store\s+\((.*),\s+SMD0\) replaceall_matched begin WSMD(%1) end;
+
+# deal with FLD3
+
+into device label EC0 insert
+begin
+Method (RFL3, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (F300, Index(TEMP, 0x00))\n
+    Store (F301, Index(TEMP, 0x01))\n
+    Store (F302, Index(TEMP, 0x02))\n
+    Store (F303, Index(TEMP, 0x03))\n
+    Store (F304, Index(TEMP, 0x04))\n
+    Store (F305, Index(TEMP, 0x05))\n
+    Store (F306, Index(TEMP, 0x06))\n
+    Store (F307, Index(TEMP, 0x07))\n
+    Store (F308, Index(TEMP, 0x08))\n
+    Store (F309, Index(TEMP, 0x09))\n
+    Store (F30A, Index(TEMP, 0x0A))\n
+    Store (F30B, Index(TEMP, 0x0B))\n
+    Store (F30C, Index(TEMP, 0x0C))\n
+    Store (F30D, Index(TEMP, 0x0D))\n
+    Store (F30E, Index(TEMP, 0x0E))\n
+    Store (F30F, Index(TEMP, 0x0F))\n
+    Store (F310, Index(TEMP, 0x10))\n
+    Store (F311, Index(TEMP, 0x11))\n
+    Store (F312, Index(TEMP, 0x12))\n
+    Store (F313, Index(TEMP, 0x13))\n
+    Store (F314, Index(TEMP, 0x14))\n
+    Store (F315, Index(TEMP, 0x15))\n
+    Store (F316, Index(TEMP, 0x16))\n
+    Store (F317, Index(TEMP, 0x17))\n
+    Store (F318, Index(TEMP, 0x18))\n
+    Store (F319, Index(TEMP, 0x19))\n
+    Store (F31A, Index(TEMP, 0x1A))\n
+    Store (F31B, Index(TEMP, 0x1B))\n
+    Store (F31C, Index(TEMP, 0x1C))\n
+    Store (F31D, Index(TEMP, 0x1D))\n
+    Store (F31E, Index(TEMP, 0x1E))\n
+    Store (F31F, Index(TEMP, 0x1F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+/*\n
+Method (WFL3, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), F300)\n
+    Store (DerefOf(Index(TEMP, 0x01)), F301)\n
+    Store (DerefOf(Index(TEMP, 0x02)), F302)\n
+    Store (DerefOf(Index(TEMP, 0x03)), F303)\n
+    Store (DerefOf(Index(TEMP, 0x04)), F304)\n
+    Store (DerefOf(Index(TEMP, 0x05)), F305)\n
+    Store (DerefOf(Index(TEMP, 0x06)), F306)\n
+    Store (DerefOf(Index(TEMP, 0x07)), F307)\n
+    Store (DerefOf(Index(TEMP, 0x08)), F308)\n
+    Store (DerefOf(Index(TEMP, 0x09)), F309)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), F30A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), F30B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), F30C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), F30D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), F30E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), F30F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), F310)\n
+    Store (DerefOf(Index(TEMP, 0x11)), F311)\n
+    Store (DerefOf(Index(TEMP, 0x12)), F312)\n
+    Store (DerefOf(Index(TEMP, 0x13)), F313)\n
+    Store (DerefOf(Index(TEMP, 0x14)), F314)\n
+    Store (DerefOf(Index(TEMP, 0x15)), F315)\n
+    Store (DerefOf(Index(TEMP, 0x16)), F316)\n
+    Store (DerefOf(Index(TEMP, 0x17)), F317)\n
+    Store (DerefOf(Index(TEMP, 0x18)), F318)\n
+    Store (DerefOf(Index(TEMP, 0x19)), F319)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), F31A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), F31B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), F31C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), F31D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), F31E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), F31F)\n
+}\n
+*/\n
+end;
+
+
+# deal with FLD2
+
+into device label EC0 insert
+begin
+Method (RFL2, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x18) { })\n
+    Store (F200, Index(TEMP, 0x00))\n
+    Store (F201, Index(TEMP, 0x01))\n
+    Store (F202, Index(TEMP, 0x02))\n
+    Store (F203, Index(TEMP, 0x03))\n
+    Store (F204, Index(TEMP, 0x04))\n
+    Store (F205, Index(TEMP, 0x05))\n
+    Store (F206, Index(TEMP, 0x06))\n
+    Store (F207, Index(TEMP, 0x07))\n
+    Store (F208, Index(TEMP, 0x08))\n
+    Store (F209, Index(TEMP, 0x09))\n
+    Store (F20A, Index(TEMP, 0x0A))\n
+    Store (F20B, Index(TEMP, 0x0B))\n
+    Store (F20C, Index(TEMP, 0x0C))\n
+    Store (F20D, Index(TEMP, 0x0D))\n
+    Store (F20E, Index(TEMP, 0x0E))\n
+    Store (F20F, Index(TEMP, 0x0F))\n
+    Store (F210, Index(TEMP, 0x10))\n
+    Store (F211, Index(TEMP, 0x11))\n
+    Store (F212, Index(TEMP, 0x12))\n
+    Store (F213, Index(TEMP, 0x13))\n
+    Store (F214, Index(TEMP, 0x14))\n
+    Store (F215, Index(TEMP, 0x15))\n
+    Store (F216, Index(TEMP, 0x16))\n
+    Store (F217, Index(TEMP, 0x17))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+/*\n
+Method (WFL2, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x18) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), F200)\n
+    Store (DerefOf(Index(TEMP, 0x01)), F201)\n
+    Store (DerefOf(Index(TEMP, 0x02)), F202)\n
+    Store (DerefOf(Index(TEMP, 0x03)), F203)\n
+    Store (DerefOf(Index(TEMP, 0x04)), F204)\n
+    Store (DerefOf(Index(TEMP, 0x05)), F205)\n
+    Store (DerefOf(Index(TEMP, 0x06)), F206)\n
+    Store (DerefOf(Index(TEMP, 0x07)), F207)\n
+    Store (DerefOf(Index(TEMP, 0x08)), F208)\n
+    Store (DerefOf(Index(TEMP, 0x09)), F209)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), F20A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), F20B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), F20C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), F20D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), F20E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), F20F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), F210)\n
+    Store (DerefOf(Index(TEMP, 0x11)), F211)\n
+    Store (DerefOf(Index(TEMP, 0x12)), F212)\n
+    Store (DerefOf(Index(TEMP, 0x13)), F213)\n
+    Store (DerefOf(Index(TEMP, 0x14)), F214)\n
+    Store (DerefOf(Index(TEMP, 0x15)), F215)\n
+    Store (DerefOf(Index(TEMP, 0x16)), F216)\n
+    Store (DerefOf(Index(TEMP, 0x17)), F217)\n
+}\n
+*/\n
+end;
+
+
+# deal with FLD1
+
+into device label EC0 insert
+begin
+Method (RFL1, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (F100, Index(TEMP, 0x00))\n
+    Store (F101, Index(TEMP, 0x01))\n
+    Store (F102, Index(TEMP, 0x02))\n
+    Store (F103, Index(TEMP, 0x03))\n
+    Store (F104, Index(TEMP, 0x04))\n
+    Store (F105, Index(TEMP, 0x05))\n
+    Store (F106, Index(TEMP, 0x06))\n
+    Store (F107, Index(TEMP, 0x07))\n
+    Store (F108, Index(TEMP, 0x08))\n
+    Store (F109, Index(TEMP, 0x09))\n
+    Store (F10A, Index(TEMP, 0x0A))\n
+    Store (F10B, Index(TEMP, 0x0B))\n
+    Store (F10C, Index(TEMP, 0x0C))\n
+    Store (F10D, Index(TEMP, 0x0D))\n
+    Store (F10E, Index(TEMP, 0x0E))\n
+    Store (F10F, Index(TEMP, 0x0F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+/*\n
+Method (WFL1, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), F100)\n
+    Store (DerefOf(Index(TEMP, 0x01)), F101)\n
+    Store (DerefOf(Index(TEMP, 0x02)), F102)\n
+    Store (DerefOf(Index(TEMP, 0x03)), F103)\n
+    Store (DerefOf(Index(TEMP, 0x04)), F104)\n
+    Store (DerefOf(Index(TEMP, 0x05)), F105)\n
+    Store (DerefOf(Index(TEMP, 0x06)), F106)\n
+    Store (DerefOf(Index(TEMP, 0x07)), F107)\n
+    Store (DerefOf(Index(TEMP, 0x08)), F108)\n
+    Store (DerefOf(Index(TEMP, 0x09)), F109)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), F10A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), F10B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), F10C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), F10D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), F10E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), F10F)\n
+}\n
+*/\n
+end;
+
+# deal with FLD0
+
+into device label EC0 insert
+begin
+Method (RFL0, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (F000, Index(TEMP, 0x00))\n
+    Store (F001, Index(TEMP, 0x01))\n
+    Store (F002, Index(TEMP, 0x02))\n
+    Store (F003, Index(TEMP, 0x03))\n
+    Store (F004, Index(TEMP, 0x04))\n
+    Store (F005, Index(TEMP, 0x05))\n
+    Store (F006, Index(TEMP, 0x06))\n
+    Store (F007, Index(TEMP, 0x07))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+/*\n
+Method (WFL0, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), F000)\n
+    Store (DerefOf(Index(TEMP, 0x01)), F001)\n
+    Store (DerefOf(Index(TEMP, 0x02)), F002)\n
+    Store (DerefOf(Index(TEMP, 0x03)), F003)\n
+    Store (DerefOf(Index(TEMP, 0x04)), F004)\n
+    Store (DerefOf(Index(TEMP, 0x05)), F005)\n
+    Store (DerefOf(Index(TEMP, 0x06)), F006)\n
+    Store (DerefOf(Index(TEMP, 0x07)), F007)\n
+}\n
+*/\n
+end;
+
+into method label SMRD code_regex \(FLD([0-3]), replaceall_matched begin (RFL%1(), end;
+

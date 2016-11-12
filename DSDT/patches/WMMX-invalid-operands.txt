@@ -1,0 +1,1 @@
+into method label WMMX parent_label WMI1 code_regex \s+(MUID|REVI|SFNC|XRG0)\n removeall_matched;

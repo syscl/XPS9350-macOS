@@ -1,0 +1,28 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_PLD.txt
+
+# _PLD is supposed to return a variable length Package of Buffers
+into_all all code_regex (Name\s*\(_PLD,\s*)Buffer(\s\([^\)].*\)[^\)]*) replaceall_matched
+begin
+%1Package() { Buffer%2 }
+end;
+
+# _PLD return case, courtesy stargazer418
+into_all all code_regex (Return\s)\(Buffer(\s\(0x10\)[^\)]*) replaceall_matched
+begin
+%1(Package() { Buffer%2}
+end;
+
+# 
+
+# REVIEW: below is causing issues...
+#into_all all code_regex (Name\s*\(_PLD,\s*)Package(\s\([^\)].*\)[^\)]*) replaceall_matched
+#begin
+#%1Package() { Buffer%2 }
+#end;
+
+#into_all all code_regex (Return\s)\(Package(\s\(0x10\)[^\)]*) replaceall_matched
+#begin
+#%1(Package() { Buffer%2}
+#end;
+

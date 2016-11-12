@@ -1,0 +1,38 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Dell-XPS-13.txt
+
+# created by RehabMan 9/25/2013
+# created originally for ivan0309
+
+# works for:
+#  Dell XPS 13
+#  Dell Insprion 14z
+#  Dell XPS 15z
+#  Dell Inspiron 14r n4110
+#  Dell Vostro 5470 (per sonic1978)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# battery EC
+into device label EC0 code_regex CAP0,\s+16 replace_matched begin CAPX,8,CAPY,8 end;
+into device label EC0 code_regex VOT0,\s+16 replace_matched begin VOTX,8,VOTY,8 end;
+into device label EC0 code_regex CRT0,\s+16 replace_matched begin CRTX,8,CRTY,8 end;
+into device label EC0 code_regex FCP0,\s+16 replace_matched begin FCPX,8,FCPY,8 end;
+into device label EC0 code_regex DCP0,\s+16 replace_matched begin DCPX,8,DCPY,8 end;
+into device label EC0 code_regex DVT0,\s+16 replace_matched begin DVTX,8,DVTY,8 end;
+into device label EC0 code_regex BSN0,\s+16 replace_matched begin BSNX,8,BSNY,8 end;
+
+# battery methods
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DCP0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.DCPX,^^PCI0.LPCB.EC0.DCPY), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.FCP0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.FCPX,^^PCI0.LPCB.EC0.FCPY), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DVT0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.DVTX,^^PCI0.LPCB.EC0.DVTY), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.BSN0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.BSNX,^^PCI0.LPCB.EC0.BSNY), end;
+
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.CAP0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.CAPX,^^PCI0.LPCB.EC0.CAPY), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.VOT0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.VOTX,^^PCI0.LPCB.EC0.VOTY), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.CRT0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.CRTX,^^PCI0.LPCB.EC0.CRTY), end;
+

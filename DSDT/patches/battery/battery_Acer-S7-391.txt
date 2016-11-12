@@ -1,0 +1,103 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Acer-S7-391.txt
+
+# created by dadaist 2013-11-14
+
+# works for:
+#  Acer S7-391
+#  Acer Iconia w700 (per polygaryd)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# 16-bit registers
+into device label EC0 code_regex BVLT,\s+16, replace_matched begin VLT0,8,VLT1,8, end;
+into device label EC0 code_regex BRMC,\s+16, replace_matched begin RMC0,8,RMC1,8, end;
+into device label EC0 code_regex BFCC,\s+16, replace_matched begin FCC0,8,FCC1,8, end;
+into device label EC0 code_regex BDSC,\s+16, replace_matched begin DSC0,8,DSC1,8, end;
+into device label EC0 code_regex BDSV,\s+16, replace_matched begin DSV0,8,DSV1,8, end;
+into device label EC0 code_regex BPRA,\s+16, replace_matched begin PRA0,8,PRA1,8, end;
+
+# fix 16-bit methods
+into method label _BST code_regex \(\^\^EC0\.BVLT, replaceall_matched begin (B1B2(^^EC0.VLT0,^^EC0.VLT1), end;
+into method label _BST code_regex \(\^\^EC0\.BRMC, replaceall_matched begin (B1B2(^^EC0.RMC0,^^EC0.RMC1), end;
+into method label _BST code_regex \(\^\^EC0\.BFCC, replaceall_matched begin (B1B2(^^EC0.FCC0,^^EC0.FCC1), end;
+into method label _BIF code_regex \(\^\^EC0\.BFCC, replaceall_matched begin (B1B2(^^EC0.FCC0,^^EC0.FCC1), end;
+into method label _BIF code_regex \(\^\^EC0\.BDSC, replaceall_matched begin (B1B2(^^EC0.DSC0,^^EC0.DSC1), end;
+into method label _BIF code_regex \(\^\^EC0\.BDSV, replaceall_matched begin (B1B2(^^EC0.DSV0,^^EC0.DSV1), end;
+into method label _BST code_regex \(\^\^EC0\.BPRA, replaceall_matched begin (B1B2(^^EC0.PRA0,^^EC0.PRA1), end;
+
+# added for Acer Iconia w700
+into device label EC0 code_regex ERIB,\s+16, replace_matched begin ERI0,8,ERI1,8, end;
+into method label FANG code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+into method label FANW code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+// Arg2 - value to write\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+into device label EC0 code_regex (SMD0,)\s+(256) replace_matched begin SMDX,%2,//%1%2 end;
+into method label CFUN code_regex Store\s+\(Zero,\s+SMD0\) replaceall_matched begin WECB(0x96,256,Zero) end;
+into method label CFUN code_regex \(SMD0, replaceall_matched begin (RECB(0x94,256), end;

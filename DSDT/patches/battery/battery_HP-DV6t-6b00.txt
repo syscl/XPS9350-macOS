@@ -1,0 +1,134 @@
+# Maintained by: RehabMan for: Laptop Patches
+#battery_HP-DV6t-6b00.txt
+
+# created by jtp_redson using RehabMan's guide
+
+# Works for
+#    HP DV6t-6b00 Quad Core
+#    HP DV6-6150sl
+#    HP DV6-6033cl (per ttran001)
+
+# define helper method to handle 16 bits
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# define utility methods to read buffers from/to EC
+
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, Serialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+
+# 16-bit EC registers
+
+into device label EC code_regex RTTE,\s+16 replace_matched begin RTE0,8,RTE1,8 end;
+into device label EC code_regex ATTE,\s+16 replace_matched begin ATE0,8,ATE1,8 end;
+into device label EC code_regex ATTF,\s+16 replace_matched begin TTF0,8,TTF1,8 end;
+into device label EC code_regex AVGC,\s+16 replace_matched begin VGC0,8,VGC1,8 end;
+into device label EC code_regex CHGV,\s+16 replace_matched begin HGV0,8,HGV1,8 end;
+into device label EC code_regex CHGC,\s+16 replace_matched begin HGC0,8,HGC1,8 end;
+into device label EC code_regex BDC,\s+16 replace_matched begin DC0,8,DC1,8 end;
+into device label EC code_regex BFC,\s+16 replace_matched begin FC0,8,FC1,8 end;
+into device label EC code_regex BTEC,\s+16 replace_matched begin TEC0,8,TEC1,8 end;
+into device label EC code_regex BDV,\s+16 replace_matched begin DV0,8,DV1,8 end;
+into device label EC code_regex BST,\s+16 replace_matched begin ST0,8,ST1,8 end;
+into device label EC code_regex BPR,\s+16 replace_matched begin PR0,8,PR1,8 end;
+into device label EC code_regex BPV,\s+16 replace_matched begin PV0,8,PV1,8 end;
+into device label EC code_regex BMD,\s+16 replace_matched begin MD0,8,MD1,8 end;
+into device label EC code_regex BCW,\s+16 replace_matched begin CW0,8,CW1,8 end;
+into device label EC code_regex BCL,\s+16 replace_matched begin CL0,8,CL1,8 end;
+into device label EC code_regex BMN,\s+16 replace_matched begin MN0,8,MN1,8 end;
+into device label EC code_regex BSN,\s+16 replace_matched begin SN0,8,SN1,8 end;
+into device label EC code_regex BTY,\s+16 replace_matched begin TY0,8,TY1,8 end;
+into device label EC code_regex BC4,\s+16 replace_matched begin C40,8,C41,8 end;
+into device label EC code_regex BC3,\s+16 replace_matched begin C30,8,C31,8 end;
+into device label EC code_regex BC2,\s+16 replace_matched begin C20,8,C21,8 end;
+into device label EC code_regex BC1,\s+16 replace_matched begin C10,8,C11,8 end;
+into device label EC code_regex BTT,\s+16 replace_matched begin TT0,8,TT1,8 end;
+
+# GTBI method
+
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.RTTE, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.RTE0,^^PCI0.LPCB.EC.RTE1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.ATTE, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.ATE0,^^PCI0.LPCB.EC.ATE1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.ATTF, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.TTF0,^^PCI0.LPCB.EC.TTF1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.AVGC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.VGC0,^^PCI0.LPCB.EC.VGC1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.CHGV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.HGV0,^^PCI0.LPCB.EC.HGV1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.CHGC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.HGC0,^^PCI0.LPCB.EC.HGC1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.DC0,^^PCI0.LPCB.EC.DC1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.FC0,^^PCI0.LPCB.EC.FC1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.DV0,^^PCI0.LPCB.EC.DV1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BST, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.ST0,^^PCI0.LPCB.EC.ST1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BPR, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.PR0,^^PCI0.LPCB.EC.PR1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BPV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.PV0,^^PCI0.LPCB.EC.PV1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BMD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.MD0,^^PCI0.LPCB.EC.MD1), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BSN\), replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.SN0,^^PCI0.LPCB.EC.SN1)), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BC4, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.C40,^^PCI0.LPCB.EC.C41), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BC3, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.C30,^^PCI0.LPCB.EC.C31), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BC2, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.C20,^^PCI0.LPCB.EC.C21), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BC1, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.C10,^^PCI0.LPCB.EC.C11), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BTT, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.TT0,^^PCI0.LPCB.EC.TT1), end;
+
+# _BIF method
+
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.DC0,^^PCI0.LPCB.EC.DC1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.FC0,^^PCI0.LPCB.EC.FC1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BTEC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.TEC0,^^PCI0.LPCB.EC.TEC1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.DV0,^^PCI0.LPCB.EC.DV1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BCW, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.CW0,^^PCI0.LPCB.EC.CW1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BCL, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.CL0,^^PCI0.LPCB.EC.CL1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BMN, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.MN0,^^PCI0.LPCB.EC.MN1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BSN, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.SN0,^^PCI0.LPCB.EC.SN1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC\.BTY, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.TY0,^^PCI0.LPCB.EC.TY1), end;
+
+
+# UBST method
+
+into method label UBST code_regex \(\^\^PCI0\.LPCB\.EC\.BFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.FC0,^^PCI0.LPCB.EC.FC1), end;
+into method label UBST code_regex \(\^\^PCI0\.LPCB\.EC\.BDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.DV0,^^PCI0.LPCB.EC.DV1), end;
+into method label UBST code_regex \(\^\^PCI0\.LPCB\.EC\.BST, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.ST0,^^PCI0.LPCB.EC.ST1), end;
+into method label UBST code_regex \(\^\^PCI0\.LPCB\.EC\.BPR, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.PR0,^^PCI0.LPCB.EC.PR1), end;
+into method label UBST code_regex \(\^\^PCI0\.LPCB\.EC\.BPV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.PV0,^^PCI0.LPCB.EC.PV1), end;
+
+# WMBG method
+
+into method label WMBG code_regex \(\^\^PCI0\.LPCB\.EC\.BST, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.ST0,^^PCI0.LPCB.EC.ST1), end;
+
+# Buffer fields renaming so they are inaccessible
+
+into device label EC code_regex (BTN,)\s+(64) replace_matched begin BTNX,%2,//%1%2 end;
+into device label EC code_regex (BDNB,)\s+(56) replace_matched begin BDNBX,%2,//%1%2 end;
+into device label EC code_regex (CTL,)\s+(128) replace_matched begin CTLX,%2,//%1%2 end;
+
+# Apply RECB method 
+
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.CTL, replaceall_matched begin (^^PCI0.LPCB.EC.RECB(0x30,128), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BDNB, replaceall_matched begin (^^PCI0.LPCB.EC.RECB(0x08,112), end;
+into method label GTBI code_regex \(\^\^PCI0\.LPCB\.EC\.BTN, replaceall_matched begin (^^PCI0.LPCB.EC.RECB(0xC1,64), end;
+
+

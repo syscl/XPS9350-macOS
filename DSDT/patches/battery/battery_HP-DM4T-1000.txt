@@ -1,0 +1,139 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-DM4T-1000.txt
+
+# created by DanAren 2014-02-22, finished by RehabMan
+
+# works for:
+#  HP Pavilion DM4T-1000
+
+# 16-bit registers
+into device label H_EC code_regex ATTE,\s+16 replace_matched begin TTE0,8,TTE1,8 end;
+into device label H_EC code_regex ATTF,\s+16 replace_matched begin TTF0,8,TTF1,8 end;
+into device label H_EC code_regex RTTE,\s+16 replace_matched begin RTT0,8,RTT1,8 end;
+into device label H_EC code_regex BDC0,\s+16 replace_matched begin DC00,8,DC01,8 end;
+into device label H_EC code_regex BFC0,\s+16 replace_matched begin FC00,8,FC01,8 end;
+into device label H_EC code_regex BFC1,\s+16 replace_matched begin FC10,8,FC11,8 end;
+into device label H_EC code_regex BDV0,\s+16 replace_matched begin DV00,8,DV01,8 end;
+into device label H_EC code_regex BPR0,\s+16 replace_matched begin BR00,8,BR01,8 end;
+into device label H_EC code_regex BRC0,\s+16 replace_matched begin RC00,8,RC01,8 end;
+into device label H_EC code_regex BCC0,\s+16 replace_matched begin CC00,8,CC01,8 end;
+into device label H_EC code_regex CV01,\s+16 replace_matched begin VC10,8,VC11,8 end;
+into device label H_EC code_regex CV02,\s+16 replace_matched begin CV20,8,CV21,8 end;
+into device label H_EC code_regex CV03,\s+16 replace_matched begin CV30,8,CV31,8 end;
+into device label H_EC code_regex CV04,\s+16 replace_matched begin CV40,8,CV41,8 end;
+into device label H_EC code_regex BMD0,\s+16 replace_matched begin MD00,8,MD01,8 end;
+into device label H_EC code_regex BPV0,\s+16 replace_matched begin PV00,8,PV01,8 end;
+into device label H_EC code_regex BSN0,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into device label H_EC code_regex BCV0,\s+16 replace_matched begin BV00,8,BV01,8 end;
+into device label H_EC code_regex CRG0,\s+16 replace_matched begin RG00,8,RG01,8 end;
+into device label H_EC code_regex CBT0,\s+16 replace_matched begin BT00,8,BT01,8 end;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# fix 16-bit methods
+into method label GBTI code_regex \(ATTE, replaceall_matched begin (B1B2(TTE0,TTE1), end;
+into method label GBTI code_regex \(ATTF, replaceall_matched begin (B1B2(TTF0,TTF1), end;
+into method label GBTI code_regex \(RTTE, replaceall_matched begin (B1B2(RTT0,RTT1), end;
+into method label GBTI code_regex \(BDC0, replaceall_matched begin (B1B2(DC00,DC01), end;
+
+into method label GBTI code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label BTIF code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label MBRC code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label ITLB code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label ITLB code_regex BFC0, replaceall_matched begin B1B2(FC00,FC01), end;
+into method label _Q09 code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+
+into method label ITLB code_regex \(BFC1, replaceall_matched begin (B1B2(FC10,FC11), end;
+
+into method label GBTI code_regex \(BDV0, replaceall_matched begin (B1B2(DV00,DV01), end;
+into method label BTIF code_regex \(BDV0, replaceall_matched begin (B1B2(DV00,DV01), end;
+
+into method label GBTI code_regex \(BPR0, replaceall_matched begin (B1B2(BR00,BR01), end;
+into method label BTST code_regex \(BPR0, replaceall_matched begin (B1B2(BR00,BR01), end;
+
+into method label GBTI code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label _Q09 code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label _Q09 code_regex BFC0\) replaceall_matched begin B1B2(FC00,FC01)) end;
+into method label _PTS code_regex \(\\_SB\.PCI0\.LPCB\.H_EC\.BRC0, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.H_EC.RC00,\\_SB.PCI0.LPCB.H_EC.RC01), end;
+into method label _WAK code_regex \(\\_SB\.PCI0\.LPCB\.H_EC\.BRC0, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.H_EC.RC00,\\_SB.PCI0.LPCB.H_EC.RC01), end;
+into method label MBRC code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label MBRC code_regex \(BRC0\) replaceall_matched begin (B1B2(RC00,RC01)) end;
+
+into method label GBTI code_regex \(BCC0, replaceall_matched begin (B1B2(CC00,CC01), end;
+into method label GBTI code_regex \(CV01, replaceall_matched begin (B1B2(VC10,VC11), end;
+into method label GBTI code_regex \(CV02, replaceall_matched begin (B1B2(CV20,CV21), end;
+into method label GBTI code_regex \(CV03, replaceall_matched begin (B1B2(CV30,CV31), end;
+into method label GBTI code_regex \(CV04, replaceall_matched begin (B1B2(CV40,CV41), end;
+
+into method label GBTI code_regex \(BMD0, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BTIF code_regex \(BMD0, replaceall_matched begin (B1B2(MD00,MD01), end;
+
+into method label GBTI code_regex \(BPV0, replaceall_matched begin (B1B2(PV00,PV01), end;
+into method label BTST code_regex \(BPV0, replaceall_matched begin (B1B2(PV00,PV01), end;
+
+into method label GBTI code_regex \(BSN0, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label GBTI code_regex BMD0\) replaceall_matched begin B1B2(MD00,MD01)) end;
+into method label BTIF code_regex \(BSN0, replaceall_matched begin (B1B2(SN00,SN01), end;
+
+into method label GBTI code_regex \(BCV0, replaceall_matched begin (B1B2(BV00,BV01), end;
+into method label GBTI code_regex \(CRG0, replaceall_matched begin (B1B2(RG00,RG01), end;
+into method label GBTI code_regex \(CBT0, replaceall_matched begin (B1B2(BT00,BT01), end;
+
+# 32-bit registers
+into device label H_EC code_regex BTY0,\s+32 replace_matched begin TY00,8,TY01,8,TY02,8,TY03,8 end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# fix 32-bit methods
+into method label GBTI code_regex \(BTY0, replaceall_matched begin (B1B4(TY00,TY01,TY02,TY03), end;
+
+
+# 56/128-bit registers
+into device label H_EC code_regex (BDN0,)\s+(56) replace_matched begin BDNX,%2,//%1%2 end;
+into device label H_EC code_regex (BCT0,)\s+(128) replace_matched begin BCTX,%2,//%1%2 end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label H_EC remove_entry;
+into method label RECB parent_label H_EC remove_entry;
+into device label H_EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into method label GBTI code_regex \(BDN0, replaceall_matched begin (RECB(0x10,56), end;
+into method label MBRC code_regex \(BDN0, replaceall_matched begin (RECB(0x10,56), end;
+into method label GBTI code_regex \(BCT0, replaceall_matched begin (RECB(0x30,128), end;

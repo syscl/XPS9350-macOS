@@ -1,0 +1,6 @@
+#IMTR->TIMR(and also _T_x->T_x) to fit the OS X/macOS’s required credit syscl
+into device label _T_0 set_label begin T_0 end;
+into device label _T_1 set_label begin T_1 end;
+into_all all code_regex _T_0 replaceall_matched begin T_0 end;
+into_all all code_regex _T_1 replaceall_matched begin T_1 end;
+into_all all code_regex ITMR replaceall_matched begin TIMR end;

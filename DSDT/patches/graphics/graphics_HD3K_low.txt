@@ -1,0 +1,25 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_HD3K_low.txt
+
+#
+# Use this patch if your laptop has the standard 1366x768 screen
+#
+# Use dual-link if you have 1600x900 or have upgraded
+# to 1080p screen.
+#
+
+#   Inject HDMI info into GFX0/IGPU
+into method label _DSM parent_adr 0x00020000 remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "AAPL,snb-platform-id", Buffer() { 0x00, 0x00, 0x01, 0x00 },\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+    })\n
+}\n
+end;
+

@@ -1,0 +1,214 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Envy-14.txt
+
+# created by RehabMan 2013-11-07
+# for ddoryoo
+
+# works for:
+#  HP Envy 14-2166se
+#  HP Envy 14-2050SE
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label H_EC remove_entry;
+into method label RECB parent_label H_EC remove_entry;
+into device label H_EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+#
+# Note: Offsets below into EC are based on the following data in the native DSDT
+#
+#                    Field (ECF2, ByteAcc, Lock, Preserve)
+#                    {
+#                                Offset (0x10),
+#                        BDN0,   56, 	//!!0x10
+#                                Offset (0x18),
+#                        BME0,   8,
+#                                Offset (0x20),
+#                        BMN0,   32, 	//0x20
+#                        BMN2,   8, 	//0x24
+#                        BMN4,   88,	//0x25
+#                        BCT0,   128, 	//!! 0x30
+#                        BDN1,   56, 	//!! 0x40
+#                                Offset (0x48),
+#                        BME1,   8,
+#                                Offset (0x50),
+#                        BMN1,   32, 	//0x50
+#                        BMN3,   8, 	//0x54
+#                        BMN5,   88, 	//0x55
+#                        BCT1,   128, 	//!!0x60
+#
+# If the native DSDT has any such data re-organized such that the fields
+# being read with RECB are at a different offset, the offsets below
+# (first param to WECB/RECB) would need to be changed for the DSDT.
+#
+# This is something to watch out for when adapting this patch to another 
+# computer and maybe even after updating to a new BIOS.
+#
+
+# deal with buffer fields above
+into device label H_EC code_regex (BDN0,)\s+(56) replace_matched begin BDNX,%2,//%1%2 end;
+into device label H_EC code_regex (BDN1,)\s+(56) replace_matched begin BDNY,%2,//%1%2 end;
+into device label H_EC code_regex (BCT0,)\s+(128) replace_matched begin BCTX,%2,//%1%2 end;
+into device label H_EC code_regex (BCT1,)\s+(128) replace_matched begin BCTY,%2,//%1%2 end;
+into method label GBTI code_regex \(BCT0, replaceall_matched begin (RECB(0x30,128), end;
+into method label GBTI code_regex \(BCT1, replaceall_matched begin (RECB(0x60,128), end;
+into method label GBTI code_regex \(BDN0, replaceall_matched begin (RECB(0x10,56), end;
+into method label GBTI code_regex \(BDN1, replaceall_matched begin (RECB(0x40,56), end;
+
+# 16-bit registers
+into device label H_EC code_regex BDC0,\s+16 replace_matched begin DC00,8,DC01,8 end;
+into device label H_EC code_regex BDC1,\s+16 replace_matched begin DC10,8,DC11,8 end;
+into device label H_EC code_regex BFC0,\s+16 replace_matched begin FC00,8,FC01,8 end;
+into device label H_EC code_regex BFC1,\s+16 replace_matched begin FC10,8,FC11,8 end;
+into device label H_EC code_regex BDV0,\s+16 replace_matched begin DV00,8,DV01,8 end;
+into device label H_EC code_regex BDV1,\s+16 replace_matched begin DV10,8,DV11,8 end;
+into device label H_EC code_regex BPR0,\s+16 replace_matched begin PR00,8,PR01,8 end;
+into device label H_EC code_regex BPR1,\s+16 replace_matched begin PR10,8,PR11,8 end;
+into device label H_EC code_regex BRC0,\s+16 replace_matched begin RC00,8,RC01,8 end;
+into device label H_EC code_regex BRC1,\s+16 replace_matched begin RC10,8,RC11,8 end;
+into device label H_EC code_regex BCC0,\s+16 replace_matched begin CC00,8,CC01,8 end;
+into device label H_EC code_regex BCC1,\s+16 replace_matched begin CC10,8,CC11,8 end;
+into device label H_EC code_regex CV01,\s+16 replace_matched begin CV10,8,CV11,8 end;
+into device label H_EC code_regex CV02,\s+16 replace_matched begin CV20,8,CV21,8 end;
+into device label H_EC code_regex CV03,\s+16 replace_matched begin CV30,8,CV31,8 end;
+into device label H_EC code_regex CV04,\s+16 replace_matched begin CV40,8,CV41,8 end;
+into device label H_EC code_regex CV11,\s+16 replace_matched begin CV50,8,CV51,8 end;
+into device label H_EC code_regex CV12,\s+16 replace_matched begin CV60,8,CV61,8 end;
+into device label H_EC code_regex CV13,\s+16 replace_matched begin CV70,8,CV71,8 end;
+into device label H_EC code_regex CV14,\s+16 replace_matched begin CV80,8,CV81,8 end;
+into device label H_EC code_regex HPBA,\s+16 replace_matched begin PBA0,8,PBA1,8 end;
+into device label H_EC code_regex HPBB,\s+16 replace_matched begin PBB0,8,PBB1,8 end;
+into device label H_EC code_regex BMD0,\s+16 replace_matched begin MD00,8,MD01,8 end;
+into device label H_EC code_regex BMD1,\s+16 replace_matched begin MD10,8,MD11,8 end;
+into device label H_EC code_regex BPV0,\s+16 replace_matched begin PV00,8,PV01,8 end;
+into device label H_EC code_regex BPV1,\s+16 replace_matched begin PV10,8,PV11,8 end;
+into device label H_EC code_regex BSN0,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into device label H_EC code_regex BSN1,\s+16 replace_matched begin SN10,8,SN11,8 end;
+into device label H_EC code_regex BCV0,\s+16 replace_matched begin BV00,8,BV01,8 end;
+into device label H_EC code_regex BCV1,\s+16 replace_matched begin BV10,8,BV11,8 end;
+into device label H_EC code_regex CRG0,\s+16 replace_matched begin RG00,8,RG01,8 end;
+into device label H_EC code_regex CRG1,\s+16 replace_matched begin RG10,8,RG11,8 end;
+into device label H_EC code_regex CBT0,\s+16 replace_matched begin BT00,8,BT01,8 end;
+into device label H_EC code_regex CBT1,\s+16 replace_matched begin BT10,8,BT11,8 end;
+
+# 32-bit registers
+into device label H_EC code_regex BTY0,\s+32 replace_matched begin TY00,8,TY01,8,TY02,8,TY03,8 end;
+into device label H_EC code_regex BTY1,\s+32 replace_matched begin TY10,8,TY11,8,TY12,8,TY13,8 end;
+
+# fix 16-bit methods
+into method label GBTI code_regex \(BDC0, replaceall_matched begin (B1B2(DC00,DC01), end;
+into method label GBTI code_regex \(BDC1, replaceall_matched begin (B1B2(DC10,DC11), end;
+into method label GBTI code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label GBTI code_regex \(BFC1, replaceall_matched begin (B1B2(FC10,FC11), end;
+into method label BTIF code_regex \(BFC0, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label BTIF code_regex \(BFC1, replaceall_matched begin (B1B2(FC10,FC11), end;
+into method label ITLB code_regex \(BFC1, replaceall_matched begin (B1B2(FC10,FC11), end;
+into method label ITLB code_regex \sBFC0, replaceall_matched begin B1B2(FC00,FC01), end;
+into method label _Q09 code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label _Q09 code_regex \sBFC0\) replaceall_matched begin B1B2(FC00,FC01)) end;
+into method label GBTI code_regex \(BDV0, replaceall_matched begin (B1B2(DV00,DV01), end;
+into method label GBTI code_regex \(BDV1, replaceall_matched begin (B1B2(DV10,DV11), end;
+into method label BTIF code_regex \(BDV0, replaceall_matched begin (B1B2(DV00,DV01), end;
+into method label BTIF code_regex \(BDV1, replaceall_matched begin (B1B2(DV10,DV11), end;
+into method label GBTI code_regex \(BPR0, replaceall_matched begin (B1B2(PR00,PR01), end;
+into method label GBTI code_regex \(BPR1, replaceall_matched begin (B1B2(PR10,PR11), end;
+into method label BTST code_regex \sBPR0, replaceall_matched begin B1B2(PR00,PR01), end;
+into method label BTST code_regex \sBPR1, replaceall_matched begin B1B2(PR10,PR11), end;
+into method label BTST code_regex \(BPR0, replaceall_matched begin (B1B2(PR00,PR01), end;
+into method label BTST code_regex \(BPR1, replaceall_matched begin (B1B2(PR10,PR11), end;
+into method label BTST code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label BTST code_regex \(BRC1, replaceall_matched begin (B1B2(RC10,RC11), end;
+into method label GBTI code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label GBTI code_regex \(BRC1, replaceall_matched begin (B1B2(RC10,RC11), end;
+into method label _Q09 code_regex \(BRC0, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label GBTI code_regex \(BCC0, replaceall_matched begin (B1B2(CC00,CC01), end;
+into method label GBTI code_regex \(BCC1, replaceall_matched begin (B1B2(CC10,CC11), end;
+into method label GBTI code_regex \(CV01, replaceall_matched begin (B1B2(CV10,CV11), end;
+into method label GBTI code_regex \(CV02, replaceall_matched begin (B1B2(CV20,CV21), end;
+into method label GBTI code_regex \(CV03, replaceall_matched begin (B1B2(CV30,CV31), end;
+into method label GBTI code_regex \(CV04, replaceall_matched begin (B1B2(CV40,CV41), end;
+into method label GBTI code_regex \(CV11, replaceall_matched begin (B1B2(CV50,CV51), end;
+into method label GBTI code_regex \(CV12, replaceall_matched begin (B1B2(CV60,CV61), end;
+into method label GBTI code_regex \(CV13, replaceall_matched begin (B1B2(CV70,CV71), end;
+into method label GBTI code_regex \(CV14, replaceall_matched begin (B1B2(CV80,CV81), end;
+into method label BTIF code_regex \(BMD0, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BTIF code_regex \(BMD1, replaceall_matched begin (B1B2(MD10,MD11), end;
+into method label GBTI code_regex \sBMD0\) replaceall_matched begin B1B2(MD00,MD01)) end;
+into method label GBTI code_regex \(BMD0, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label GBTI code_regex \sBMD1\) replaceall_matched begin B1B2(MD10,MD11)) end;
+into method label GBTI code_regex \(BMD1, replaceall_matched begin (B1B2(MD10,MD11), end;
+into method label BTST code_regex \(BPV0, replaceall_matched begin (B1B2(PV00,PV01), end;
+into method label BTST code_regex \(BPV1, replaceall_matched begin (B1B2(PV10,PV11), end;
+into method label GBTI code_regex \(BPV0, replaceall_matched begin (B1B2(PV00,PV01), end;
+into method label GBTI code_regex \(BPV1, replaceall_matched begin (B1B2(PV10,PV11), end;
+into method label BTIF code_regex \(BSN0, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label BTIF code_regex \(BSN1, replaceall_matched begin (B1B2(SN10,SN11), end;
+into method label GBTI code_regex \(BSN0, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label GBTI code_regex \(BSN1, replaceall_matched begin (B1B2(SN10,SN11), end;
+into method label GBTI code_regex \(BCV0, replaceall_matched begin (B1B2(BV00,BV01), end;
+into method label GBTI code_regex \(BCV1, replaceall_matched begin (B1B2(BV10,BV11), end;
+into method label GBTI code_regex \(CRG0, replaceall_matched begin (B1B2(RG00,RG01), end;
+into method label GBTI code_regex \(CRG1, replaceall_matched begin (B1B2(RG10,RG11), end;
+into method label GBTI code_regex \(CBT0, replaceall_matched begin (B1B2(BT00,BT01), end;
+into method label GBTI code_regex \(CBT1, replaceall_matched begin (B1B2(BT10,BT11), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BFC0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.FC00,^^PCI0.LPCB.H_EC.FC01), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BFC1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.FC10,^^PCI0.LPCB.H_EC.FC11), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BDV0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.DV00,^^PCI0.LPCB.H_EC.DV01), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BDV1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.DV10,^^PCI0.LPCB.H_EC.DV11), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BSN0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.SN00,^^PCI0.LPCB.H_EC.SN01), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BSN1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.SN10,^^PCI0.LPCB.H_EC.SN11), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BMD0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.MD00,^^PCI0.LPCB.H_EC.MD01), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BMD1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.MD10,^^PCI0.LPCB.H_EC.MD11), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPR0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.PR00,^^PCI0.LPCB.H_EC.PR01), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPR1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.PR10,^^PCI0.LPCB.H_EC.PR11), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BRC0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.RC00,^^PCI0.LPCB.H_EC.RC01), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BRC1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.RC10,^^PCI0.LPCB.H_EC.RC11), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPV0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.PV00,^^PCI0.LPCB.H_EC.PV01), end;
+into_all method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPV1, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.PV10,^^PCI0.LPCB.H_EC.PV11), end;
+
+# fix 32-bit methods
+into method label GBTI code_regex \(BTY0, replaceall_matched begin (B1B4(TY00,TY01,TY02,TY03), end;
+into method label GBTI code_regex \(BTY1, replaceall_matched begin (B1B4(TY10,TY11,TY12,TY13), end;
+
+# disable BAT1 device
+into method label _STA parent_label BAT1 replace_content begin Return (Zero) end;

@@ -1,0 +1,8 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_HID_pnp.txt
+
+# To fix Name(_HID, "*pnpXXXX") and Name(_HID, "pnpXXXX")
+
+into_all all code_regex (Name\s+\(_HID,\s+\")\*pnp(.*\") replaceall_matched begin %1PNP%2 end;
+into_all all code_regex (Name\s+\(_HID,\s+\")pnp(.*\") replaceall_matched begin %1PNP%2 end; 
+

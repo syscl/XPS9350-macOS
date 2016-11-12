@@ -1,0 +1,24 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_HD4600_yosemite.txt
+
+#
+# Use this patch if your laptop has Haswell graphics
+#
+
+into method label _DSM parent_adr 0x00020000 remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "device-id", Buffer() { 0x12, 0x04, 0x00, 0x00 },\n
+        "AAPL,ig-platform-id", Buffer() { 0x06, 0x00, 0x26, 0x0a },\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+        "model", Buffer() { "Intel HD 4600" },\n
+    })\n
+}\n
+end;
+
+

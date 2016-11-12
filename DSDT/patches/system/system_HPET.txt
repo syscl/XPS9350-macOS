@@ -1,0 +1,23 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_HPET.txt
+
+# If you have panic "No HPETs available..." or have a abrubt restart
+# after waking from sleep, you may need this patch.
+# The patch makes sure the HPET device is always available.
+
+# HPET fix to avoid AppleIntelCPUPowerManagement panic
+into method label _STA parent_hid PNP0103 remove_entry;
+into device name_hid PNP0103 code_regex Name\s\(_STA\,\s+0x0F\) remove_matched;
+into device name_hid PNP0103 insert
+begin
+Name (_STA, 0x0F)\n
+end;
+
+into method label _CRS parent_hid PNP0103 remove_entry;
+into device name_hid PNP0103 insert
+begin
+Method (_CRS, 0, NotSerialized)\n
+{\n
+    Return (BUF0)\n
+}\n
+end;

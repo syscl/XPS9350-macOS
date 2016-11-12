@@ -1,0 +1,35 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_WAK2.txt
+
+#
+# In 10.8.5 and perhaps later versions of OS X, DSDT method _WAK
+# called after resuming from S3 suspend (Sleep, or suspend to RAM),
+# is called with garbage in Arg0, where it should be a value 
+# representing the sleep state being left (1-5).
+#
+# This causes problems for code in DSDT _WAK method which expects
+# and checks against Arg0==3 for wake from sleep to turn on various
+# devices or restore internal state to a working state.
+#
+# This patch adds code at the very beginning of the method to
+# force an an out-of-range Arg0 to 3.
+#
+# See system_WAK1.txt for an alternate patch
+#
+# Note regarding Yosemite:
+#  At least in Yosemite 10.10.2, this bug appears to be fixed.
+#  I didn't notice/verify on other versions of Yosemite
+#
+
+into method label _WAK code_regex ([\s\S]*) replace_matched
+begin
+If (LOr(LLess(Arg0,1),LGreater(Arg0,5))) { Store(3,Arg0) }\n
+%1
+end;
+
+into method label \_WAK code_regex ([\s\S]*) replace_matched
+begin
+If (LOr(LLess(Arg0,1),LGreater(Arg0,5))) { Store(3,Arg0) }\n
+%1
+end;
+

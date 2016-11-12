@@ -1,0 +1,59 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Surface-Pro-v1.txt
+
+# created by RehabMan 2014-01-09
+
+# works for:
+#  Microsoft Surface Pro v1
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# 16-bit registers
+
+# not battery related (not accessed from DSDT, but likely related to fan speeds)
+into device label EC0 code_regex F0RM,\s+16, replace_matched begin RM00,8,RM01,8, end;
+into device label EC0 code_regex F1RM,\s+16, replace_matched begin RM10,8,RM11,8, end;
+
+# battery related
+into device label EC0 code_regex B0VL,\s+16, replace_matched begin VL00,8,VL01,8, end;
+into device label EC0 code_regex B0CR,\s+16, replace_matched begin CR00,8,CR01,8, end;
+into device label EC0 code_regex B0RC,\s+16, replace_matched begin RC00,8,RC01,8, end;
+into device label EC0 code_regex B0FC,\s+16, replace_matched begin FC00,8,FC01,8, end;
+into device label EC0 code_regex B0CC,\s+16, replace_matched begin CC00,8,CC01,8, end;
+into device label EC0 code_regex B0DC,\s+16, replace_matched begin DC00,8,DC01,8, end;
+into device label EC0 code_regex B0DV,\s+16, replace_matched begin DV00,8,DV01,8, end;
+into device label EC0 code_regex B0MD,\s+16, replace_matched begin MD00,8,MD01,8, end;
+
+into device label EC0 code_regex B1VL,\s+16, replace_matched begin VL10,8,VL11,8, end;
+into device label EC0 code_regex B1CR,\s+16, replace_matched begin CR10,8,CR11,8, end;
+into device label EC0 code_regex B1RC,\s+16, replace_matched begin RC10,8,RC11,8, end;
+into device label EC0 code_regex B1FC,\s+16, replace_matched begin FC10,8,FC11,8, end;
+into device label EC0 code_regex B1CC,\s+16, replace_matched begin CC10,8,CC11,8, end;
+into device label EC0 code_regex B1DC,\s+16, replace_matched begin DC10,8,DC11,8, end;
+into device label EC0 code_regex B1DV,\s+16, replace_matched begin DV10,8,DV11,8, end;
+into device label EC0 code_regex B1MD,\s+16, replace_matched begin MD10,8,MD11,8, end;
+
+# 16-bit methods
+
+into_all method parent_label EC0 code_regex \(B0MD, replace_matched begin (B1B2(MD00,MD01), end;
+into_all method parent_label EC0 code_regex \(B1MD, replace_matched begin (B1B2(MD10,MD11), end;
+into_all method parent_label EC0 code_regex \(B0DC, replace_matched begin (B1B2(DC00,DC01), end;
+into_all method parent_label EC0 code_regex \(B1DC, replace_matched begin (B1B2(DC10,DC11), end;
+into_all method parent_label EC0 code_regex \(B0FC, replace_matched begin (B1B2(FC00,FC01), end;
+into_all method parent_label EC0 code_regex \(B1FC, replace_matched begin (B1B2(FC10,FC11), end;
+into_all method parent_label EC0 code_regex \(B0DV, replace_matched begin (B1B2(DV00,DV01), end;
+into_all method parent_label EC0 code_regex \(B1DV, replace_matched begin (B1B2(DV10,DV11), end;
+into_all method parent_label EC0 code_regex \(B0CR, replace_matched begin (B1B2(CR00,CR01), end;
+into_all method parent_label EC0 code_regex \(B1CR, replace_matched begin (B1B2(CR10,CR11), end;
+into_all method parent_label EC0 code_regex \(B0RC, replace_matched begin (B1B2(RC00,RC01), end;
+into_all method parent_label EC0 code_regex \(B1RC, replace_matched begin (B1B2(RC10,RC11), end;
+into_all method parent_label EC0 code_regex \(B0VL, replace_matched begin (B1B2(VL00,VL01), end;
+into_all method parent_label EC0 code_regex \(B1VL, replace_matched begin (B1B2(VL10,VL11), end;
+
+into_all method parent_label BAT0 code_regex \^\^LPCB.EC0.B0FC, replace_matched begin B1B2(^^LPCB.EC0.FC00,^^LPCB.EC0.FC01), end;
+into_all method parent_label BAT0 code_regex \(\^\^LPCB.EC0.B0CC, replace_matched begin (B1B2(^^LPCB.EC0.CC00,^^LPCB.EC0.CC01), end;
+into_all method parent_label BAT0 code_regex \(\^\^LPCB.EC0.B0RC, replace_matched begin (B1B2(^^LPCB.EC0.RC00,^^LPCB.EC0.RC01), end;

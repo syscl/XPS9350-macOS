@@ -1,0 +1,130 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-Yoga-13.txt
+
+# Created by StarLord 2014-11-12
+
+# works for:
+#  Lenovo IdeaPad Yoga 13
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+
+# 16-bit EC registers
+into device label H_EC code_regex BAPV,\s+16 replace_matched begin APV0,8,APV1,8 end;
+into device label H_EC code_regex B1CR,\s+16 replace_matched begin CR10,8,CR11,8 end;
+into device label H_EC code_regex BARC,\s+16 replace_matched begin ARC0,8,ARC1,8 end;
+into device label H_EC code_regex BAFC,\s+16 replace_matched begin AFC0,8,AFC1,8 end;
+into device label H_EC code_regex BADC,\s+16 replace_matched begin ADC0,8,ADC1,8 end;
+into device label H_EC code_regex BADV,\s+16 replace_matched begin ADV0,8,ADV1,8 end;
+
+into method label _BST code_regex \(BAPV, replaceall_matched begin (B1B2(APV0,APV1), end;
+into method label _BST code_regex \(B1CR, replaceall_matched begin (B1B2(CR10,CR11), end;
+into method label _BST code_regex \(BARC, replaceall_matched begin (B1B2(ARC0,ARC1), end;
+into method label _BIF code_regex \(BAFC, replaceall_matched begin (B1B2(AFC0,AFC1), end;
+into method label _BIF code_regex \(BADC, replaceall_matched begin (B1B2(ADC0,ADC1), end;
+into method label _BIF code_regex \(BADV, replaceall_matched begin (B1B2(ADV0,ADV1), end;
+
+# deal with 256-bit SMD0
+into device label H_EC code_regex SMD0,\s+256 replace_matched
+begin
+//SMD0, 256,\n
+SD00,8,SD01,8,SD02,8,SD03,8,\n
+SD04,8,SD05,8,SD06,8,SD07,8,\n
+SD08,8,SD09,8,SD0A,8,SD0B,8,\n
+SD0C,8,SD0D,8,SD0E,8,SD0F,8,\n
+SD10,8,SD11,8,SD12,8,SD13,8,\n
+SD14,8,SD15,8,SD16,8,SD17,8,\n
+SD18,8,SD19,8,SD1A,8,SD1B,8,\n
+SD1C,8,SD1D,8,SD1E,8,SD1F,8
+end;
+
+into device label H_EC insert
+begin
+Method (RSMD, 0, Serialized)\n
+{\n
+Name (TEMP, Buffer(0x20) { })\n
+Store (SD00, Index(TEMP, 0x00))\n
+Store (SD01, Index(TEMP, 0x01))\n
+Store (SD02, Index(TEMP, 0x02))\n
+Store (SD03, Index(TEMP, 0x03))\n
+Store (SD04, Index(TEMP, 0x04))\n
+Store (SD05, Index(TEMP, 0x05))\n
+Store (SD06, Index(TEMP, 0x06))\n
+Store (SD07, Index(TEMP, 0x07))\n
+Store (SD08, Index(TEMP, 0x08))\n
+Store (SD09, Index(TEMP, 0x09))\n
+Store (SD0A, Index(TEMP, 0x0A))\n
+Store (SD0B, Index(TEMP, 0x0B))\n
+Store (SD0C, Index(TEMP, 0x0C))\n
+Store (SD0D, Index(TEMP, 0x0D))\n
+Store (SD0E, Index(TEMP, 0x0E))\n
+Store (SD0F, Index(TEMP, 0x0F))\n
+Store (SD10, Index(TEMP, 0x10))\n
+Store (SD11, Index(TEMP, 0x11))\n
+Store (SD12, Index(TEMP, 0x12))\n
+Store (SD13, Index(TEMP, 0x13))\n
+Store (SD14, Index(TEMP, 0x14))\n
+Store (SD15, Index(TEMP, 0x15))\n
+Store (SD16, Index(TEMP, 0x16))\n
+Store (SD17, Index(TEMP, 0x17))\n
+Store (SD18, Index(TEMP, 0x18))\n
+Store (SD19, Index(TEMP, 0x19))\n
+Store (SD1A, Index(TEMP, 0x1A))\n
+Store (SD1B, Index(TEMP, 0x1B))\n
+Store (SD1C, Index(TEMP, 0x1C))\n
+Store (SD1D, Index(TEMP, 0x1D))\n
+Store (SD1E, Index(TEMP, 0x1E))\n
+Store (SD1F, Index(TEMP, 0x1F))\n
+Return (TEMP)\n
+}\n
+end;
+
+
+into device label H_EC insert
+begin
+Method (WSMD, 1, Serialized)\n
+{\n
+Name (TEMP, Buffer(0x20) { })\n
+Store (Arg0, TEMP)\n
+Store (DerefOf(Index(TEMP, 0x00)), SD00)\n
+Store (DerefOf(Index(TEMP, 0x01)), SD01)\n
+Store (DerefOf(Index(TEMP, 0x02)), SD02)\n
+Store (DerefOf(Index(TEMP, 0x03)), SD03)\n
+Store (DerefOf(Index(TEMP, 0x04)), SD04)\n
+Store (DerefOf(Index(TEMP, 0x05)), SD05)\n
+Store (DerefOf(Index(TEMP, 0x06)), SD06)\n
+Store (DerefOf(Index(TEMP, 0x07)), SD07)\n
+Store (DerefOf(Index(TEMP, 0x08)), SD08)\n
+Store (DerefOf(Index(TEMP, 0x09)), SD09)\n
+Store (DerefOf(Index(TEMP, 0x0A)), SD0A)\n
+Store (DerefOf(Index(TEMP, 0x0B)), SD0B)\n
+Store (DerefOf(Index(TEMP, 0x0C)), SD0C)\n
+Store (DerefOf(Index(TEMP, 0x0D)), SD0D)\n
+Store (DerefOf(Index(TEMP, 0x0E)), SD0E)\n
+Store (DerefOf(Index(TEMP, 0x0F)), SD0F)\n
+Store (DerefOf(Index(TEMP, 0x10)), SD10)\n
+Store (DerefOf(Index(TEMP, 0x11)), SD11)\n
+Store (DerefOf(Index(TEMP, 0x12)), SD12)\n
+Store (DerefOf(Index(TEMP, 0x13)), SD13)\n
+Store (DerefOf(Index(TEMP, 0x14)), SD14)\n
+Store (DerefOf(Index(TEMP, 0x15)), SD15)\n
+Store (DerefOf(Index(TEMP, 0x16)), SD16)\n
+Store (DerefOf(Index(TEMP, 0x17)), SD17)\n
+Store (DerefOf(Index(TEMP, 0x18)), SD18)\n
+Store (DerefOf(Index(TEMP, 0x19)), SD19)\n
+Store (DerefOf(Index(TEMP, 0x1A)), SD1A)\n
+Store (DerefOf(Index(TEMP, 0x1B)), SD1B)\n
+Store (DerefOf(Index(TEMP, 0x1C)), SD1C)\n
+Store (DerefOf(Index(TEMP, 0x1D)), SD1D)\n
+Store (DerefOf(Index(TEMP, 0x1E)), SD1E)\n
+Store (DerefOf(Index(TEMP, 0x1F)), SD1F)\n
+}\n
+end;
+
+into method label MHPF code_regex Store\s+\(FB4,\s+SMD0\) replaceall_matched begin \\_SB.PCI0.LPCB.H_EC.WSMD(FB4) end;
+into method label MHPF code_regex Store\s+\(SMD0,\s+FB4\) replaceall_matched begin Store(\\_SB.PCI0.LPCB.H_EC.RSMD(), FB4) end;
+

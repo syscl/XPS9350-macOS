@@ -1,0 +1,24 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_INI-disable.txt
+
+# The purpose of this patch is to add code to _INI to
+# disable nvidia/Radeon.  The patch is intended to be applied to
+# the SSDT that contains the _INI method for the discrete card.
+#
+# Usually the path is \_SB.PCI0.PEG0.PEGP and the method name
+# is _OFF, but some systems use different names.
+#
+# The path of _OFF may have to be customized to match your SSDTs
+# In addition the label of EC0 may need to be changed (H_EC, EC, etc)
+#
+# Note: Uncomment the External line if your _OFF method is in
+#   a separate SSDT.
+#
+
+into method label _INI parent_label \_SB.PCI0.PEG0.PEGP insert
+begin
+//added to turn nvidia/radeon off\n
+//External(\_SB.PCI0.PEG0.PEGP._OFF, MethodObj)\n
+_OFF()\n
+end;
+

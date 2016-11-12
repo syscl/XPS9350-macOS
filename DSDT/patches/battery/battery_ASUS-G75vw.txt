@@ -1,0 +1,195 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_ASUS-G75vw.txt
+
+# created by Zackptg5 1/2014
+# modified by RehabMan 2014-11-24
+
+# works for:
+#  ASUS G75vw
+#  ASUS S400
+#  ASUS G750 JW (probably works for Asus G750 JX and JH also)
+#  ASUS PRO PU401LA
+#  ASUS K56CM
+#  ASUS Q550LF
+#  ASUS X450C
+#  ASUS X83vm-x1
+#  ASUS F550L
+#  ASUS N551 (per shutt1e)
+#  ASUS T300LA-DH51T (per maromi)
+#  ASUS X551CA
+#  ASUS G51Jx-a1 (per elkis75)
+#  ASUS A555LD
+
+#Convert 16 bit to 8 bit registers
+into device label EC0 code_regex TAH0,\s+16, replace_matched begin AH00,8,AH01,8, end;
+into device label EC0 code_regex TAH1,\s+16, replace_matched begin AH10,8,AH11,8, end;
+into device label EC0 code_regex B0PN,\s+16, replace_matched begin B0P0,8,B0P1,8, end;
+into device label EC0 code_regex B0VL,\s+16, replace_matched begin B0V0,8,B0V1,8, end;
+into device label EC0 code_regex B0RC,\s+16, replace_matched begin B0R0,8,B0R1,8, end;
+into device label EC0 code_regex B0FC,\s+16, replace_matched begin B0F0,8,B0F1,8, end;
+into device label EC0 code_regex B0MD,\s+16, replace_matched begin B0M0,8,B0M1,8, end;
+into device label EC0 code_regex B0ST,\s+16, replace_matched begin B0S0,8,B0S1,8, end;
+into device label EC0 code_regex B0CC,\s+16, replace_matched begin B0C0,8,B0C1,8, end;
+into device label EC0 code_regex B0DC,\s+16, replace_matched begin B0D0,8,B0D1,8, end;
+into device label EC0 code_regex B0DV,\s+16, replace_matched begin B0D2,8,B0D3,8, end;
+into device label EC0 code_regex B0TM,\s+16, replace_matched begin B0T0,8,B0T1,8, end;
+into device label EC0 code_regex B0C1,\s+16, replace_matched begin B010,8,B011,8, end;
+into device label EC0 code_regex B0C2,\s+16, replace_matched begin B020,8,B021,8, end;
+into device label EC0 code_regex B0C3,\s+16, replace_matched begin B030,8,B031,8, end;
+into device label EC0 code_regex B0C4,\s+16, replace_matched begin B040,8,B041,8, end;
+into device label EC0 code_regex B1PN,\s+16, replace_matched begin B1P0,8,B1P1,8, end;
+into device label EC0 code_regex B1VL,\s+16, replace_matched begin B1V0,8,B1V1,8, end;
+into device label EC0 code_regex B1RC,\s+16, replace_matched begin B1R0,8,B1R1,8, end;
+into device label EC0 code_regex B1FC,\s+16, replace_matched begin B1F0,8,B1F1,8, end;
+into device label EC0 code_regex B1MD,\s+16, replace_matched begin B1M0,8,B1M1,8, end;
+into device label EC0 code_regex B1ST,\s+16, replace_matched begin B1S0,8,B1S1,8, end;
+into device label EC0 code_regex B1CC,\s+16, replace_matched begin B1C0,8,B1C1,8, end;
+into device label EC0 code_regex B1DC,\s+16, replace_matched begin B1D0,8,B1D1,8, end;
+into device label EC0 code_regex B1DV,\s+16, replace_matched begin B1D2,8,B1D3,8, end;
+into device label EC0 code_regex B1TM,\s+16, replace_matched begin B1T0,8,B1T1,8, end;
+into device label EC0 code_regex B1C1,\s+16, replace_matched begin B110,8,B111,8, end;
+into device label EC0 code_regex B1C2,\s+16, replace_matched begin B120,8,B121,8, end;
+into device label EC0 code_regex B1C3,\s+16, replace_matched begin B130,8,B131,8, end;
+into device label EC0 code_regex B1C4,\s+16, replace_matched begin B140,8,B141,8, end;
+into device label EC0 code_regex B0SN,\s+16, replace_matched begin B0N0,8,B0N1,8, end;
+into device label EC0 code_regex B1SN,\s+16 replace_matched begin B1N0,8,B1N1,8, end;
+into device label EC0 code_regex DT2B,\s+16 replace_matched begin T2B0,8,T2B1,8, end;
+into device label EC0 code_regex B1DV,\s+16 replace_matched begin B1D2,8,B1D3,8 end;
+
+#Create B1B2 Method
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+#Fix 16 bit registers
+into method label TACH code_regex \(TAH0, replaceall_matched begin (B1B2(AH00,AH01), end;
+into method label TACH code_regex \(TAH1, replaceall_matched begin (B1B2(AH10,AH11), end;
+into method label BIFA code_regex \(B0SN, replaceall_matched begin (B1B2(B0N0,B0N1), end;
+into method label BIFA code_regex \(B1SN, replaceall_matched begin (B1B2(B1N0,B1N1), end;
+into method label SMBR code_regex \(DT2B, replaceall_matched begin (B1B2(T2B0,T2B1), end;
+into method label SMBW code_regex Store\s+\((.*),\s+DT2B\) replace_matched 
+begin
+Store(%1, T2B0) Store(ShiftRight(%1,8), T2B1)
+end;
+
+#And more...
+into_all method code_regex \(B0MD, replaceall_matched begin (B1B2(B0M0,B0M1), end;
+into_all method code_regex \(B1MD, replaceall_matched begin (B1B2(B1M0,B1M1), end;
+into_all method code_regex \(B0DC, replaceall_matched begin (B1B2(B0D0,B0D1), end;
+into_all method code_regex \(B1DC, replaceall_matched begin (B1B2(B1D0,B1D1), end;
+into_all method code_regex \(B0FC, replaceall_matched begin (B1B2(B0F0,B0F1), end;
+into_all method code_regex \(B1FC, replaceall_matched begin (B1B2(B1F0,B1F1), end;
+into_all method code_regex \(B0DV, replaceall_matched begin (B1B2(B0D2,B0D3), end;
+into_all method code_regex \(B1DV, replaceall_matched begin (B1B2(B1D2,B1D3), end;
+into_all method code_regex \(B0ST, replaceall_matched begin (B1B2(B0S0,B0S1), end;
+into_all method code_regex \(B1ST, replaceall_matched begin (B1B2(B1S0,B1S1), end;
+into_all method code_regex \(B0CC, replaceall_matched begin (B1B2(B0C0,B0C1), end;
+into_all method code_regex \(B1CC, replaceall_matched begin (B1B2(B1C0,B1C1), end;
+into_all method code_regex \(B0RC, replaceall_matched begin (B1B2(B0R0,B0R1), end;
+into_all method code_regex \(B1RC, replaceall_matched begin (B1B2(B1R0,B1R1), end;
+into_all method code_regex \(B0VL, replaceall_matched begin (B1B2(B0V0,B0V1), end;
+into_all method code_regex \(B1VL, replaceall_matched begin (B1B2(B1V0,B1V1), end;
+
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B0RC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B0R0,^^PCI0.LPCB.EC0.B0R1), end;
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B1RC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B1R0,^^PCI0.LPCB.EC0.B1R1), end;
+into method label WMNB code_regex \^\^PCI0\.LPCB\.EC0\.B1RC\), replaceall_matched begin B1B2(^^PCI0.LPCB.EC0.B1R0,^^PCI0.LPCB.EC0.B1R1)), end;
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B0DV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B0D0,^^PCI0.LPCB.EC0.B0D1), end;
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B1DV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B1D0,^^PCI0.LPCB.EC0.B1D1), end;
+into method label WMNB code_regex \^\^PCI0\.LPCB\.EC0\.B1DV\), replaceall_matched begin B1B2(^^PCI0.LPCB.EC0.B1D0,^^PCI0.LPCB.EC0.B1D1)), end;
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B0FC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B0F0,^^PCI0.LPCB.EC0.B0F1), end;
+into method label WMNB code_regex \(\^\^PCI0\.LPCB\.EC0\.B1FC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.B1F0,^^PCI0.LPCB.EC0.B1F1), end;
+into method label WMNB code_regex \^\^PCI0\.LPCB\.EC0\.B1FC\), replaceall_matched begin B1B2(^^PCI0.LPCB.EC0.B1F0,^^PCI0.LPCB.EC0.B1F1)), end;
+
+into_all method code_regex \^\^LPCB\.EC0\.B0DV, replaceall_matched begin B1B2(^^LPCB.EC0.B0D2,^^LPCB.EC0.B0D3), end;
+into_all method code_regex \^\^LPCB\.EC0\.B1DV, replaceall_matched begin B1B2(^^LPCB.EC0.B1D2,^^LPCB.EC0.B1D3), end;
+
+# added for T300LA-DH51T
+into method label OLPM code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.B0DC, replace_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.B0D0,\\_SB.PCI0.LPCB.EC0.B0D1), end;
+
+
+#G750JW requires this fix to compile
+into method label _BIX code_regex \(\^\^LPCB\.EC0\.B0C3, replaceall_matched begin (B1B2(^^LPCB.EC0.B030,^^LPCB.EC0.B031), end;
+
+#Change name of 256 bit registers
+into device label EC0 code_regex BDAT,\s+256, replace_matched begin BDAX,	256, end;
+into device label EC0 code_regex BDA2,\s+256, replace_matched begin BDAY,	256, end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+#utility method to write to EC buffers
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+#Note: offsets are based on actual DSDT.  Please verify if you have a different model.
+
+#fix 256 bit registers
+into method label SMBR code_regex Store\s+\((.*),\s+BDAT\) replaceall_matched begin WECB(0x1c,256,%1) end;
+into method label SMBW code_regex Store\s+\((.*),\s+BDAT\) replaceall_matched begin WECB(0x1c,256,%1) end;
+into method label ECSB code_regex Store\s+\((.*),\s+BDAT\) replaceall_matched begin WECB(0x1c,256,%1) end;
+into method label ECSB code_regex Store\s+\((.*),\s+BDA2\) replaceall_matched begin WECB(0x44,256,%1) end;
+into method label ECSB code_regex \(BDAT, replaceall_matched begin (RECB(0x1c,256), end;
+into method label ECSB code_regex \(BDA2, replaceall_matched begin (RECB(0x44,256), end;
+into method label SMBR code_regex \(BDAT, replaceall_matched begin (RECB(0x1c,256), end;
+
+#fix logic error in some newer ASUS DSDTs (issue #23)
+into method label FBST code_regex If\s\(CHGS\s\(Zero\)\)[\s]+\{[\s]+Store\s\(0x02,\sLocal0\)[\s]+\}[\s]+Else[\s]+\{[\s]+Store\s\(One,\sLocal0\)[\s]+\} replaceall_matched
+begin
+If (CHGS (Zero))\n
+{\n
+    Store (0x02, Local0)\n
+}\n
+Else\n
+{\n
+    Store (Zero, Local0)\n
+}
+end;

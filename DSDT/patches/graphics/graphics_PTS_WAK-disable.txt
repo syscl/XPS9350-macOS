@@ -1,0 +1,29 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PTS_WAK-disable.txt
+
+#
+# The purpose of this patch is to add code to to _WAK
+# that disables Radeon/nvidia on wake and add code
+# to _PTS that enables it on _PTS.
+#
+# The path of _OFF may have to be customized to match your SSDTs
+# The patch attempts to identify the correct _REG by using
+# the ACPI PNP identifier for the EC.
+#
+# Use this patch if you experience trouble shutting down
+# or restarting your laptop when disabling nvida/radeon.
+#
+
+into method label _PTS code_regex ([\s\S]*) replace_matched
+begin
+External(\\_SB.PCI0.PEG0.PEGP._ON, MethodObj)\n
+If (CondRefOf(\\_SB.PCI0.PEG0.PEGP._ON)) { \\_SB.PCI0.PEG0.PEGP._ON() }\n
+%1
+end;
+
+into method label _WAK code_regex (Return\s+\(.*) replace_matched
+begin
+External(\\_SB.PCI0.PEG0.PEGP._OFF, MethodObj)\n
+If (CondRefOf(\\_SB.PCI0.PEG0.PEGP._OFF)) { \\_SB.PCI0.PEG0.PEGP._OFF() }\n
+%1
+end;

@@ -1,0 +1,14 @@
+#Maintained by: RehabMan for: Laptop Patches
+#misc_Lid_PRW.txt
+
+#
+# Note: Some people report that adding just this patch fixes
+#  their lid problems.  Try this patch without "Poll for Lid changes"
+#  or use both together.
+#
+# Also note with this patch, wakeup via lid will be disabled.
+#
+
+# remove either _PRW Method or _PRW Name from PNP0C0D (ACPI LID)
+into method label _PRW parent_hid PNP0C0D remove_entry;
+into device name_hid PNP0C0D code_regex Name\s+\(_PRW,[\s\S]*\}\) remove_matched;

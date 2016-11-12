@@ -1,0 +1,3 @@
+#ALSD->ALS0 to fit the OS X/macOS’s required credit syscl
+into device label ALSD set_label begin ALS0 end;
+into_all all code_regex ALSD replaceall_matched begin ALS0 end;

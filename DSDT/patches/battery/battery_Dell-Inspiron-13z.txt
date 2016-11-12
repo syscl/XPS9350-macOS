@@ -1,0 +1,34 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Dell-Inspiron-13z.txt
+
+# created by lilryu 2014-09-20
+
+# works for:
+#  Dell Inspiron 13z i13Z-3636sLV
+#  Dell Vostro 3750, per 459below
+#  Dell Inspiron 17 (N7110), per scififan68
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# 16-bit registers
+into device label EC0 code_regex CAP0,\s+16 replace_matched begin DAP0,8,DAP1,8 end;
+into device label EC0 code_regex VOT0,\s+16 replace_matched begin WOT0,8,WOT1,8 end;
+into device label EC0 code_regex CRT0,\s+16 replace_matched begin DRT0,8,DRT1,8 end;
+into device label EC0 code_regex FCP0,\s+16 replace_matched begin GCP0,8,GCP1,8 end;
+into device label EC0 code_regex DCP0,\s+16 replace_matched begin ECP0,8,ECP1,8 end;
+into device label EC0 code_regex DVT0,\s+16 replace_matched begin EVT0,8,EVT1,8 end;
+into device label EC0 code_regex BSN0,\s+16 replace_matched begin CSN0,8,CSN1,8 end;
+
+# fix 16-bit methods
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.CAP0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.DAP0,^^PCI0.LPCB.EC0.DAP1), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.VOT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.WOT0,^^PCI0.LPCB.EC0.WOT1), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.EC0\.CRT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.DRT0,^^PCI0.LPCB.EC0.DRT1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.FCP0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.GCP0,^^PCI0.LPCB.EC0.GCP1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DCP0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.ECP0,^^PCI0.LPCB.EC0.ECP1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DVT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.EVT0,^^PCI0.LPCB.EC0.EVT1), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.BSN0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.CSN0,^^PCI0.LPCB.EC0.CSN1), end;
+

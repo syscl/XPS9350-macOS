@@ -1,0 +1,24 @@
+#!/bin/sh
+
+#  mnt
+#  
+#
+#  Created by lighting on 16/2/5.
+#
+BOLD="\033[1m"
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+BLUE="\033[1;34m"
+OFF="\033[m"
+
+#
+# Repository location
+#
+REPO=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+diskutil list
+printf "Enter EFI's IDENTIFIER, e.g. ${RED}disk0s1${OFF}"
+read -p ": " targetEFI
+diskutil mount ${targetEFI}
+
+exit 0

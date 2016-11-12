@@ -1,0 +1,134 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-ThinkPad-W550s.txt
+
+# Created by phantomge 2015-04-29
+
+# Works for:
+#   Lenovo ThinkPad W550s (dual-battery)
+
+# This patch is designed for ThinkPad W550s with
+# built-in battery and external battery.
+# Not sure if it works well with the W550s with single
+# battery.
+# if you have any concern about this patch
+# please contact RehabMan
+# or email me -- goophantom@gmail.com
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into method label WE1B parent_label EC remove_entry;
+into method label WECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+// Arg2 - value to write\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+into device label EC code_regex HWAC,\s+16, replace_matched begin WAC0,8,WAC1,8, end;
+into device label EC code_regex HWAK,\s+16, replace_matched begin WAK0,8,WAK1,8, end;
+into device label EC code_regex HSPD,\s+16, replace_matched begin SPD0,8,SPD1,8, end;
+into device label EC code_regex SBRC,\s+16, replace_matched begin BRC0,8,BRC1,8, end;
+into device label EC code_regex SBFC,\s+16, replace_matched begin BFC0,8,BFC1,8, end;
+into device label EC code_regex SBAE,\s+16, replace_matched begin BAE0,8,BAE1,8, end;
+into device label EC code_regex SBRS,\s+16, replace_matched begin BRS0,8,BRS1,8, end;
+into device label EC code_regex SBAC,\s+16, replace_matched begin BAC0,8,BAC1,8, end;
+into device label EC code_regex SBVO,\s+16, replace_matched begin BVO0,8,BVO1,8, end;
+into device label EC code_regex SBAF,\s+16, replace_matched begin BAF0,8,BAF1,8, end;
+into device label EC code_regex SBBS,\s+16 replace_matched begin BBS0,8,BBS1,8 end;
+into device label EC code_regex SBBM,\s+16, replace_matched begin BBM0,8,BBM1,8, end;
+into device label EC code_regex SBMD,\s+16, replace_matched begin BMD0,8,BMD1,8, end;
+into device label EC code_regex SBCC,\s+16 replace_matched begin BCC0,8,BCC1,8, end;
+into device label EC code_regex SBDC,\s+16, replace_matched begin BDC0,8,BDC1,8, end;
+into device label EC code_regex SBDV,\s+16, replace_matched begin BDV0,8,BDV1,8, end;
+into device label EC code_regex SBOM,\s+16, replace_matched begin BOM0,8,BOM1,8, end;
+into device label EC code_regex SBSI,\s+16, replace_matched begin BSI0,8,BSI1,8, end;
+into device label EC code_regex SBDT,\s+16, replace_matched begin BDT0,8,BDT1,8, end;
+into device label EC code_regex SBSN,\s+16 replace_matched begin BSN0,8,BSN1,8, end;
+into device label EC code_regex SBCH,\s+32 replace_matched begin BCH0,8,BCH1,8,BCH2,8,BCH3,8 end;
+into device label EC code_regex HDEN,\s+32 replace_matched begin DEN0,8,DEN1,8,DEN2,8,DEN3,8 end;
+into device label EC code_regex HDEP,\s+32 replace_matched begin DEP0,8,DEP1,8,DEP2,8,DEP3,8 end;
+into device label EC code_regex (SBMN,)\s+(128) replace_matched begin BMNX,%2,//%1%2 end;
+into device label EC code_regex (SBDN,)\s+(128) replace_matched begin BDNX,%2,//%1%2 end;
+
+
+into method label _L0D code_regex \_SB.PCI0.LPC.EC.HWAC, replaceall_matched begin B1B2(\\_SB.PCI0.LPC.EC.WAC0,\\_SB.PCI0.LPC.EC.WAC1), end;
+into method label \_WAK code_regex \_SB.PCI0.LPC.EC.HWAC, replaceall_matched begin B1B2(\\_SB.PCI0.LPC.EC.WAC0,\\_SB.PCI0.LPC.EC.WAC1), end;
+into method label GBIF code_regex SBBM, replaceall_matched begin B1B2(BBM0,BBM1), end;
+into method label GBIF code_regex SBFC, replaceall_matched begin B1B2(BFC0,BFC1), end;
+into method label GBIF code_regex SBDC, replaceall_matched begin B1B2(BDC0,BDC1), end;
+into method label GBIF code_regex SBDV replaceall_matched begin B1B2(BDV0,BDV1) end;
+into method label GBIF code_regex SBSN, replaceall_matched begin B1B2(BSN0,BSN1), end;
+into method label GBST code_regex SBVO, replaceall_matched begin B1B2(BVO0,BVO1), end;
+into method label GBST code_regex SBRC, replaceall_matched begin B1B2(BRC0,BRC1), end;
+into method label GBST code_regex SBAC, replaceall_matched begin B1B2(BAC0,BAC1), end;
+into method label GBIF code_regex SBCH, replaceall_matched begin B1B4(BCH0,BCH1,BCH2,BCH3), end;
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RECB(0xA0,128), end;
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RECB(0xA0,128), end;
+

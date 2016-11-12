@@ -1,0 +1,66 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-G62-B13SL.txt
+
+# created by RehabMan 2013-01-21
+# created for giofrida
+
+# Works for:
+#  HP G62-B13SL
+
+# utility methods to read buffers from/to EC
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+#
+# Note: Offsets below into EC are based on the following data in the native DSDT
+#
+#    OperationRegion (ECF2, EmbeddedControl, Zero, 0xFF)
+#    Field (ECF2, ByteAcc, Lock, Preserve)
+#    {
+#        ADIN,   1,
+#        ADIS,   1,
+#..
+#        WMB3,   8,
+#        Offset (0xA0),
+#        C1VL,   8,     //a0
+#        C1VH,   8,     //a1
+#        C2VL,   8,     //a2
+#        C2VH,   8,     //a3
+#        C3VL,   8,     //a4
+#        C3VH,   8,     //a5
+#        C4VL,   8,     //a6
+#        C4VH,   8,     //a7
+#        CTLB,   128,   //a8
+#        RCS1,   8,
+
+# deal with 128-bit CTLB
+# (Note: this is probably not even necessary, since this code is in WMI)
+into device label EC code_regex (CTLB,)\s+(128) replace_matched begin CTLX,%2,//%1%2 end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.CTLB, replaceall_matched begin (^^PCI0.LPCB.EC.RECB(0xa0,128), end;
+
+# make PNOT do nothing
+
+into method label PNOT replace_content begin //nothing end;

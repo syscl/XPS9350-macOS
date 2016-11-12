@@ -1,0 +1,27 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-y510p.txt
+
+# Created by intruder16, 2015-03-12
+
+# Works for:
+#   Lenovo IdeaPad y510p
+
+# Change EC register from 16-bit to 8-bit
+
+into device label EC0 code_regex ENIB,\s+16 replace_matched begin ENI0,8,ENI1,8 end;
+into device label EC0 code_regex ERIB,\s+16 replace_matched begin ERI0,8,ERI1,8 end;
+
+into method label _TMP code_regex Store\s+\(0x8400,\s+\\_SB\.PCI0\.LPCB\.EC0\.ENIB\) replace_matched
+begin
+Store(Zero, \\_SB.PCI0.LPCB.EC0.ENI0) Store(0x84, \\_SB.PCI0.LPCB.EC0.ENI1)
+end;
+
+into method label FANG code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+
+into method label FANW code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;

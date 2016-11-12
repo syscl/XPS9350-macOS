@@ -1,0 +1,91 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Sony-VAIO-S.txt
+
+# created by RehabMan 2013-07-26
+# created originally for johnrey
+# Sony VAIO Duo changes by ParsiMan 2015-01-15
+
+# works for:
+#  Sony VAIO S13P (SVS13A2C5E)
+#  Sony VAIO VPCEH390x
+#  Sony VAIO SB4
+#  Sony VAIO Duo 11
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# BAT1: Change EC register declarations from 16-bit to 8-bit
+into device label H_EC code_regex B1DC,\s+16 replace_matched begin XDC0, 8, XDC1, 8 end;
+into device label H_EC code_regex B1FC,\s+16 replace_matched begin XFC0, 8, XFC1, 8 end;
+into device label H_EC code_regex B1DV,\s+16 replace_matched begin XDV0, 8, XDV1, 8 end;
+into device label H_EC code_regex B1AI,\s+16 replace_matched begin XAI0, 8, XAI1, 8 end;
+into device label H_EC code_regex B1FV,\s+16 replace_matched begin XFV0, 8, XFV1, 8 end;
+into device label H_EC code_regex B1RC,\s+16 replace_matched begin XRC0, 8, XRC1, 8 end;
+# added for Sony VAIO Duo
+into device label H_EC code_regex B1TM,\s+16 replace_matched begin XTM0, 8, XTM1, 8 end;
+into device label H_EC code_regex B1SE,\s+16 replace_matched begin XSE0, 8, XSE1, 8 end;
+into device label H_EC code_regex B1CI,\s+16 replace_matched begin XCI0, 8, XCI1, 8 end;
+into device label H_EC code_regex B1CV,\s+16 replace_matched begin XCV0, 8, XCV1, 8 end;
+into device label H_EC code_regex B1SC,\s+16 replace_matched begin XSC0, 8, XSC1, 8 end;
+into device label H_EC code_regex B1RA,\s+16 replace_matched begin XRA0, 8, XAR1, 8 end;
+
+
+# BAT1: Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label _BIF code_regex \(B1DC, replaceall_matched begin (B1B2 (XDC0, XDC1), end;
+into_all method label _BIF code_regex \(B1FC replaceall_matched begin (B1B2 (XFC0, XFC1) end;
+into_all method label _BIF code_regex \(B1DV, replaceall_matched begin (B1B2 (XDV0, XDV1), end;
+into_all method label _BST code_regex \(B1AI, replaceall_matched begin (B1B2 (XAI0, XAI1), end;
+into_all method label _BST code_regex \(B1FV, replaceall_matched begin (B1B2 (XFV0, XFV1), end;
+into_all method label _BST code_regex B1FV\), replaceall_matched begin B1B2 (XFV0, XFV1)\), end;
+into_all method label _BST code_regex \(B1RC, replaceall_matched begin (B1B2 (XRC0, XRC1), end;
+# added for Sony VAIO Duo
+into_all method label _BST code_regex \(B1TM, replaceall_matched begin (B1B2 (XTM0, XTM1), end;
+into_all method label _BST code_regex \(B1SE, replaceall_matched begin (B1B2 (XSE0, XSE1), end;
+into_all method label _BST code_regex \(B1CI, replaceall_matched begin (B1B2 (XCI0, XCI1), end;
+into_all method label _BST code_regex \(B1CV, replaceall_matched begin (B1B2 (XCV0, XCV1), end;
+into_all method label _BST code_regex \(B1SC, replaceall_matched begin (B1B2 (XSC0, XSC1), end;
+into_all method label _BST code_regex \(B1RA, replaceall_matched begin (B1B2 (XRA0, XRA1), end;
+
+# BAT2: Change EC register declarations from 16-bit to 8-bit
+into device label H_EC code_regex B2DC,\s+16 replace_matched begin YDC0, 8, YDC1, 8 end;
+into device label H_EC code_regex B2FC,\s+16 replace_matched begin YFC0, 8, YFC1, 8 end;
+into device label H_EC code_regex B2DV,\s+16 replace_matched begin YDV0, 8, YDV1, 8 end;
+into device label H_EC code_regex B2AI,\s+16 replace_matched begin YAI0, 8, YAI1, 8 end;
+into device label H_EC code_regex B2FV,\s+16 replace_matched begin YFV0, 8, YFV1, 8 end;
+into device label H_EC code_regex B2RC,\s+16 replace_matched begin YRC0, 8, YRC1, 8 end;
+# added for Sony VAIO Duo
+into device label H_EC code_regex B2TM,\s+16 replace_matched begin YTM0, 8, YTM1, 8 end;
+into device label H_EC code_regex B2SE,\s+16 replace_matched begin YSE0, 8, YSE1, 8 end;
+into device label H_EC code_regex B2CI,\s+16 replace_matched begin YCI0, 8, YCI1, 8 end;
+into device label H_EC code_regex B2CV,\s+16 replace_matched begin YCV0, 8, YCV1, 8 end;
+into device label H_EC code_regex B2SC,\s+16 replace_matched begin YSC0, 8, YSC1, 8 end;
+into device label H_EC code_regex B2RA,\s+16 replace_matched begin YRA0, 8, YRA1, 8 end;
+
+# BAT2: Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label _BIF code_regex \(B2DC, replaceall_matched begin (B1B2 (YDC0, YDC1), end;
+into_all method label _BIF code_regex \(B2FC replaceall_matched begin (B1B2 (YFC0, YFC1) end;
+into_all method label _BIF code_regex \(B2DV, replaceall_matched begin (B1B2 (YDV0, YDV1), end;
+into_all method label _BST code_regex \(B2AI, replaceall_matched begin (B1B2 (YAI0, YAI1), end;
+into_all method label _BST code_regex \(B2FV, replaceall_matched begin (B1B2 (YFV0, YFV1), end;
+into_all method label _BST code_regex B2FV\), replaceall_matched begin B1B2 (YFV0, YFV1)\), end;
+into_all method label _BST code_regex \(B2RC, replaceall_matched begin (B1B2 (YRC0, YRC1), end;
+# added for Sony VAIO Duo
+into_all method label _BST code_regex \(B2TM, replaceall_matched begin (B1B2 (YTM0, YTM1), end;
+into_all method label _BST code_regex \(B2SE, replaceall_matched begin (B1B2 (YSE0, YSE1), end;
+into_all method label _BST code_regex \(B2CI, replaceall_matched begin (B1B2 (YCI0, YCI1), end;
+into_all method label _BST code_regex \(B2CV, replaceall_matched begin (B1B2 (YCV0, YCV1), end;
+into_all method label _BST code_regex \(B2SC, replaceall_matched begin (B1B2 (YSC0, YSC1), end;
+into_all method label _BST code_regex \(B2RA, replaceall_matched begin (B1B2 (YRA0, YRA1), end;
+
+# Activate BAT1 device
+into method label _STA parent_label BAT1 replace_content begin Return (0x1F) end;
+
+# Disable BAT2 device
+into method label _STA parent_label BAT2 replace_content begin Return (Zero) end;
+
+# Activate H_EC device
+into method label _STA parent_label H_EC replace_content begin Return (0x0F) end;
+

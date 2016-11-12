@@ -1,0 +1,167 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-ProBook-4x0s-G1.txt
+
+# Created by RehabMan 2014-01-15
+# for kickokim
+# based on original 4x30s ProBook patches
+
+
+# Works for:
+#  HP ProBook 4x0s G1, others
+#  HP ProBook 4x0s G2, others
+
+# syntax fix
+
+into definitionblock code_regex External\s+\(_SB_\.ISCT\) remove_matched;
+
+# Optimize (get rid of stuff that is WMI/BIOS related)
+
+# remove large chunk of symbols used only by device WMID and device WMID itself
+into all code_regex Name\s*\(WSIP,[\s\S]*Name\s*\(ETYP,\s*Buffer\s*\(.*\)\s*\{\}\) remove_matched;
+into device label WMID remove_entry;
+
+# remove references to device WMID
+into_all all code_regex .*WMID.*\(.*\) removeall_matched;
+into method label _TMP parent_label PCHZ code_regex Store\s*\(DerefOf\s*\(Index\s*\(DerefOf\s*\(Index\s*\(\\_SB\.WMID\.TSTV,[\s\S]*\} remove_matched;
+
+
+# Add cycle count and temperature to battery info method
+
+# 16-bit version
+into method label BTIF code_regex Store\s\(BDAT,\sLocal1\) replace_matched
+begin
+	Store (BDAT, Local1)\n
+	// battery cycle count\n
+	Store (BCC, Index (DerefOf (Index (NBTI, Arg0)), 0x0D))\n
+	// battery temperature\n
+	Store (\\_TZ.GTTP (0x04, 0x05, Zero, Zero, 0x7F), Local2)\n
+	Add (Multiply (Local2, 10), 2732, Local2) // Celsius to .1K\n
+	Store (Local2, Index (DerefOf (Index (NBTI, Arg0)), 0x0E))\n
+end;
+
+# Need to extend size of NBTI packages
+into all code_regex \"Hewlett\-Packard\"\s+\},\s+Package\s\(0x0D\) replaceall_matched
+begin
+		"Hewlett-Packard",\n
+        Zero,\n
+        Zero,\n
+   	},\n
+	Package(0x0F)\n
+end;
+
+# G1 series has two potential batteries (NBTI package is size 2)
+into all code_regex Name\s\(NBTI,\sPackage\s\(0x02\)\s+\{\s+Package\s\(0x0D\) replaceall_matched
+begin
+	Name (NBTI, Package(0x02)\n
+	{\n
+		Package(0x0F)\n
+end;
+
+# G2 series has three potential batteries (NBTI package is size 3)
+into all code_regex Name\s\(NBTI,\sPackage\s\(0x03\)\s+\{\s+Package\s\(0x0D\) replaceall_matched
+begin
+	Name (NBTI, Package(0x03)\n
+	{\n
+		Package(0x0F)\n
+end;
+
+into_all all code_regex \"LIon\",\s+\"Hewlett\-Packard\"\n\s+\}\n replaceall_matched
+begin
+	"LIon",\n
+	"Hewlett-Packard",\n
+	Zero,\n
+	Zero,\n
+}\n
+end;
+
+
+# Convert battery EC info from 16-bit to 8-bit fields...
+
+# Need this utility method B1B2(lowbyte, hibyte)... returns ((hibyte << 8) | lowbyte)
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized)\n
+{\n
+	ShiftLeft (Arg1, 8, Local0)\n
+	Or (Arg0, Local0, Local0)\n
+	Return (Local0)\n
+}\n
+end;
+
+# Change EC register declarations from 16-bit to 8-bit
+into device label EC0 code_regex BSN,\s+16 replace_matched begin BSN0, 8, BSN1, 8 end;
+into device label EC0 code_regex CBT,\s+16 replace_matched begin CBT0, 8, CBT1, 8 end;
+into device label EC0 code_regex BDC,\s+16 replace_matched begin BDC0, 8, BDC1, 8 end;
+into device label EC0 code_regex BFC,\s+16 replace_matched begin BFC0, 8, BFC1, 8 end;
+into device label EC0 code_regex BPR,\s+16 replace_matched begin BPR0, 8, BPR1, 8 end;
+into device label EC0 code_regex BCR,\s+16 replace_matched begin BCR0, 8, BCR1, 8 end;
+into device label EC0 code_regex BRC,\s+16 replace_matched begin BRC0, 8, BRC1, 8 end;
+into device label EC0 code_regex BCC,\s+16 replace_matched begin BCC0, 8, BCC1, 8 end;
+into device label EC0 code_regex BPV,\s+16 replace_matched begin BPV0, 8, BPV1, 8 end;
+into device label EC0 code_regex BME,\s+16 replace_matched begin BME0, 8, BME1, 8 end;
+into device label EC0 code_regex BDV,\s+16 replace_matched begin BDV0, 8, BDV1, 8 end;
+into device label EC0 code_regex BRTE,\s+16 replace_matched begin RTE0, 8, RTE1, 8 end;
+into device label EC0 code_regex BATE,\s+16 replace_matched begin ATE0, 8, ATE1, 8 end;
+into device label EC0 code_regex BCV1,\s+16 replace_matched begin BCX0, 8, BCX1, 8 end;
+into device label EC0 code_regex BCV2,\s+16 replace_matched begin BCA0, 8, BCA1, 8 end;
+into device label EC0 code_regex BCV3,\s+16 replace_matched begin BCB0, 8, BCB1, 8 end;
+into device label EC0 code_regex BCV4,\s+16 replace_matched begin BCP0, 8, BCP1, 8 end;
+into device label EC0 code_regex BATF,\s+16 replace_matched begin ATF0, 8, ATF1, 8 end;
+into device label EC0 code_regex MAXC,\s+16 replace_matched begin AXC0, 8, AXC1, 8 end;
+into device label EC0 code_regex BSTS,\s+16 replace_matched begin BST0, 8, BST1, 8 end;
+into device label EC0 code_regex BDAT,\s+16 replace_matched begin BDA0, 8, BDA1, 8 end;
+
+# Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label BTIF code_regex \(BFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label GBTI code_regex \(BFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label BTIF code_regex \(BDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBTI code_regex \(BDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label BTIF code_regex \(BSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+into_all method label GBTI code_regex \(BSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+into_all method label BTST code_regex \(BPR, replaceall_matched begin (B1B2 (BPR0, BPR1), end;
+into_all method label GBTI code_regex \(BPR, replaceall_matched begin (B1B2 (BPR0, BPR1), end;
+into_all method label BTST code_regex \(BRC, replaceall_matched begin (B1B2 (BRC0, BRC1), end;
+into_all method label GBTI code_regex \(BRC, replaceall_matched begin (B1B2 (BRC0, BRC1), end;
+into_all method label GBTI code_regex \(BCR, replaceall_matched begin (B1B2 (BCR0, BCR1), end;
+into_all method label BTST code_regex \(BPV, replaceall_matched begin (B1B2 (BPV0, BPV1), end;
+into_all method label GBTI code_regex \(BPV, replaceall_matched begin (B1B2 (BPV0, BPV1), end;
+into_all method label GBTI code_regex \(BDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into_all method label GBTI code_regex \(BME, replaceall_matched begin (B1B2 (BME0, BME1), end;
+into_all method label GBTI code_regex \(BCC, replaceall_matched begin (B1B2 (BCC0, BCC1), end;
+into_all method label BTIF code_regex \(BCC, replaceall_matched begin (B1B2 (BCC0, BCC1), end;
+into_all method label GBTI code_regex \(CBT, replaceall_matched begin (B1B2 (CBT0, CBT1), end;
+into_all method label GBTI code_regex \(BSTS, replaceall_matched begin (B1B2 (BST0, BST1), end;
+into_all method label BTIF code_regex \(BDAT, replaceall_matched begin (B1B2 (BDA0, BDA1), end;
+into_all method label GBTI code_regex \(BDAT, replaceall_matched begin (B1B2 (BDA0, BDA1), end;
+into_all method label GBTI code_regex \(BCV1, replaceall_matched begin (B1B2 (BCX0, BCX1), end;
+into_all method label GBTI code_regex \(BCV2, replaceall_matched begin (B1B2 (BCA0, BCA1), end;
+into_all method label GBTI code_regex \(BCV3, replaceall_matched begin (B1B2 (BCB0, BCB1), end;
+into_all method label GBTI code_regex \(BCV4, replaceall_matched begin (B1B2 (BCP0, BCP1), end;
+into_all method label GBTI code_regex \(BRTE, replaceall_matched begin (B1B2 (RTE0, RTE1), end;
+into_all method label GBTI code_regex \(BATE, replaceall_matched begin (B1B2 (ATE0, ATE1), end;
+into_all method label GBTI code_regex \(BATF, replaceall_matched begin (B1B2 (ATF0, ATF1), end;
+into_all method label GBTC code_regex \(MAXC, replaceall_matched begin (B1B2 (AXC0, AXC1), end;
+
+# Now deal with the writes to those registers
+# Store (0xFA, MAXC)
+into_all method label SBTC code_regex \(0xFA,\sMAXC\) replaceall_matched begin (0xFA, AXC0)\nStore (Zero, AXC1) end;
+# Store (Zero, MAXC)
+into_all method label SBTC code_regex \(Zero,\sMAXC\) replaceall_matched begin (Zero, AXC0)\nStore (Zero, AXC1) end;
+# Store (0x00, MAXC)
+into_all method label SBTC code_regex \(0x00,\sMAXC\) replaceall_matched begin (0x00, AXC0)\nStore (0x00, AXC1) end;
+
+# Store (GBSS (B1B2 (BSN0, BSN1), BDAT, BTSN)
+into_all method label GBTI code_regex Store\s\(GBSS\s\(B1B2\s\(BSN0,\sBSN1\),\sBDAT\),\sBTSN\) replaceall_matched
+begin
+Store (GBSS (B1B2 (BSN0, BSN1), B1B2 (BDA0, BDA1)), BTSN)\n
+end;
+
+# Disable BAT1 device
+into method label _STA parent_label BAT1 replace_content begin Return (Zero) end;
+
+# Fix method PPNT, called from AC adapter device (AC/ADP1) (ProBooks)
+into method label PPNT parent_label EC0 replace_content begin // nothing end;
+
+# Fix method PNOT, called from AC adapter device (AC/ADP1) (EliteBooks?)
+into method label PNOT replace_content begin // nothing end;

@@ -1,0 +1,60 @@
+#Maintained by: Draekko for: Laptop Patches
+#battery_Dell-Studio-1558.txt
+
+# created by Draekko 2015-05-02
+
+# works for:
+#  Dell Studio 1558 / Intel HD Graphics 
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# fix an error in this DSDT
+into method label _DSM parent_label PEGP code_regex Arg0\n.*Arg1\n.*Arg2\n.*Arg3\n remove_matched;
+
+# 16-bit registers
+into device label EC0 code_regex CTL1,\s+16 replace_matched begin TL10,8,TL11,8 end;
+into device label EC0 code_regex CTL2,\s+16 replace_matched begin TL20,8,TL21,8 end;
+into device label EC0 code_regex RPM2,\s+16 replace_matched begin PM20,8,PM21,8 end;
+into device label EC0 code_regex FTAC,\s+16 replace_matched begin TAC0,8,TAC1,8 end;
+into device label EC0 code_regex FSPD,\s+16 replace_matched begin SPD0,8,SPD1,8 end;
+into device label EC0 code_regex CAP0,\s+16 replace_matched begin AP00,8,AP01,8 end;
+into device label EC0 code_regex RCP0,\s+16 replace_matched begin RP00,8,RP01,8 end;
+into device label EC0 code_regex VOT0,\s+16 replace_matched begin OT00,8,OT01,8 end;
+into device label EC0 code_regex CRT0,\s+16 replace_matched begin RT00,8,RT01,8 end;
+into device label EC0 code_regex BTM0,\s+16 replace_matched begin TM00,8,TM01,8 end;
+into device label EC0 code_regex BST0,\s+16 replace_matched begin ST00,8,ST01,8 end;
+into device label EC0 code_regex BRC0,\s+16 replace_matched begin RC00,8,RC01,8 end;
+into device label EC0 code_regex FCP0,\s+16 replace_matched begin CP00,8,CP01,8 end;
+into device label EC0 code_regex DCP0,\s+16 replace_matched begin DP00,8,DP01,8 end;
+into device label EC0 code_regex DVT0,\s+16 replace_matched begin VT00,8,VT01,8 end;
+into device label EC0 code_regex MER0,\s+16 replace_matched begin ER00,8,ER01,8 end;
+into device label EC0 code_regex MFD0,\s+16 replace_matched begin FD00,8,FD01,8 end;
+into device label EC0 code_regex BSN0,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into device label EC0 code_regex MAS0,\s+16 replace_matched begin AS00,8,AS01,8 end;
+into device label EC0 code_regex CAP1,\s+16 replace_matched begin AP10,8,AP11,8 end;
+into device label EC0 code_regex RCP1,\s+16 replace_matched begin CP10,8,CP11,8 end;
+into device label EC0 code_regex VOT1,\s+16 replace_matched begin OT10,8,OT11,8 end;
+into device label EC0 code_regex CRT1,\s+16 replace_matched begin RT10,8,RT11,8 end;
+into device label EC0 code_regex BTM1,\s+16 replace_matched begin TM10,8,TM11,8 end;
+into device label EC0 code_regex BST1,\s+16 replace_matched begin ST10,8,ST11,8 end;
+into device label EC0 code_regex BRC1,\s+16 replace_matched begin RC10,8,RC11,8 end;
+into device label EC0 code_regex FCP1,\s+16 replace_matched begin FP10,8,FP11,8 end;
+into device label EC0 code_regex DCP1,\s+16 replace_matched begin DP10,8,DP11,8 end;
+into device label EC0 code_regex DVT1,\s+16 replace_matched begin VT10,8,VT11,8 end;
+into device label EC0 code_regex MER1,\s+16 replace_matched begin ER10,8,ER11,8 end;
+into device label EC0 code_regex MFD1,\s+16 replace_matched begin FD10,8,FD11,8 end;
+into device label EC0 code_regex BSN1,\s+16 replace_matched begin SN10,8,SN11,8 end;
+into device label EC0 code_regex MAS1,\s+16 replace_matched begin AS10,8,AS11,8 end;
+
+# fix 16-bit methods
+into method label GTIF code_regex \(\^\^PCI0\.LPCB\.EC0\.CAP0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.AP00,^^PCI0.LPCB.EC0.AP01), end;
+into method label GTIF code_regex \(\^\^PCI0\.LPCB\.EC0\.VOT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.OT00,^^PCI0.LPCB.EC0.OT01), end;
+into method label GTIF code_regex \(\^\^PCI0\.LPCB\.EC0\.CRT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.RT00,^^PCI0.LPCB.EC0.RT01), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DCP0, replace_matched begin (B1B2(^^PCI0.LPCB.EC0.DP00,^^PCI0.LPCB.EC0.DP01), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.FCP0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.CP00,^^PCI0.LPCB.EC0.CP01), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.DVT0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.VT00,^^PCI0.LPCB.EC0.VT01), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.EC0\.BSN0, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SN00,^^PCI0.LPCB.EC0.SN01), end;

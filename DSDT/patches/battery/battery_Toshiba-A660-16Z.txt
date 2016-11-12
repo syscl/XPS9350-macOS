@@ -1,0 +1,63 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Toshiba-A660-16Z.txt
+
+# created by stez 2014-02-23, cleanup by RehabMan
+
+# works for:
+#  Toshiba Satellite A660-16Z
+#  Toshiba Satellite P755-1004XT
+
+# B1B2 utility method
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# 16-bit fields
+into device label EC0 code_regex CECE,\s+16, replace_matched begin ECE0,8,ECE1,8, end;
+into device label EC0 code_regex TOHK,\s+16, replace_matched begin OHK0,8,OHK1,8, end;
+into device label EC0 code_regex BRC0,\s+16, replace_matched begin RC00,8,RC01,8, end;
+into device label EC0 code_regex BPV0,\s+16, replace_matched begin PV00,8,PV01,8, end;
+into device label EC0 code_regex BDV0,\s+16, replace_matched begin DV00,8,DV01,8, end;
+into device label EC0 code_regex BDC0,\s+16, replace_matched begin DC00,8,DC01,8, end;
+into device label EC0 code_regex BFC0,\s+16, replace_matched begin FC00,8,FC01,8, end;
+into device label EC0 code_regex BAC0,\s+16, replace_matched begin AC00,8,AC01,8, end;
+
+# 32-bit fields
+into device label EC0 code_regex PAE1,\s+32, replace_matched begin AE10,8,AE11,8,AE12,8,AE13,8, end;
+into device label EC0 code_regex PAE2,\s+32, replace_matched begin AE20,8,AE21,8,AE22,8,AE23,8, end;
+into device label EC0 code_regex PAE3,\s+32, replace_matched begin AE30,8,AE31,8,AE32,8,AE33,8, end;
+into device label EC0 code_regex PAE4,\s+32, replace_matched begin AE40,8,AE41,8,AE42,8,AE43,8, end;
+
+# fan related
+into device label EC0 code_regex ERIB,\s+16, replace_matched begin RIB0,8,RIB1,8, end;
+
+into method label _Q50 code_regex \(CECE, replaceall_matched begin (B1B2(ECE0,ECE1), end;
+into method label _Q50 code_regex \(Zero,\sCECE\) replaceall_matched begin \(Zero,ECE1) Store(Zero,ECE0) end;
+into method label INFO code_regex \(\^\^PCI0\.LPCB\.EC0\.TOHK, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.OHK0,^^PCI0.LPCB.EC0.OHK1), end;
+into method label INFO code_regex \(Zero,\s\^\^PCI0.LPCB.EC0.TOHK\) replaceall_matched 
+begin 
+\(Zero, ^^PCI0.LPCB.EC0.OHK1) 
+Store (Zero, ^^PCI0.LPCB.EC0.OHK0) 
+end;
+
+into method label _BIF code_regex \^\^EC0.BFC0, replaceall_matched begin B1B2(^^EC0.FC00,^^EC0.FC01), end;
+into method label _BIF code_regex \^\^EC0.BDC0, replaceall_matched begin B1B2(^^EC0.DC00,^^EC0.DC01), end;
+into method label _BIF code_regex \^\^EC0.BDV0, replaceall_matched begin B1B2(^^EC0.DV00,^^EC0.DV01), end;
+into method label _BST code_regex \^\^EC0.BAC0, replaceall_matched begin B1B2(^^EC0.AC00,^^EC0.AC01), end;
+into method label _BST code_regex \^\^EC0.BRC0, replaceall_matched begin B1B2(^^EC0.RC00,^^EC0.RC01), end;
+into method label _BST code_regex \^\^EC0.BPV0, replaceall_matched begin B1B2(^^EC0.PV00,^^EC0.PV01), end;
+
+into method label FANG code_regex \(Arg0,\sERIB\) replaceall_matched begin \(Arg0, RIB0) Store(ShiftRight(Arg0,8), RIB1) end;
+into method label FANW code_regex \(Arg0,\sERIB\) replaceall_matched begin \(Arg0, RIB0) Store(ShiftRight(Arg0,8), RIB1) end;
+
+into method label _Q50 code_regex \(P(AE[1234]), replaceall_matched begin (B1B4(%1\0,%1\1,%1\2,%1\3), end;
+
+into method label SPFC code_regex Store\s+\((.*),\s+(\^\^PCI0\.LPCB\.EC0\.)P(AE[1234])\) replaceall_matched
+begin
+Store(%1,%2%3\0)
+Store(ShiftRight(%1,8),%2%3\1)
+Store(ShiftRight(%1,16),%2%3\2)
+Store(ShiftRight(%1,24),%2%3\3)
+end;

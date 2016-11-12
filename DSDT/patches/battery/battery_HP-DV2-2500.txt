@@ -1,0 +1,105 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-DV2-2500.txt
+
+# created by sen17 2015-11-07
+
+# works for:
+#  HP DV2-2500
+
+#B1B2
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# 16 bit register
+into device label EC0 code_regex LHIC,\s+16 replace_matched begin HIC0,8,HIC1,8 end;
+into device label EC0 code_regex BSRC,\s+16 replace_matched begin SRC0,8,SRC1,8 end;
+into device label EC0 code_regex BSFC,\s+16 replace_matched begin SFC0,8,SFC1,8 end;
+into device label EC0 code_regex BSAC,\s+16 replace_matched begin SAC0,8,SAC1,8 end;
+into device label EC0 code_regex BSVO,\s+16 replace_matched begin SVO0,8,SVO1,8 end;
+into device label EC0 code_regex BSCU,\s+16 replace_matched begin SCU0,8,SCU1,8 end;
+into device label EC0 code_regex BSTV,\s+16 replace_matched begin STV0,8,STV1,8 end;
+into device label EC0 code_regex BSDC,\s+16 replace_matched begin SDC0,8,SDC1,8 end;
+into device label EC0 code_regex BSDV,\s+16 replace_matched begin SDV0,8,SDV1,8 end;
+into device label EC0 code_regex BSSN,\s+16 replace_matched begin SSN0,8,SSN1,8 end;
+into device label EC0 code_regex BSMD,\s+16 replace_matched begin SMD0,8,SMD1,8 end;
+into device label EC0 code_regex BSME,\s+16 replace_matched begin SME0,8,SME1,8 end;
+into device label EC0 code_regex BSC1,\s+16 replace_matched begin SC10,8,SC11,8 end;
+into device label EC0 code_regex BSC2,\s+16 replace_matched begin SC20,8,SC21,8 end;
+into device label EC0 code_regex BSC3,\s+16 replace_matched begin SC30,8,SC31,8 end;
+into device label EC0 code_regex BSC4,\s+16 replace_matched begin SC40,8,SC41,8 end;
+into device label EC0 code_regex BSBS,\s+16 replace_matched begin SBS0,8,SBS1,8 end;
+into device label EC0 code_regex BSCY,\s+16 replace_matched begin SCY0,8,SCY1,8 end;
+
+#16 bit methods
+into method label Z00I code_regex \(\^\^PCI0\.LPCB\.EC0\.LHIC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.HIC0,^^PCI0.LPCB.EC0.HIC1), end;
+into method label GBST code_regex \(BSRC, replaceall_matched begin (B1B2(SRC0,SRC1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSRC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SRC0,^^PCI0.LPCB.EC0.SRC1), end;
+into method label GBIF code_regex \(BSFC, replaceall_matched begin (B1B2(SFC0,SFC1), end;
+into method label GBST code_regex \(BSFC, replaceall_matched begin (B1B2(SFC0,SFC1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SFC0,^^PCI0.LPCB.EC0.SFC1), end;
+into method label GBST code_regex \(BSAC, replaceall_matched begin (B1B2(SAC0,SAC1), end;
+into method label GBST code_regex \(BSVO, replaceall_matched begin (B1B2(SVO0,SVO1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSVO, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SVO0,^^PCI0.LPCB.EC0.SVO1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCU, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SCU0,^^PCI0.LPCB.EC0.SCU1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSTV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.STV0,^^PCI0.LPCB.EC0.STV1), end;
+into method label GBIF code_regex \(BSDC, replaceall_matched begin (B1B2(SDC0,SDC1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SDC0,^^PCI0.LPCB.EC0.SDC1), end;
+into method label GBIF code_regex \(BSDV, replaceall_matched begin (B1B2(SDV0,SDV1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SDV0,^^PCI0.LPCB.EC0.SDV1), end;
+into method label GBIF code_regex \(BSSN, replaceall_matched begin (B1B2(SSN0,SSN1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSSN, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SSN0,^^PCI0.LPCB.EC0.SSN1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSMD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SMD0,^^PCI0.LPCB.EC0.SMD1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSME, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SME0,^^PCI0.LPCB.EC0.SME1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSC1, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SC10,^^PCI0.LPCB.EC0.SC11), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSC2, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SC20,^^PCI0.LPCB.EC0.SC21), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSC3, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SC30,^^PCI0.LPCB.EC0.SC31), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSC4, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SC40,^^PCI0.LPCB.EC0.SC41), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSBS, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SBS0,^^PCI0.LPCB.EC0.SBS1), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCY, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.SCY0,^^PCI0.LPCB.EC0.SCY1), end;
+
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+ShiftRight(Arg1, 3, Arg1)\n
+Name(TEMP, Buffer(Arg1) { })\n
+Add(Arg0, Arg1, Arg1)\n
+Store(0, Local0)\n
+While (LLess(Arg0, Arg1))\n
+{\n
+Store(RE1B(Arg0), Index(TEMP, Local0))\n
+Increment(Arg0)\n
+Increment(Local0)\n
+}\n
+Return(TEMP)\n
+}\n
+end;
+
+# For 128-bit fields
+into device label EC0 code_regex (BSMN,)\s+(128) replace_matched begin SMNX,%2,//%1%2 end;
+into device label EC0 code_regex (BSDN,)\s+(128) replace_matched begin SDNX,%2,//%1%2 end;
+into device label EC0 code_regex (BSCH,)\s+(128) replace_matched begin SCHX,%2,//%1%2 end;
+
+#Replacing used 128-bits
+into method label GBIF code_regex \(BSMN, replaceall_matched begin (RECB(0xE0,128), end;
+into method label GBIF code_regex \(BSDN, replaceall_matched begin (RECB(0xE0,128), end;
+into method label GBIF code_regex \(BSCH, replaceall_matched begin (RECB(0xE0,128), end;
+into method label Z00E code_regex \(\^\^PCI0\.LPCB\.EC0\.BSMN, replaceall_matched begin (^^PCI0.LPCB.EC0.RECB(0xE0,128), end;
+
+
+

@@ -1,0 +1,46 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Surface-Pro-v1.txt
+
+# created by booblej 2014-01-12
+
+# works for:
+#  TabletKiosk i575
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into device label EC0 code_regex B1FC,\s+16 replace_matched begin IFC0,8,IFC1,8 end;
+into device label EC0 code_regex B1RM,\s+16 replace_matched begin IRM0,8,IRM1,8 end;
+into device label EC0 code_regex B1VT,\s+16 replace_matched begin IVT0,8,IVT1,8 end;
+into device label EC0 code_regex B1CR,\s+16 replace_matched begin ICR0,8,ICR1,8 end;
+into device label EC0 code_regex B2FC,\s+16 replace_matched begin ZFC0,8,ZFC1,8 end;
+into device label EC0 code_regex B2RM,\s+16 replace_matched begin ZRM0,8,ZRM1,8 end;
+into device label EC0 code_regex B2VT,\s+16 replace_matched begin ZVT0,8,ZVT1,8 end;
+into device label EC0 code_regex B2CR,\s+16 replace_matched begin ZCR0,8,ZCR1,8 end;
+into device label EC0 code_regex SDAT,\s+16 replace_matched begin DAT0,8,DAT1,8 end;
+into device label EC0 code_regex B3ST,\s+16 replace_matched begin EST0,8,EST1,8 end;
+into device label EC0 code_regex B3FC,\s+16 replace_matched begin EFC0,8,EFC1,8 end;
+into device label EC0 code_regex B3RM,\s+16 replace_matched begin ERM0,8,ERM1,8 end;
+into method label RD02 code_regex ECR1,\s+16 replace_matched begin CR10,8,CR11,8 end;
+
+into method label BIF1 code_regex \(\^\^LPCB.EC0\.B1FC, replaceall_matched begin (B1B2(^^LPCB.EC0.IFC0,^^LPCB.EC0.IFC1), end;
+into method label _STA code_regex \(\^\^LPCB.EC0\.B1FC, replaceall_matched begin (B1B2(^^LPCB.EC0.IFC0,^^LPCB.EC0.IFC1), end; 
+into method label BST2 code_regex \(\^\^LPCB.EC0\.B1RM, replaceall_matched begin (B1B2(^^LPCB.EC0.IRM0,^^LPCB.EC0.IRM1), end;
+into method label BST3 code_regex \(\^\^LPCB.EC0\.B1VT, replaceall_matched begin (B1B2(^^LPCB.EC0.IVT0,^^LPCB.EC0.IVT1), end;
+into method label BST1 code_regex \(\^\^LPCB.EC0\.B1CR, replaceall_matched begin (B1B2(^^LPCB.EC0.ICR0,^^LPCB.EC0.ICR1), end;
+into method label BIF1 code_regex \(\^\^LPCB.EC0\.B2FC, replaceall_matched begin (B1B2(^^LPCB.EC0.ZFC0,^^LPCB.EC0.ZFC1), end;
+into method label _STA code_regex \(\^\^LPCB.EC0\.B2FC, replaceall_matched begin (B1B2(^^LPCB.EC0.ZFC0,^^LPCB.EC0.ZFC1), end;
+into method label BST2 code_regex \(\^\^LPCB.EC0\.B2RM, replaceall_matched begin (B1B2(^^LPCB.EC0.ZRM0,^^LPCB.EC0.ZRM1), end;
+into method label BST3 code_regex \(\^\^LPCB.EC0\.B2VT, replaceall_matched begin (B1B2(^^LPCB.EC0.ZVT0,^^LPCB.EC0.ZVT1), end;
+into method label BST1 code_regex \(\^\^LPCB.EC0\.B2CR, replaceall_matched begin (B1B2(^^LPCB.EC0.ZCR0,^^LPCB.EC0.ZCR1), end;
+into method label SMDW code_regex \(\^\^LPCB.EC0\.SDAT, replaceall_matched begin (B1B2(^^LPCB.EC0.DAT0,^^LPCB.EC0.DAT1), end;
+into method label _BIF code_regex \(\^\^LPCB.EC0\.SDAT, replaceall_matched begin (B1B2(^^LPCB.EC0.DAT0,^^LPCB.EC0.DAT1), end;
+into method label _BST code_regex \(\^\^LPCB.EC0\.B3ST, replaceall_matched begin (B1B2(^^LPCB.EC0.EST0,^^LPCB.EC0.EST1), end;
+into method label _BIF code_regex \(\^\^LPCB.EC0\.B3FC, replaceall_matched begin (B1B2(^^LPCB.EC0.EFC0,^^LPCB.EC0.EFC1), end;
+into method label _BST code_regex \(\^\^LPCB.EC0\.B3RM, replaceall_matched begin (B1B2(^^LPCB.EC0.ERM0,^^LPCB.EC0.ERM1), end;
+into method label SMDW code_regex \(\^\^LPCB.EC0\.SDAT, replaceall_matched begin (B1B2(^^LPCB.EC0.DAT0,^^LPCB.EC0.DAT1), end;
+into method label SMDW code_regex \(\^\^LPCB.EC0\.SDAT, replaceall_matched begin (B1B2(^^LPCB.EC0.DAT0,^^LPCB.EC0.DAT1), end;
+into_all method label RD02 code_regex \(ECR1\) replaceall_matched begin (B1B2 (CR10, CR11)) end;

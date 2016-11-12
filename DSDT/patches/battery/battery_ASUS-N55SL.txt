@@ -1,0 +1,284 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_ASUS-N55SL.txt
+
+# created by RehabMan 8/12/2013
+# created originally for jesselid
+
+# works for:
+#  ASUS N55SL, BIOS rev. 204
+#  ASUS VivoBook series
+#  ASUS Zenbook UX31A
+#  ASUS UX301LA
+#  ASUS X553E-SX399V
+#  ASUS F501A
+#  ASUS K55VM
+#  ASUS U46SV, BIOS rev. 2.04
+#  ASUS N43
+#  ASUS PU500CA (90NB00F1-M01120)
+#  ASUS N73SV
+#  ASUS X401A-WX108
+#  ASUS F551CA Bios rev. 207
+#  ASUS S551LB VivoBook
+#  ASUS ZenBook UX32VD
+#  ASUS ZenBook UX32V
+#  ASUS F550L-X455H
+#  ASUS X53S
+#  ASUS K550JD-XX003H
+#  ASUS G53SX
+#  ASUS K56CB
+#  ASUS UX305
+#  ASUS N550LF (per gabberZ)
+#  ASUS TP300LA
+#  ASUS X200LA
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# not really for battery, but might come in handy to read fan speed(s)
+into device label EC0 code_regex TAH0,\s+16 replace_matched begin TH00,8,TH01,8 end;
+into device label EC0 code_regex TAH1,\s+16 replace_matched begin TH10,8,TH11,8 end;
+into method label TACH code_regex \(TAH0, replace_matched begin (B1B2(TH00,TH01), end;
+into method label TACH code_regex \(TAH1, replace_matched begin (B1B2(TH10,TH11), end;
+into method label GFAN code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.TAH0, replace_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.TH00,\\_SB.PCI0.LPCB.EC0.TH01), end;
+
+# battery EC
+into device label EC0 code_regex B0SN,\s+16 replace_matched begin B0S0,8,B0S1,8 end;
+into device label EC0 code_regex B1SN,\s+16 replace_matched begin B1S0,8,B1S1,8 end;
+into method label BIFA code_regex \(B0SN, replace_matched begin (B1B2(B0S0,B0S1), end;
+into method label BIFA code_regex \(B1SN, replace_matched begin (B1B2(B1S0,B1S1), end;
+into device label EC0 code_regex DT2B,\s+16 replace_matched begin T2B0,8,T2B1,8 end;
+into method label SMBR code_regex \(DT2B, replace_matched begin (B1B2(T2B0,T2B1), end;
+into method label SMBW code_regex Store\s+\(([^,]*),\s+DT2B\) replace_matched
+begin
+Store(%1,T2B0) Store(ShiftRight(%1,8),T2B1)
+end;
+
+into device label EC0 insert
+begin
+Method (RDBA, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (BA00, Index(TEMP, 0x00))\n
+    Store (BA01, Index(TEMP, 0x01))\n
+    Store (BA02, Index(TEMP, 0x02))\n
+    Store (BA03, Index(TEMP, 0x03))\n
+    Store (BA04, Index(TEMP, 0x04))\n
+    Store (BA05, Index(TEMP, 0x05))\n
+    Store (BA06, Index(TEMP, 0x06))\n
+    Store (BA07, Index(TEMP, 0x07))\n
+    Store (BA08, Index(TEMP, 0x08))\n
+    Store (BA09, Index(TEMP, 0x09))\n
+    Store (BA0A, Index(TEMP, 0x0A))\n
+    Store (BA0B, Index(TEMP, 0x0B))\n
+    Store (BA0C, Index(TEMP, 0x0C))\n
+    Store (BA0D, Index(TEMP, 0x0D))\n
+    Store (BA0E, Index(TEMP, 0x0E))\n
+    Store (BA0F, Index(TEMP, 0x0F))\n
+    Store (BA10, Index(TEMP, 0x10))\n
+    Store (BA11, Index(TEMP, 0x11))\n
+    Store (BA12, Index(TEMP, 0x12))\n
+    Store (BA13, Index(TEMP, 0x13))\n
+    Store (BA14, Index(TEMP, 0x14))\n
+    Store (BA15, Index(TEMP, 0x15))\n
+    Store (BA16, Index(TEMP, 0x16))\n
+    Store (BA17, Index(TEMP, 0x17))\n
+    Store (BA18, Index(TEMP, 0x18))\n
+    Store (BA19, Index(TEMP, 0x19))\n
+    Store (BA1A, Index(TEMP, 0x1A))\n
+    Store (BA1B, Index(TEMP, 0x1B))\n
+    Store (BA1C, Index(TEMP, 0x1C))\n
+    Store (BA1D, Index(TEMP, 0x1D))\n
+    Store (BA1E, Index(TEMP, 0x1E))\n
+    Store (BA1F, Index(TEMP, 0x1F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (WRBA, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), BA00)\n
+    Store (DerefOf(Index(TEMP, 0x01)), BA01)\n
+    Store (DerefOf(Index(TEMP, 0x02)), BA02)\n
+    Store (DerefOf(Index(TEMP, 0x03)), BA03)\n
+    Store (DerefOf(Index(TEMP, 0x04)), BA04)\n
+    Store (DerefOf(Index(TEMP, 0x05)), BA05)\n
+    Store (DerefOf(Index(TEMP, 0x06)), BA06)\n
+    Store (DerefOf(Index(TEMP, 0x07)), BA07)\n
+    Store (DerefOf(Index(TEMP, 0x08)), BA08)\n
+    Store (DerefOf(Index(TEMP, 0x09)), BA09)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), BA0A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), BA0B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), BA0C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), BA0D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), BA0E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), BA0F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), BA10)\n
+    Store (DerefOf(Index(TEMP, 0x11)), BA11)\n
+    Store (DerefOf(Index(TEMP, 0x12)), BA12)\n
+    Store (DerefOf(Index(TEMP, 0x13)), BA13)\n
+    Store (DerefOf(Index(TEMP, 0x14)), BA14)\n
+    Store (DerefOf(Index(TEMP, 0x15)), BA15)\n
+    Store (DerefOf(Index(TEMP, 0x16)), BA16)\n
+    Store (DerefOf(Index(TEMP, 0x17)), BA17)\n
+    Store (DerefOf(Index(TEMP, 0x18)), BA18)\n
+    Store (DerefOf(Index(TEMP, 0x19)), BA19)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), BA1A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), BA1B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), BA1C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), BA1D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), BA1E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), BA1F)\n
+}\n
+end;
+
+into device label EC0 code_regex BDAT,\s+256 replace_matched 
+begin
+//BDAT, 256,\n
+BA00,8,BA01,8,BA02,8,BA03,8,\n
+BA04,8,BA05,8,BA06,8,BA07,8,\n
+BA08,8,BA09,8,BA0A,8,BA0B,8,\n
+BA0C,8,BA0D,8,BA0E,8,BA0F,8,\n
+BA10,8,BA11,8,BA12,8,BA13,8,\n
+BA14,8,BA15,8,BA16,8,BA17,8,\n
+BA18,8,BA19,8,BA1A,8,BA1B,8,\n
+BA1C,8,BA1D,8,BA1E,8,BA1F,8\n
+end;
+
+into method label SMBR code_regex \(BDAT, replaceall_matched begin (RDBA(), end;
+into method label SMBR code_regex Store\s\((.*),\sBDAT\) replaceall_matched begin WRBA(%1) end;
+into method label SMBW code_regex Store\s\((.*),\sBDAT\) replaceall_matched begin WRBA(%1) end;
+into method label ECSB code_regex Store\s\((.*),\sBDAT\) replaceall_matched begin WRBA(%1) end;
+into method label ECSB code_regex \(BDAT, replaceall_matched begin (RDBA(), end;
+
+
+into device label EC0 insert
+begin
+Method (RDBB, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (BB00, Index(TEMP, 0x00))\n
+    Store (BB01, Index(TEMP, 0x01))\n
+    Store (BB02, Index(TEMP, 0x02))\n
+    Store (BB03, Index(TEMP, 0x03))\n
+    Store (BB04, Index(TEMP, 0x04))\n
+    Store (BB05, Index(TEMP, 0x05))\n
+    Store (BB06, Index(TEMP, 0x06))\n
+    Store (BB07, Index(TEMP, 0x07))\n
+    Store (BB08, Index(TEMP, 0x08))\n
+    Store (BB09, Index(TEMP, 0x09))\n
+    Store (BB0A, Index(TEMP, 0x0A))\n
+    Store (BB0B, Index(TEMP, 0x0B))\n
+    Store (BB0C, Index(TEMP, 0x0C))\n
+    Store (BB0D, Index(TEMP, 0x0D))\n
+    Store (BB0E, Index(TEMP, 0x0E))\n
+    Store (BB0F, Index(TEMP, 0x0F))\n
+    Store (BB10, Index(TEMP, 0x10))\n
+    Store (BB11, Index(TEMP, 0x11))\n
+    Store (BB12, Index(TEMP, 0x12))\n
+    Store (BB13, Index(TEMP, 0x13))\n
+    Store (BB14, Index(TEMP, 0x14))\n
+    Store (BB15, Index(TEMP, 0x15))\n
+    Store (BB16, Index(TEMP, 0x16))\n
+    Store (BB17, Index(TEMP, 0x17))\n
+    Store (BB18, Index(TEMP, 0x18))\n
+    Store (BB19, Index(TEMP, 0x19))\n
+    Store (BB1A, Index(TEMP, 0x1A))\n
+    Store (BB1B, Index(TEMP, 0x1B))\n
+    Store (BB1C, Index(TEMP, 0x1C))\n
+    Store (BB1D, Index(TEMP, 0x1D))\n
+    Store (BB1E, Index(TEMP, 0x1E))\n
+    Store (BB1F, Index(TEMP, 0x1F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (WRBB, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x20) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), BB00)\n
+    Store (DerefOf(Index(TEMP, 0x01)), BB01)\n
+    Store (DerefOf(Index(TEMP, 0x02)), BB02)\n
+    Store (DerefOf(Index(TEMP, 0x03)), BB03)\n
+    Store (DerefOf(Index(TEMP, 0x04)), BB04)\n
+    Store (DerefOf(Index(TEMP, 0x05)), BB05)\n
+    Store (DerefOf(Index(TEMP, 0x06)), BB06)\n
+    Store (DerefOf(Index(TEMP, 0x07)), BB07)\n
+    Store (DerefOf(Index(TEMP, 0x08)), BB08)\n
+    Store (DerefOf(Index(TEMP, 0x09)), BB09)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), BB0A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), BB0B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), BB0C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), BB0D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), BB0E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), BB0F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), BB10)\n
+    Store (DerefOf(Index(TEMP, 0x11)), BB11)\n
+    Store (DerefOf(Index(TEMP, 0x12)), BB12)\n
+    Store (DerefOf(Index(TEMP, 0x13)), BB13)\n
+    Store (DerefOf(Index(TEMP, 0x14)), BB14)\n
+    Store (DerefOf(Index(TEMP, 0x15)), BB15)\n
+    Store (DerefOf(Index(TEMP, 0x16)), BB16)\n
+    Store (DerefOf(Index(TEMP, 0x17)), BB17)\n
+    Store (DerefOf(Index(TEMP, 0x18)), BB18)\n
+    Store (DerefOf(Index(TEMP, 0x19)), BB19)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), BB1A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), BB1B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), BB1C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), BB1D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), BB1E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), BB1F)\n
+}\n
+end;
+
+into device label EC0 code_regex BDA2,\s+256 replace_matched 
+begin
+//BDA2, 256,\n
+BB00,8,BB01,8,BB02,8,BB03,8,\n
+BB04,8,BB05,8,BB06,8,BB07,8,\n
+BB08,8,BB09,8,BB0A,8,BB0B,8,\n
+BB0C,8,BB0D,8,BB0E,8,BB0F,8,\n
+BB10,8,BB11,8,BB12,8,BB13,8,\n
+BB14,8,BB15,8,BB16,8,BB17,8,\n
+BB18,8,BB19,8,BB1A,8,BB1B,8,\n
+BB1C,8,BB1D,8,BB1E,8,BB1F,8\n
+end;
+
+into method label SMBR code_regex \(BDA2, replaceall_matched begin (RDBB(), end;
+into method label SMBR code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label SMBW code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label ECSB code_regex Store\s\((.*),\sBDA2\) replaceall_matched begin WRBB(%1) end;
+into method label ECSB code_regex \(BDA2, replaceall_matched begin (RDBB(), end;
+
+# additional work for _BIX method present in some ASUS laptops
+
+into device label EC0 code_regex B0C3,\s+16 replace_matched begin XC30,8,XC31,8 end;
+into device label EC0 code_regex B1C3,\s+16 replace_matched begin YC30,8,YC31,8 end;
+into_all method label _BIX code_regex \(\^\^LPCB\.EC0\.B0C3, replaceall_matched begin (B1B2(^^LPCB.EC0.XC30,^^LPCB.EC0.XC31), end;
+into_all method label _BIX code_regex \(\^\^LPCB\.EC0\.B1C3, replaceall_matched begin (B1B2(^^LPCB.EC0.YC30,^^LPCB.EC0.YC31), end;
+
+# or could remove the _BIX method if it turns out not to work
+
+#into_all method label _BIX remove_entry;
+
+#fix logic error in some newer ASUS DSDTs (issue #23)
+into method label FBST code_regex If\s\(CHGS\s\(Zero\)\)[\s]+\{[\s]+Store\s\(0x02,\sLocal0\)[\s]+\}[\s]+Else[\s]+\{[\s]+Store\s\(One,\sLocal0\)[\s]+\} replaceall_matched
+begin
+If (CHGS (Zero))\n
+{\n
+    Store (0x02, Local0)\n
+}\n
+Else\n
+{\n
+    Store (Zero, Local0)\n
+}
+end;

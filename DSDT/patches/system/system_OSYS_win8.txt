@@ -1,0 +1,12 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_OSYS_win8.txt
+
+# Cause the DSDT to simulate "Windows 2012" when running under "Darwin" (OS X).
+#
+# This can fix various DSDT related problems for code within the DSDT
+# that is conditional on the operating system version.
+#
+# Sometimes "Windows 2012" is a better choice than "Windows 2006"
+
+into_all method code_regex If\s+\([\\]?_OSI\s+\(\"Windows\s2012\"\)\) replace_matched begin If(LOr(_OSI("Darwin"),_OSI("Windows 2012"))) end;
+

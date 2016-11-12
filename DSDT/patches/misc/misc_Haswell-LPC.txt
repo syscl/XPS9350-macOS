@@ -1,0 +1,16 @@
+# HM87 is not more needed this patch since the 8c4b is supported natively by Apple. 
+# by Yating Zhou/lighting/syscl
+
+# inject "compatible" with recognized series-8 LPC device-id
+into method label _DSM parent_adr 0x001F0000 remove_entry;
+into device name_adr 0x001F0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "compatible", "pci8086,8c4b",\n
+    })\n
+}\n
+end;

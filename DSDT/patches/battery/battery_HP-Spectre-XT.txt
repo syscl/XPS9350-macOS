@@ -1,0 +1,178 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Spectre-XT.txt
+
+# created by RehabMan 2013-09-09
+# created originally for LilaQ
+
+# works for:
+#  HP Spectre XT Touchsmart 15-4000EG
+#  HP Envy 6T Ultrabook
+#  HP Envy 6T 1000
+#  HP Envy 4-1117nr (per chris998)
+#  HP Envy 4-1024tu (per chris998)
+
+# remove WMI related items; makes it easier to patch battery EC
+#into device label WMID remove_entry;
+#into device label WLBU remove_entry;
+#into method label CHWL code_regex \(\^WMID\.[^\)].*\) replaceall_matched begin (Zero) end;
+#into method label _PTS code_regex \\_SB\.WMID\.ESDT\s+\(\) remove_matched;
+#into method label PFUN code_regex \^\^\^\^WMID\.SWDS\s+\(0x01FF0000\) remove_matched;
+#into method label _Q40 remove_entry;
+#into method label _Q41 remove_entry;
+#into method label _Q42 remove_entry;
+
+#                SMD0,   256, 
+#                BTDC,   64, 
+#                BMNN,   72, 
+#                BDVN,   56, 
+#                ERIB,   16, 
+
+# 16-bit EC
+into device label EC0 code_regex ERIB,\s+16 replace_matched begin ERI0,8,ERI1,8 end;
+into method label FANG code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched 
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+into method label FANW code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+#
+# Note: Offsets below into EC are based on the following data in the native DSDT
+#
+#            OperationRegion (ERAM, EmbeddedControl, Zero, 0xFF)
+#            Field (ERAM, ByteAcc, Lock, Preserve)
+#            {
+#                        Offset (0x5A),
+#                        Offset (0x5B),
+#                        Offset (0x5C),
+#                        Offset (0x5D),
+#                ENIB,   16,//5d
+#                ENDD,   8,//5f
+#                SMPR,   8,//60
+#                SMST,   8,//61
+#                SMAD,   8,//62
+#                SMCM,   8,//63
+#                SMD0,   256,//64
+#                BCNT,   8,
+#                SMAA,   24,
+#                        Offset (0x89)
+#            }
+#
+#            OperationRegion (ECPR, EmbeddedControl, Zero, 0xFF)
+#            Field (ECPR, ByteAcc, Lock, Preserve)
+#            {
+#                        Offset (0x06),
+#                    ,   4,
+#                GSPN,   1,
+#                        Offset (0x0E),
+#                SADP,   8,
+#                        Offset (0x2D),
+#                BCTL,   128,
+#                        Offset (0x88),
+#                BTDC,   64,//88
+#                BMNN,   72,//90
+#                BDVN,   56,//99
+#
+# If the native DSDT has any such data re-organized such that the fields
+# being read with RECB are at a different offset, the offsets below
+# (first param to WECB/RECB) would need to be changed for the DSDT.
+#
+# This is something to watch out for when adapting this patch to another 
+# computer and maybe even after updating to a new BIOS.
+#
+
+
+# deal with 256-bit SMD0
+into device label EC0 code_regex SMD0,\s+256 replace_matched begin SDXX,256 end;
+into device label EC0 insert begin Method (RSMD, 0, Serialized) { Return (RECB(0x64, 256)) } end;
+into device label EC0 insert begin Method (WSMD, 1, Serialized) { WECB(0x64, 256, Arg0) } end;
+into method label ESMR code_regex Store\s+\((.*),\s+\^\^LPCB\.EC0\.SMD0\) replaceall_matched begin ^^LPCB.EC0.WSMD(%1) end;
+into method label ESMR code_regex \(\^\^LPCB\.EC0\.SMD0\, replaceall_matched begin (^^LPCB.EC0.RSMD(), end;
+into method label ESMW code_regex Store\s+\((.*),\s+\^\^LPCB\.EC0\.SMD0\) replaceall_matched begin ^^LPCB.EC0.WSMD(%1) end;
+into method label CFUN code_regex Store\s+\((.*),\s+SMD0\) replaceall_matched begin WSMD(%1) end;
+into method label CFUN code_regex \(SMD0\, replaceall_matched begin (RSMD(), end;
+
+# deal with 64-bit BTDC
+into device label EC0 code_regex BTDC,\s+64 replace_matched begin TDCX,64 end;
+into device label EC0 insert begin Method (RTDC, 0, Serialized) { Return(RECB(0x88, 64)) } end;
+into method label GUBT code_regex \(BTDC, replaceall_matched begin (RTDC(), end;
+into method label BATT code_regex \(\^\^PCI0\.LPCB\.EC0\.BTDC, replaceall_matched begin (^^PCI0.LPCB.EC0.RTDC(), end;
+
+# deal with 72-bit BMNN
+into device label EC0 code_regex BMNN,\s+72 replace_matched begin MNNX,72 end;
+into device label EC0 insert begin Method (RMNN, 0, Serialized) { Return(RECB(0x90, 72)) } end;
+into method label GUBI code_regex \(BMNN, replaceall_matched begin (RMNN(), end;
+into method label BATT code_regex \(\^\^PCI0\.LPCB\.EC0\.BMNN, replaceall_matched begin (^^PCI0.LPCB.EC0.RMNN(), end;
+
+# deal with 56-bit BDVN
+into device label EC0 code_regex BDVN,\s+56 replace_matched begin DVNX,56 end;
+into device label EC0 insert begin Method (RDVN, 0, Serialized) { Return(RECB(0x99, 56)) } end;
+into method label GBMN code_regex \(BDVN, replaceall_matched begin (RDVN(), end;
+into method label BATT code_regex \(\^\^PCI0\.LPCB\.EC0\.BDVN, replaceall_matched begin (^^PCI0.LPCB.EC0.RDVN(), end;
+
+# REVIEW: temporarily disable some parts of _BIF
+#                Store (^^EC0.GBMN (), Index (STAT, 0x09))
+#                Store (^^EC0.GUBS (), Index (STAT, 0x0A))
+#                Store (^^EC0.GUBT (), Index (STAT, 0x0B))
+#                Store (^^EC0.GUBI (), Index (STAT, 0x0C))
+
+#into method label _BIF code_regex (Store\s\(\^\^EC0\.GBMN\s\(\),\sIndex\s\(STAT,\s0x09\)\)) replace_matched begin if(0){%1} end;
+#into method label _BIF code_regex (Store\s\(\^\^EC0\.GUBS\s\(\),\sIndex\s\(STAT,\s0x0A\)\)) replace_matched begin if(0){%1} end;
+#into method label _BIF code_regex (Store\s\(\^\^EC0\.GUBT\s\(\),\sIndex\s\(STAT,\s0x0B\)\)) replace_matched begin if(0){%1} end;
+#into method label _BIF code_regex (Store\s\(\^\^EC0\.GUBI\s\(\),\sIndex\s\(STAT,\s0x0C\)\)) replace_matched begin if(0){%1} end;
+

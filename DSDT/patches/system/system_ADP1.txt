@@ -1,0 +1,25 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_ADP1.txt
+
+# Note: if AppleACPIACAdapter is already loading (look at your ioreg), then
+#  this patch is not necessary for you.
+
+# Note: Old patch used to rename AC or ACAD to ADP1 to be more "Apple" like
+# Turns out, this is not needed.
+
+# Replace all instances of AC with ADP1
+#into_all all code_regex \.AC, replaceall_matched begin .ADP1, end;
+#into_all all code_regex \(AC, replaceall_matched begin (ADP1, end;
+#into all label AC set_label begin ADP1 end;
+
+# Replace all instances of ACAD with ADP1
+#into_all all code_regex \.ACAD, replaceall_matched begin .ADP1, end;
+#into_all all code_regex \(ACAD, replaceall_matched begin (ADP1, end;
+#into all label ACAD set_label begin ADP1 end;
+
+# Power fix - cause AppleACPIACAdapter to be loaded
+into device name_hid ACPI0003 code_regex Name\s+\(_PRW,[\s\S]*\}\) remove_matched;
+into device name_hid ACPI0003 insert
+begin
+Name (_PRW, Package() { 0x18, 0x03 })
+end;

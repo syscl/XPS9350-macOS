@@ -1,0 +1,20 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_REG-disable.txt
+
+# The purpose of this patch is to add code to _REG in EC
+# to disable nvidia/Radeon
+#
+# The path of _OFF may have to be customized to match your SSDTs
+# The patch attempts to identify the correct _REG by using
+# the ACPI PNP identifier for the EC.
+
+into method label _REG parent_hid PNP0C09 insert
+begin
+//added to turn nvidia/radeon off\n
+If (LAnd(LEqual(Arg0,3),LEqual(Arg1,1)))\n
+{\n
+    External(\_SB.PCI0.PEG0.PEGP._OFF, MethodObj)\n
+    \_SB.PCI0.PEG0.PEGP._OFF()\n
+}\n
+end;
+

@@ -1,0 +1,14 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Clevo-P15SM.txt
+
+# created by RehabMan 2014-07-16
+
+# works for:
+#  Clevo P15SM
+#  Clevo P150SM
+#  Clevo W740SU
+
+# Use this patch if your _BST method returns invalid data when discharging.
+
+into method label UPBS code_regex And.*Local1.*0x8000.*Local7.*\n.*If.*LEqual.*Local7.*\n.*\{.*\n.*Store.*0xFFFFFFFF.*Local1.*\n.*\}\n remove_matched;
+

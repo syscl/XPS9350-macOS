@@ -1,0 +1,69 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Alienware-m15x.txt
+
+# created by snapchops 2015-11-24
+
+# works for:
+#  Alienware m15x
+
+
+# 16 utility
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+    Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# 32-bit utility
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+
+# 16-bit registers
+into device label H_EC code_regex BTC0,\s+16 replace_matched begin TC00,8,TC01,8 end;
+into device label H_EC code_regex BPR0,\s+16 replace_matched begin PR00,8,PR01,8 end;
+
+# 16-bit methods
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BTC0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.TC00,^^PCI0.LPCB.H_EC.TC01), end;
+into_all method label UBST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPR0, replaceall_matched begin (B1B2(^^PCI0.LPCB.H_EC.PR00,^^PCI0.LPCB.H_EC.PR01), end;
+
+
+# 32-bit registers
+into device label H_EC code_regex BDC,\s+32 replace_matched begin BDC0,8,BDC1,8,BDC2,8,BDC3,8 end;
+into device label H_EC code_regex BFC,\s+32 replace_matched begin BFC0,8,BFC1,8,BFC2,8,BFC3,8 end;
+into device label H_EC code_regex BDV,\s+32 replace_matched begin BDV0,8,BDV1,8,BDV2,8,BDV3,8 end;
+into device label H_EC code_regex BST,\s+32 replace_matched begin BST0,8,BST1,8,BST2,8,BST3,8 end;
+into device label H_EC code_regex BPV,\s+32 replace_matched begin BPV0,8,BPV1,8,BPV2,8,BPV3,8 end;
+into device label H_EC code_regex BCW,\s+32 replace_matched begin BCW0,8,BCW1,8,BCW2,8,BCW3,8 end;
+into device label H_EC code_regex BCL,\s+32 replace_matched begin BCL0,8,BCL1,8,BCL2,8,BCL3,8 end;
+into device label H_EC code_regex BCG,\s+32 replace_matched begin BCG0,8,BCG1,8,BCG2,8,BCG3,8 end;
+into device label H_EC code_regex BG2,\s+32 replace_matched begin BG20,8,BG21,8,BG22,8,BG23,8 end;
+into device label H_EC code_regex BSN0,\s+32 replace_matched begin BS10,8,BS11,8,BS12,8,BS13,8 end;
+into device label H_EC code_regex BSN1,\s+32 replace_matched begin BS20,8,BS21,8,BS22,8,BS23,8 end;
+
+# 32-bit methods
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BDC replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BDC0,^^PCI0.LPCB.H_EC.BDC1,^^PCI0.LPCB.H_EC.BDC2,^^PCI0.LPCB.H_EC.BDC3) end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BFC, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BFC0,^^PCI0.LPCB.H_EC.BFC1,^^PCI0.LPCB.H_EC.BFC2,^^PCI0.LPCB.H_EC.BFC3), end;
+into_all method label UBST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BFC, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BFC0,^^PCI0.LPCB.H_EC.BFC1,^^PCI0.LPCB.H_EC.BFC2,^^PCI0.LPCB.H_EC.BFC3), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BDV replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BDV0,^^PCI0.LPCB.H_EC.BDV1,^^PCI0.LPCB.H_EC.BDV2,^^PCI0.LPCB.H_EC.BDV3) end;
+into_all method label UBST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BDV, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BDV0,^^PCI0.LPCB.H_EC.BDV1,^^PCI0.LPCB.H_EC.BDV2,^^PCI0.LPCB.H_EC.BDV3), end;
+into_all method label UBST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BST, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BST0,^^PCI0.LPCB.H_EC.BST1,^^PCI0.LPCB.H_EC.BST2,^^PCI0.LPCB.H_EC.BST3), end;
+into_all method label UBST code_regex \(\^\^PCI0\.LPCB\.H_EC\.BPV, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BPV0,^^PCI0.LPCB.H_EC.BPV1,^^PCI0.LPCB.H_EC.BPV2,^^PCI0.LPCB.H_EC.BPV3), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BCW, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BCW0,^^PCI0.LPCB.H_EC.BCW1,^^PCI0.LPCB.H_EC.BCW2,^^PCI0.LPCB.H_EC.BCW3), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BCL, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BCL0,^^PCI0.LPCB.H_EC.BCL1,^^PCI0.LPCB.H_EC.BCL2,^^PCI0.LPCB.H_EC.BCL3), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BCG, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BCG0,^^PCI0.LPCB.H_EC.BCG1,^^PCI0.LPCB.H_EC.BCG2,^^PCI0.LPCB.H_EC.BCG3), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BG2, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BG20,^^PCI0.LPCB.H_EC.BG21,^^PCI0.LPCB.H_EC.BG22,^^PCI0.LPCB.H_EC.BG23), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BSN0, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BS10,^^PCI0.LPCB.H_EC.BS11,^^PCI0.LPCB.H_EC.BS12,^^PCI0.LPCB.H_EC.BS13), end;
+into_all method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.BSN1, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BS20,^^PCI0.LPCB.H_EC.BS21,^^PCI0.LPCB.H_EC.BS22,^^PCI0.LPCB.H_EC.BS23), end;
+
+

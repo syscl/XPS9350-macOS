@@ -1,0 +1,43 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_Rename-B0D3.txt
+
+# for DSDT
+
+into method label _WAK code_regex B0D3 replaceall_matched begin HDAU end;
+into definitionblock code_regex B0D3 replaceall_matched begin HDAU end;
+
+# for GFX0 SSDT
+
+# Note: Change your layout ID if you need something different
+
+# inject "hda-gfx"="onboard-1" into IGPU (GFX0 originally)
+into method label _DSM parent_adr 0x00020000 remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+    })\n
+}\n
+end;
+
+# inject "hda-gfx"="onboard-1" into HDAU (B0D3 originally)
+into method label _DSM parent_adr 0x00030000 remove_entry;
+into device name_adr 0x00030000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "layout-id", Buffer() { 12, 0x00, 0x00, 0x00 },\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+    })\n
+}\n
+end;
+
+into device label B0D3 set_label begin HDAU end;
+into method label SBCB code_regex B0D3 replaceall_matched begin HDAU end;

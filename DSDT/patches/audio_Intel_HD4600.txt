@@ -1,0 +1,15 @@
+#audio_Intel_HD4600
+
+into method label _DSM parent_label HDAU remove_entry;
+into device label HDAU insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+        "device-id", Buffer() { 0x0c, 0x0a, 0x0, 0x0 }\n
+    })\n
+}\n
+end;

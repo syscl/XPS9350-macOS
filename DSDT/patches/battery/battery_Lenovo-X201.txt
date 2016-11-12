@@ -1,0 +1,97 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-X201.txt
+
+# created by calabash 2014-03-01
+
+# Works for
+#   Lenovo Thinkpad x201
+
+# 16-bit, HWAK, HSPD, SBRC, SBFC, SBAC, SBVO, SBDC, SBDV, SBSN
+into device label EC code_regex HWAK,\s+16 replace_matched begin WAK0,8,WAK1,8 end;
+into method label _L1D parent_label \_GPE code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+into device label EC code_regex HSPD,\s+16 replace_matched begin SPD0,8,SPD1,8 end;
+into method label MHST code_regex \(\\_SB.PCI0.LPC.EC.HSPD, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.SPD0,\\_SB.PCI0.LPC.EC.SPD1), end;
+into device label EC code_regex SBRC,\s+16 replace_matched begin BRC0,8,BRC1,8 end;
+into_all method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2 (BRC0, BRC1), end;
+into device label EC code_regex SBFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into_all method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into device label EC code_regex SBAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+into_all method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2 (BAC0, BAC1), end;
+into device label EC code_regex SBVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+into_all method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2 (BVO0, BVO1), end;
+into device label EC code_regex SBDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into_all method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into device label EC code_regex SBDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into_all method label GBIF code_regex \(SBDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2 (BDV0, BDV1)) end;
+into_all method label GBIF code_regex ,\s+SBDV, replaceall_matched begin ,B1B2(BDV0, BDV1), end;
+into device label EC code_regex SBSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+into_all method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+
+# 32-bit, SBHC
+into device label EC code_regex SBCH,\s+32 replace_matched begin BCH0,8,BCH1,8,BCH2,8,BCH3,8 end;
+into_all method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(BCH0,BCH1,BCH2,BCH3), end;
+
+# 128-bit, SBMN, SBDN
+into device label EC code_regex (SBMN,)\s+(128) replace_matched begin BMNX,%2,//%1%2 end;
+into device label EC insert begin Method (RBMN, 0, Serialized) { Return(RECB(0xA0,128)) } end;
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RBMN(), end;
+into device label EC code_regex (SBDN,)\s+(128) replace_matched begin BDNX,%2,//%1%2 end;
+into device label EC insert begin Method (RBDN, 0, Serialized) { Return(RECB(0xA0,128)) } end;
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RBDN(), end;
+
+# Disable BAT1
+into method label _STA parent_label BAT1 replace_content begin Return(0) end;
+
+# Mutex Fix
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end; 
+
+# Method B1B2
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# Method B1B4
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# Utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+

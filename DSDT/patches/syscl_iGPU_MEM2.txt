@@ -1,0 +1,17 @@
+#iGPU rename TPMX to MEM2 to fit the OS X/macOS expect credit syscl
+
+into device label TPMX remove_entry;
+into device label PCI0 insert
+begin
+Device (MEM2) // iGPU use MEM2 instead of TPMX, and RW memory. syscl\n
+{\n
+    Name (_HID, EisaId ("PNP0C01"))\n
+    Name (_UID, 0x02)\n
+    Name (_STA, 0x0F)\n
+    Name (_CRS, ResourceTemplate ()\n
+    {\n
+        Memory32Fixed (ReadWrite, 0x20000000, 0x00200000, )\n
+        Memory32Fixed (ReadWrite, 0x40000000, 0x00200000, )\n
+    })\n
+}\n
+end;

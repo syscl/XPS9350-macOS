@@ -1,0 +1,57 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_Rename-VID_AGP1.txt
+
+# Note: Most DSDT/SSDTs use GFX0 for the integrated graphics
+#  device. If that is the case with your DSDT, do not use this
+#  patch and instead use "Rename GFX0 to IGPU"
+
+# Note: Applying all of the patches contained herein can cause 
+#  problems.  Most of the time, you need only one of the main 
+#  groups.  Use the MaciASL preview window to determine which
+#  patches you actually need, and remove the ones you don't need
+#  or are incorrect for your DSDT before applying the patch.
+
+# sometimes there is already IGPU used for other things
+into_all all code_regex IGPU, replaceall_matched begin IGFX, end;
+
+# and its aliases: VID_/VID
+# do VID_ rename first
+into_all all code_regex VID_\. replaceall_matched begin IGPU. end;
+into_all all code_regex \.VID_ replaceall_matched begin .IGPU end;
+into_all all code_regex \sVID_, replaceall_matched begin IGPU, end;
+into_all all code_regex \(VID_ replaceall_matched begin (IGPU end;
+into_all all label VID_ set_label begin IGPU end;
+into_all all label _SB.PCI0.VID_ set_label begin _SB.PCI0.IGPU end;
+into_all all label \_SB.PCI0.VID_ set_label begin \_SB.PCI0.IGPU end;
+into_all all label _SB.PCI0.VID_.DD02 set_label begin _SB.PCI0.IGPU.DD02 end;
+into_all all label \_SB.PCI0.VID_.DD02 set_label begin \_SB.PCI0.IGPU.DD02 end;
+into_all all label ^^VID_ set_label begin ^^IGPU end;
+into_all all label ^VID_ set_label begin ^IGPU end;
+into_all all label PCI0.PEG.VID_ set_label begin PCI0.PEG.IGPU end;
+# then VID rename...
+into_all all code_regex VID\. replaceall_matched begin IGPU. end;
+into_all all code_regex \.VID\s replaceall_matched begin .IGPU end;
+into_all all code_regex \sVID, replaceall_matched begin IGPU, end;
+into_all all code_regex \(VID replaceall_matched begin (IGPU end;
+into_all all code_regex _SB.PCI0.VID replaceall_matched begin _SB.PCI0.IGPU end;
+into_all all label VID set_label begin IGPU end;
+into_all all label _SB.PCI0.VID set_label begin _SB.PCI0.IGPU end;
+into_all all label \_SB.PCI0.VID set_label begin \_SB.PCI0.IGPU end;
+into_all all label _SB.PCI0.VID.DD02 set_label begin _SB.PCI0.IGPU.DD02 end;
+into_all all label \_SB.PCI0.VID.DD02 set_label begin \_SB.PCI0.IGPU.DD02 end;
+into_all all label ^^VID set_label begin ^^IGPU end;
+into_all all label ^VID set_label begin ^IGPU end;
+into_all all label PCI0.PEG.VID set_label begin PCI0.PEG.IGPU end;
+
+# and another: AGP1
+into_all all code_regex AGP1\. replaceall_matched begin IGPU. end;
+into_all all code_regex \.AGP1 replaceall_matched begin .IGPU end;
+into_all all code_regex \sAGP1, replaceall_matched begin IGPU, end;
+into_all all code_regex \(AGP1 replaceall_matched begin (IGPU end;
+into_all all label AGP1 set_label begin IGPU end;
+into_all all label _SB.PCI0.AGP1 set_label begin _SB.PCI0.IGPU end;
+into_all all label \_SB.PCI0.AGP1 set_label begin \_SB.PCI0.IGPU end;
+into_all all label _SB.PCI0.AGP1.DD02 set_label begin _SB.PCI0.IGPU.DD02 end;
+into_all all label \_SB.PCI0.AGP1.DD02 set_label begin \_SB.PCI0.IGPU.DD02 end;
+into_all all label ^^AGP1 set_label begin ^^IGPU end;
+into_all all label ^AGP1 set_label begin ^IGPU end;

@@ -1,0 +1,31 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PNLF.txt
+
+# This patch enables the brightness slider in SysPrefs->Displays
+# and will also enable activation of sleep mode by closing
+# the laptop lid.
+
+# This patch is a "basic" PNLF patch and doesn't attempt 
+# to fix various common problems with the backlight control.
+# 
+# For advanced patches, see:
+#   graphics_PNLF_ivy_sandy.txt
+#   graphics_PNLF_haswell.txt
+#
+
+into_all device label PNLF remove_entry;
+into definitionblock code_regex . insert
+begin
+Scope (_SB)\n
+{\n
+    Device (PNLF)\n
+    {\n
+        Name (_ADR, Zero)\n
+        Name (_HID, EisaId ("APP0002"))\n
+        Name (_CID, "backlight")\n
+        Name (_UID, 10)\n
+        Name (_STA, 0x0B)\n
+    }\n
+}\n
+end;
+

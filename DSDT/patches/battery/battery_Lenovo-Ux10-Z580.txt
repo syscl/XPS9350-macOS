@@ -1,0 +1,113 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-Ux10-Z580.txt
+
+# Created by RehabMan 2013-08-29
+# created originally for mkk
+
+# works for:
+#  Lenovo U310
+#  Lenovo U410
+#  Lenovo Z580
+#  Lenovo U430 Touch (probably U330/U530, etc)
+#
+# DOES NOT work for:
+#  Lenovo U510
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# Change EC register declarations from 16-bit to 8-bit
+into device label EC0 code_regex B1FC,\s+16 replace_matched begin B1F0, 8, B1F1, 8 end;
+into device label EC0 code_regex DICP,\s+16 replace_matched begin DIC0, 8, DIC1, 8 end;
+into device label EC0 code_regex DIVO,\s+16 replace_matched begin DIV0, 8, DIV1, 8 end;
+into device label EC0 code_regex MCUR,\s+16 replace_matched begin MCU0, 8, MCU1, 8 end;
+into device label EC0 code_regex MBRM,\s+16 replace_matched begin MBR0, 8, MBR1, 8 end;
+into device label EC0 code_regex MBVG,\s+16 replace_matched begin MBV0, 8, MBV1, 8 end;
+
+# Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.B1FC, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.B1F0, ^^PCI0.LPCB.EC0.B1F1), end;
+into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.DICP, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.DIC0, ^^PCI0.LPCB.EC0.DIC1), end;
+into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.DIVO, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.DIV0, ^^PCI0.LPCB.EC0.DIV1), end;
+
+into_all method label UPBS code_regex \^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.MCU0, ^^PCI0.LPCB.EC0.MCU1), end;
+into_all method label UPBS code_regex \^\^PCI0\.LPCB\.EC0\.MBRM, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.MBR0, ^^PCI0.LPCB.EC0.MBR1), end;
+into_all method label UPBS code_regex \^\^PCI0\.LPCB\.EC0\.MBVG, replaceall_matched begin B1B2 (^^PCI0.LPCB.EC0.MBV0, ^^PCI0.LPCB.EC0.MBV1), end;
+
+# this was the old workaround (better code below [actually grabs real data from EC])
+#into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.SBDN, replaceall_matched begin "L1234", end;
+#into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.SBMN, replaceall_matched begin "S12345678", end;
+
+into device label EC0 code_regex SBDN,\s+128 replace_matched 
+begin
+//SBDN, 128,\n
+DN00,8,DN01,8,DN02,8,DN03,8,
+DN04,8,DN05,8,DN06,8,DN07,8,
+DN08,8,DN09,8,DN0A,8,DN0B,8,
+DN0C,8,DN0D,8,DN0E,8,DN0F,8,
+end;
+
+into device label EC0 code_regex SBMN,\s+128 replace_matched 
+begin
+//SBMN, 128,\n
+MN00,8,MN01,8,MN02,8,MN03,8,
+MN04,8,MN05,8,MN06,8,MN07,8,
+MN08,8,MN09,8,MN0A,8,MN0B,8,
+MN0C,8,MN0D,8,MN0E,8,MN0F,8,
+end;
+
+into device label EC0 insert
+begin
+Method (RDDN, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (DN00, Index(TEMP, 0x00))\n
+    Store (DN01, Index(TEMP, 0x01))\n
+    Store (DN02, Index(TEMP, 0x02))\n
+    Store (DN03, Index(TEMP, 0x03))\n
+    Store (DN04, Index(TEMP, 0x04))\n
+    Store (DN05, Index(TEMP, 0x05))\n
+    Store (DN06, Index(TEMP, 0x06))\n
+    Store (DN07, Index(TEMP, 0x07))\n
+    Store (DN08, Index(TEMP, 0x08))\n
+    Store (DN09, Index(TEMP, 0x09))\n
+    Store (DN0A, Index(TEMP, 0x0A))\n
+    Store (DN0B, Index(TEMP, 0x0B))\n
+    Store (DN0C, Index(TEMP, 0x0C))\n
+    Store (DN0D, Index(TEMP, 0x0D))\n
+    Store (DN0E, Index(TEMP, 0x0E))\n
+    Store (DN0F, Index(TEMP, 0x0F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (RDMN, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (MN00, Index(TEMP, 0x00))\n
+    Store (MN01, Index(TEMP, 0x01))\n
+    Store (MN02, Index(TEMP, 0x02))\n
+    Store (MN03, Index(TEMP, 0x03))\n
+    Store (MN04, Index(TEMP, 0x04))\n
+    Store (MN05, Index(TEMP, 0x05))\n
+    Store (MN06, Index(TEMP, 0x06))\n
+    Store (MN07, Index(TEMP, 0x07))\n
+    Store (MN08, Index(TEMP, 0x08))\n
+    Store (MN09, Index(TEMP, 0x09))\n
+    Store (MN0A, Index(TEMP, 0x0A))\n
+    Store (MN0B, Index(TEMP, 0x0B))\n
+    Store (MN0C, Index(TEMP, 0x0C))\n
+    Store (MN0D, Index(TEMP, 0x0D))\n
+    Store (MN0E, Index(TEMP, 0x0E))\n
+    Store (MN0F, Index(TEMP, 0x0F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.SBDN, replaceall_matched begin ^^PCI0.LPCB.EC0.RDDN(), end;
+into_all method label UPBI code_regex \^\^PCI0\.LPCB\.EC0\.SBMN, replaceall_matched begin ^^PCI0.LPCB.EC0.RDMN(), end;
+

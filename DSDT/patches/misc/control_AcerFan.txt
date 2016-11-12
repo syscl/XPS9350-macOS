@@ -1,0 +1,182 @@
+#Maintained by: RehabMan for: Laptop Patches
+#control_AcerFan.txt
+
+#
+# Modificaton of HP ProBook fan patch, but for Acer
+#
+# EXPERIMENTAL
+#
+
+into device label SMCD remove_entry;
+into definitionblock code_regex . insert
+begin
+Device (SMCD)\n
+{\n
+    Name (_HID, "MON0000")\n
+    OperationRegion (ECRM, EmbeddedControl, Zero, 0xFF)\n
+    Field (ECRM, ByteAcc, Lock, Preserve)\n
+    {\n
+        Offset(0x93), BIOS, 8,    // BIOS control over fan byte\n
+        Offset(0x94), FSPD, 8,    // fan speed control/status\n
+        Offset(0xA8), CPUD, 8,    // CPU temp\n
+        Offset(0xAF), GPUD, 8,    // GPU temp\n
+    }\n
+    Method (FAN0, 0, Serialized)\n
+    {\n
+        //TODO: probably needs work to work on the Acer
+        Store(FSPD, Local0)\n
+        If (LEqual(Local0, 255)) { Store(Zero, Local0) }
+        If (Local0)
+        {
+            Add(0x3C000, ShiftRight(Local0, 1), Local1)
+            Divide(Local1, Local0,, Local0)
+        }
+        Return(Local0)
+    }\n
+    Method (TCPU, 0, Serialized)\n
+    {\n
+        Return (CPUD)\n
+    }\n
+    Method (TGPU, 0, Serialized)\n
+    {\n
+        Return (GPUD)\n
+    }\n
+// Fan Control Table (pairs of temp, fan control byte)\n
+	Name (FTAB, Buffer()\n
+	{\n
+        //TODO: this table needs work for the Acer
+        //35, 255,  // commented out so always on\n
+        //57, 128,\n
+        //58, 122,\n
+        //59, 115,\n
+        57, 115,\n
+        60, 109,\n
+        61, 103,\n
+        62, 96,\n
+        63, 90,\n
+        64, 87,\n
+        65, 85,\n
+        66, 82,\n
+        67, 80,\n
+        68, 77,\n
+        69, 73,\n
+        70, 68,\n
+        71, 64,\n
+        72, 59,\n
+        73, 56,\n
+        74, 52,\n
+        75, 49,\n
+        0xFF, 0\n
+	})\n
+// Table to keep track of past temperatures (to track average)\n
+	Name (FHST, Buffer(16) { 0x0, 0, 0, 0, 0x0, 0, 0, 0, 0x0, 0, 0, 0, 0x0, 0, 0, 0 })\n
+	Name (FIDX, Zero) 	// current index in buffer above\n
+	Name (FNUM, Zero) 	// number of entries in above buffer to count in avg\n
+	Name (FSUM, Zero) 	// current sum of entries in buffer\n
+// Keeps track of last fan speed set, and counter to set new one\n
+	Name (FLST, 0xFF)	// last index for fan control\n
+	Name (FCNT, 0)		// count of times it has been "wrong", 0 means no counter\n
+	Name (FCTU, 20)		// timeout for changes (fan rpm going up)\n
+	Name (FCTD, 40)		// timeout for changes (fan rpm going down)\n
+    \n
+// Fan control for CPU -- expects to be evaluated 1-per second\n
+	Method (FCPU, 0, Serialized)\n
+	{\n
+    // set to control the fan manually (no BIOS control)\n
+        Store (0x14, BIOS) // 0x04 is BIOS control, 0x14 manual control\n
+        \n
+		// get current temp into Local0 for eventual return\n
+        Store (CPUD, Local0)\n
+        \n
+	// calculate average temperature\n
+		Add (Local0, FSUM, Local1)\n
+		Store (FIDX, Local2)\n
+		Subtract (Local1, DerefOf (Index (FHST, Local2)), Local1)\n
+		Store (Local0, Index (FHST, Local2))\n
+		Store (Local1, FSUM)  // Local1 is new sum\n
+        \n
+		// adjust current index into temp table\n
+		Increment (Local2)\n
+		if (LGreaterEqual (Local2, SizeOf(FHST))) { Store (0, Local2) }\n
+		Store (Local2, FIDX)\n
+		// adjust total items collected in temp table\n
+		Store (FNUM, Local2)\n
+		if (LNotEqual (Local2, SizeOf (FHST)))\n
+		{\n
+			Increment (Local2)\n
+			Store (Local2, FNUM)\n
+		}\n
+        \n
+		// Local1 is new sum, Local2 is number of entries in sum\n
+		Divide (Local1, Local2,, Local0)  // Local0 is now average temp\n
+        \n
+	// table based search (use avg temperature to search)\n
+		if (LGreater (Local0, 255)) { Store (255, Local0) }\n
+		Store (Zero, Local2)\n
+		while (LGreater (Local0, DerefOf (Index (FTAB, Local2)))) { Add (Local2, 2, Local2) }\n
+        \n
+	// calculate difference between current and found index\n
+		if (LGreater (Local2, FLST))\n
+		{\n
+			Subtract(Local2, FLST, Local1)\n
+			Store(FCTU, Local4)\n
+		}\n
+		Else\n
+		{\n
+			Subtract(FLST, Local2, Local1)\n
+			Store(FCTD, Local4)\n
+		}\n
+        \n
+	// set new fan speed, if necessary\n
+		if (LEqual (Local1, 0))\n
+		{\n
+			// no difference, so leave current fan speed and reset count\n
+			Store (0, FCNT)\n
+		}\n
+		Else\n
+		{\n
+			// there is a difference, start/continue process of changing fan\n
+			Store (FCNT, Local3)\n
+			Increment (Local3)\n
+			Store (Local3, FCNT)\n
+            \n
+			// how long to wait depends on how big the difference\n
+			// 20 secs if diff is 2, 5 secs if diff is 4, etc.\n
+			Divide (ShiftLeft (Local4, 1), Local1,, Local1)\n
+			if (LGreaterEqual (Local3, Local1))\n
+			{\n
+				// timeout expired, so set new fan speed\n
+				Store (Local2, FLST)\n
+				Increment (Local2)\n
+				Store (DerefOf (Index (FTAB, Local2)), FSPD)\n
+				Store (0, FCNT)\n
+			}\n
+		}\n
+        \n
+		return (Local0)  // returns average temp\n
+	}\n
+/*\n
+// commented out: just for debugging and experimenting\n
+// monitoring additional temperatures\n
+	Method (TDIM, 0, Serialized)\n
+	{\n
+	}\n
+    \n
+*/\n
+// for debugging fan control\n
+	Method (TCPP, 0, Serialized)  // Average temp\n
+	{\n
+		Store (FNUM, Local0)\n
+		if (LNotEqual (Local0, 0))\n
+		{\n
+			Store (FSUM, Local1)\n
+			Divide (Local1, Local0,, Local0)\n
+		}\n
+		Return (Local0)\n
+	}\n
+	Method (TSYS, 0, Serialized)  // fan counter\n
+	{\n
+		Return (FCNT)\n
+	}\n
+}\n
+end;

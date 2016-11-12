@@ -1,0 +1,4 @@
+into method label _INI insert
+begin
+	\_SB.PCI0.PEG0.PEGP._OFF()
+end;

@@ -1,0 +1,42 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Samsung-RF411.txt
+
+# created by RehabMan 9/23/2013
+# created originally for srsr333
+
+# works for:
+#  Samsung RF411-S03SG
+#  Samsung R780
+#  Samsung RC530S04PL
+
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# 32-bit EC registers
+
+into device label H_EC code_regex B1RR,\s+32 replace_matched begin BRR0,8,BRR1,8,BRR2,8,BRR3,8 end;
+into device label H_EC code_regex B1PV,\s+32 replace_matched begin BPV0,8,BPV1,8,BPV2,8,BPV3,8 end;
+into device label H_EC code_regex B1AF,\s+32 replace_matched begin BAF0,8,BAF1,8,BAF2,8,BAF3,8 end;
+into device label H_EC code_regex B1VL,\s+32 replace_matched begin BVL0,8,BVL1,8,BVL2,8,BVL3,8 end;
+
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.B1AF, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BAF0,^^PCI0.LPCB.H_EC.BAF1,^^PCI0.LPCB.H_EC.BAF2,^^PCI0.LPCB.H_EC.BAF3), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPCB\.H_EC\.B1VL, replaceall_matched begin (B1B4(^^PCI0.LPCB.H_EC.BVL0,^^PCI0.LPCB.H_EC.BVL1,^^PCI0.LPCB.H_EC.BVL2,^^PCI0.LPCB.H_EC.BVL3), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.B1RR, replace_matched begin (B1B4(^^PCI0.LPCB.H_EC.BRR0,^^PCI0.LPCB.H_EC.BRR1,^^PCI0.LPCB.H_EC.BRR2,^^PCI0.LPCB.H_EC.BRR3), end;
+into method label _BST code_regex \(\^\^PCI0\.LPCB\.H_EC\.B1PV, replace_matched begin (B1B4(^^PCI0.LPCB.H_EC.BPV0,^^PCI0.LPCB.H_EC.BPV1,^^PCI0.LPCB.H_EC.BPV2,^^PCI0.LPCB.H_EC.BPV3), end;
+
+into method label _PTS code_regex \(\\_SB.PCI0\.LPCB\.H_EC\.B1AF, replace_matched begin (B1B4(\\_SB.PCI0.LPCB.H_EC.BAF0,\\_SB.PCI0.LPCB.H_EC.BAF1,\\_SB.PCI0.LPCB.H_EC.BAF2,\\_SB.PCI0.LPCB.H_EC.BAF3), end;
+into method label _WAK code_regex \(\\_SB.PCI0\.LPCB\.H_EC\.B1AF, replace_matched begin (B1B4(\\_SB.PCI0.LPCB.H_EC.BAF0,\\_SB.PCI0.LPCB.H_EC.BAF1,\\_SB.PCI0.LPCB.H_EC.BAF2,\\_SB.PCI0.LPCB.H_EC.BAF3), end;
+into method label PNOT code_regex \(\\_SB.PCI0\.LPCB\.H_EC\.B1AF, replace_matched begin (B1B4(\\_SB.PCI0.LPCB.H_EC.BAF0,\\_SB.PCI0.LPCB.H_EC.BAF1,\\_SB.PCI0.LPCB.H_EC.BAF2,\\_SB.PCI0.LPCB.H_EC.BAF3), end;
+

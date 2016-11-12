@@ -1,0 +1,83 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Clevo-M860TU.txt
+
+# created by RehabMan 2014-11-06
+# created for mac-nrg
+
+# works for:
+#  Clevo M860TU
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+    Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# fix bogus rate reporting
+into method label UPBS code_regex And.*Local1.*0x8000.*Local7.*\n.*If.*LEqual.*Local7.*\n.*\{.*\n.*Store.*0xFFFFFFFF.*Local1.*\n.*\}\n remove_matched;
+
+# remove WMI device (makes it easier to patch)
+into device label WMI remove_entry;
+into device label WMI0 remove_entry;
+into device label WMI1 remove_entry;
+into_all method code_regex Notify\s+\(WMI,.*\) removeall_matched;
+into_all method code_regex Add\s+\(.*WMI\.EVNT\) removeall_matched;
+into_all method code_regex Store\s+\(.*WMI\.EVNT\) removeall_matched;
+
+# 16-bit EC
+into device label EC code_regex PSV,\s+16 replace_matched begin PSVA,8,PSVB,8 end;
+into method label _TMP parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.PSV, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.PSVA,\\_SB.PCI0.LPCB.EC.PSVB), end;
+into method label _TMP parent_label TZ0 code_regex \\_SB\.PCI0\.LPCB\.EC\.PSV\) replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.EC.PSVA,\\_SB.PCI0.LPCB.EC.PSVB)) end;
+
+into device label EC code_regex CRT,\s+16 replace_matched begin CRTA,8,CRTB,8 end;
+into method label _CRT parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.CRT\) replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.CRTA,\\_SB.PCI0.LPCB.EC.CRTB)) end;
+
+into device label EC code_regex TMP,\s+16 replace_matched begin TMPA,8,TMPB,8 end;
+into method label _TMP parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.TMP, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.TMPA,\\_SB.PCI0.LPCB.EC.TMPB), end;
+
+into device label EC code_regex OEM3,\s+16 replace_matched begin OE30,8,OE31,8 end;
+into method label _Q35 code_regex \(OEM3, replace_matched begin (B1B2(OE30,OE31), end;
+into method label _Q37 code_regex \(OEM3, replace_matched begin (B1B2(OE30,OE31), end;
+into method label _TMP parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.OEM3, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.OE30,\\_SB.PCI0.LPCB.EC.OE31), end;
+
+
+# 32-bit EC
+
+into device label EC code_regex BDC0,\s+32 replace_matched begin DC00,8,DC01,8,DC02,8,DC03,8 end;
+into device label EC code_regex BFC0,\s+32 replace_matched begin FC00,8,FC01,8,FC02,8,FC03,8 end;
+into device label EC code_regex BDV0,\s+32 replace_matched begin DV00,8,DV01,8,DV02,8,DV03,8 end;
+into device label EC code_regex BST0,\s+32 replace_matched begin ST00,8,ST01,8,ST02,8,ST03,8 end;
+into device label EC code_regex BPR0,\s+32 replace_matched begin PR00,8,PR01,8,PR02,8,PR03,8 end;
+into device label EC code_regex BRC0,\s+32 replace_matched begin RC00,8,RC01,8,RC02,8,RC03,8 end;
+into device label EC code_regex BPV0,\s+32 replace_matched begin PV00,8,PV01,8,PV02,8,PV03,8 end;
+into device label EC code_regex BCW0,\s+32 replace_matched begin CW00,8,CW01,8,CW02,8,CW03,8 end;
+into device label EC code_regex BCL0,\s+32 replace_matched begin CL00,8,CL01,8,CL02,8,CL03,8 end;
+into device label EC code_regex BSN0,\s+32 replace_matched begin SN00,8,SN01,8,SN02,8,SN03,8 end;
+
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BDC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.DC00,^^PCI0.LPCB.EC.DC01,^^PCI0.LPCB.EC.DC02,^^PCI0.LPCB.EC.DC03), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BFC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.FC00,^^PCI0.LPCB.EC.FC01,^^PCI0.LPCB.EC.FC02,^^PCI0.LPCB.EC.FC03), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BDV0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.DV00,^^PCI0.LPCB.EC.DV01,^^PCI0.LPCB.EC.DV02,^^PCI0.LPCB.EC.DV03), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BCW0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.CW00,^^PCI0.LPCB.EC.CW01,^^PCI0.LPCB.EC.CW02,^^PCI0.LPCB.EC.CW03), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BCL0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.CL00,^^PCI0.LPCB.EC.CL01,^^PCI0.LPCB.EC.CL02,^^PCI0.LPCB.EC.CL03), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC\.BSN0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.SN00,^^PCI0.LPCB.EC.SN01,^^PCI0.LPCB.EC.SN02,^^PCI0.LPCB.EC.SN03), end;
+
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC\.BST0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.ST00,^^PCI0.LPCB.EC.ST01,^^PCI0.LPCB.EC.ST02,^^PCI0.LPCB.EC.ST03), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC\.BPR0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.PR00,^^PCI0.LPCB.EC.PR01,^^PCI0.LPCB.EC.PR02,^^PCI0.LPCB.EC.PR03), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC\.BRC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.RC00,^^PCI0.LPCB.EC.RC01,^^PCI0.LPCB.EC.RC02,^^PCI0.LPCB.EC.RC03), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC\.BPV0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.PV00,^^PCI0.LPCB.EC.PV01,^^PCI0.LPCB.EC.PV02,^^PCI0.LPCB.EC.PV03), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC\.BFC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.FC00,^^PCI0.LPCB.EC.FC01,^^PCI0.LPCB.EC.FC02,^^PCI0.LPCB.EC.FC03), end;
+into method label UPBS code_regex \^\^PCI0\.LPCB\.EC\.BFC0\) replaceall_matched begin B1B4(^^PCI0.LPCB.EC.FC00,^^PCI0.LPCB.EC.FC01,^^PCI0.LPCB.EC.FC02,^^PCI0.LPCB.EC.FC03)) end;
+

@@ -1,0 +1,111 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-z470-z370.txt
+
+# created by SBarrenechea 2014-12-25
+
+# It’s intended to be used with ACPIBatteryManager.kext from RehabMan
+
+# works for:
+#  Lenovo Z470
+#  Lenovo Z370
+
+# Create B1B2 Method ...
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# Create utility methods to read buffers from EC by RehabMan
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# Create utility methods to write buffers to EC by RehabMan
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+# Ignored in the DSDT (cause they’re not accessed) so not splitted:
+# BATS, CFS1, ACUR, ABRM, ABVG, B2FC, SPCC
+
+# Splitted from 16-bit to 8-bit access field:
+into device label EC0 code_regex BATD,\s+16, replace_matched begin ATD0,8,ATD1,8, end;
+into device label EC0 code_regex MCUR,\s+16, replace_matched begin CUR0,8,CUR1,8, end;
+into device label EC0 code_regex MBRM,\s+16, replace_matched begin BRM0,8,BRM1,8, end;
+into device label EC0 code_regex MBVG,\s+16, replace_matched begin BVG0,8,BVG1,8, end;
+into device label EC0 code_regex B1FC,\s+16, replace_matched begin BFC0,8,BFC1,8, end;
+into device label EC0 code_regex SMW0,\s+16 replace_matched begin MW00,8,MW01,8 end;
+
+# Fixing the code that accesses those registers
+into method label _Q20 code_regex \(BATD, replaceall_matched begin (B1B2(ATD0,ATD1), end;
+into method label UPAC code_regex Or\s+\(BATD,\s+0xC0,\s+BATD\) replace_matched begin Or (ATD0, 0xC0, ATD0) end;
+into method label UPAC code_regex And\s+\(BATD,\s+0xFF3F,\s+BATD\) replace_matched begin And (ATD0, 0x3F, ATD0) end;
+into method label SELE code_regex \(BATD, replaceall_matched begin (B1B2(ATD0,ATD1), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.B1FC, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.BFC0,\^\^PCI0\.LPCB\.EC0\.BFC1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.CUR0,\^\^PCI0\.LPCB\.EC0\.CUR1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.BRM0,\^\^PCI0\.LPCB\.EC0\.BRM1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBVG, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.BVG0,\^\^PCI0\.LPCB\.EC0\.BVG1), end;
+into method label SMRD code_regex \(SMW0, replaceall_matched begin (B1B2(MW00,MW01), end;
+into method label SMWR code_regex Store\s+\(Arg3,\s+SMW0\) replace_matched begin Store(Arg3, MW00) Store(ShiftRight(Arg3, 8), MW01) end;
+
+# Renaming buffer fields
+into device label EC0 code_regex (SMD0,)\s+(256) replace_matched begin SMDX,%2 end;
+into device label EC0 code_regex (FLD1,)\s+(128) replace_matched begin FLDX,%2 end;
+into device label EC0 code_regex (FLD2,)\s+(192) replace_matched begin FLDY,%2 end;
+into device label EC0 code_regex (FLD3,)\s+(256) replace_matched begin FLDZ,%2 end;
+
+# Calling WECB method to write into SMDX (Offset 0x1C)
+into method label SMWR code_regex Store\s?\(Arg3,\s?\SMD0\) replaceall_matched begin WECB (0x1C,256,Arg3) end;
+
+# Calling RECB method to read data from FLDX, FLDY, FLDZ by their corresponding offsets
+into method label SMRD code_regex \(FLD1, replaceall_matched begin (RECB(0x1C,128), end;
+into method label SMRD code_regex \(FLD2, replaceall_matched begin (RECB(0x1C,192), end;
+into method label SMRD code_regex \(FLD3, replaceall_matched begin (RECB(0x1C,256), end;
+

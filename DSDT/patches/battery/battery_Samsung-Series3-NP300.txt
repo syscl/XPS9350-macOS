@@ -1,0 +1,62 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Samsung-Series3-NP300.txt
+
+# created by RehabMan 8/20/2013
+# created originally for jack7676
+
+# works for:
+#  Samsung Series 3 NP300E5E
+#  Samsung NP700Z5C-S02UB
+#  Samsung Q430
+#  Samsung R480 (NP-R480-JS04AR)
+#  Samsung Series 5 NP530U3B
+#  Samsung Series 3 NP300E5C-A09US
+#  Samsung NP270E5E (per vocalico)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# 16-bit EC registers to 8-bit
+
+into device label H_EC code_regex B1RP,\s+16 replace_matched begin BRP0,8,BRP1,8 end;
+into device label H_EC code_regex B1RA,\s+16 replace_matched begin BRA0,8,BRA1,8 end;
+into device label H_EC code_regex B1PR,\s+16 replace_matched begin BPR0,8,BPR1,8 end;
+into device label H_EC code_regex B1VO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+into device label H_EC code_regex B1DA,\s+16 replace_matched begin BDA0,8,BDA1,8 end;
+into device label H_EC code_regex B1DF,\s+16 replace_matched begin BDF0,8,BDF1,8 end;
+into device label H_EC code_regex B1DV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into device label H_EC code_regex B1DL,\s+16 replace_matched begin BDL0,8,BDL1,8 end;
+into device label H_EC code_regex B1SE,\s+16 replace_matched begin BSE0,8,BSE1,8 end;
+into device label H_EC code_regex B1CR,\s+16 replace_matched begin BCR0,8,BCR1,8 end;
+into device label H_EC code_regex B1TM,\s+16 replace_matched begin BTM0,8,BTM1,8 end;
+into device label H_EC code_regex BTPC,\s+16 replace_matched begin BPC0,8,BPC1,8 end;
+into device label H_EC code_regex CYLC,\s+16 replace_matched begin CYC0,8,CYC1,8 end;
+
+
+into method label _BIF code_regex \(B1DA, replaceall_matched begin (B1B2(BDA0,BDA1), end;
+into method label _BIF code_regex \(B1DF, replaceall_matched begin (B1B2(BDF0,BDF1), end;
+into method label _BIF code_regex \(B1DV, replaceall_matched begin (B1B2(BDV0,BDV1), end;
+into method label _BIF code_regex \(B1DL, replaceall_matched begin (B1B2(BDL0,BDL1), end;
+
+into method label _BIX code_regex \(B1DA, replaceall_matched begin (B1B2(BDA0,BDA1), end;
+into method label _BIX code_regex \(B1DF, replaceall_matched begin (B1B2(BDF0,BDF1), end;
+into method label _BIX code_regex \(B1DV, replaceall_matched begin (B1B2(BDV0,BDV1), end;
+into method label _BIX code_regex \(B1DL, replaceall_matched begin (B1B2(BDL0,BDL1), end;
+into method label _BIX code_regex \(CYLC, replaceall_matched begin (B1B2(CYC0,CYC1), end;
+
+into method label _BST code_regex \(B1PR, replaceall_matched begin (B1B2(BPR0,BPR1), end;
+into method label _BST code_regex \(B1RA, replaceall_matched begin (B1B2(BRA0,BRA1), end;
+into method label _BST code_regex \(B1VO, replaceall_matched begin (B1B2(BVO0,BVO1), end;
+
+into method label _PTS code_regex \(\\_SB\.PCI0\.LPCB\.H_EC\.B1DF, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.H_EC.BDF0,\\_SB.PCI0.LPCB.H_EC.BDF1), end;
+into method label _WAK code_regex \(\\_SB\.PCI0\.LPCB\.H_EC\.B1DF, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.H_EC.BDF0,\\_SB.PCI0.LPCB.H_EC.BDF1), end;
+
+into method label _BTP code_regex Store\s+\(Local0,\s+BTPC\) replaceall_matched 
+begin
+    Store(Local0, BPC0)\n
+    Store(ShiftRight(Local0, 8),BPC1)\n
+end;
+

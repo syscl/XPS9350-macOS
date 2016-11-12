@@ -1,0 +1,83 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Acer-3820tg.txt
+
+# created by pontyl 2013-12-08
+# bugs/typos fixed by RehabMan 2015-04-04
+
+# works for:
+#  Acer 3820tg
+#  Acer 4738z (per dhnguyen92)
+#  Acer Aspire 4741G-382G50Mnsk/C002
+#  Acer Aspire V Nitro VN7-591G-744N (per ylums)
+
+# requires mutex fix too (2x to work around MaciASL bug...)
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B remove_entry;
+into method label RECB remove_entry;
+into scope label _SB.PCI0.LPCB.EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# 16-bit registers
+into scope label _SB.AMWA code_regex SDTA,\s+16 replace_matched begin DTA0,8,DTA1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSDC,\s+16 replace_matched begin SDC0,8,SDC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSDV,\s+16 replace_matched begin SDV0,8,SDV1,8 end; 
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSSN,\s+16 replace_matched begin SSN0,8,SSN1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSRC,\s+16 replace_matched begin SRC0,8,SRC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSFC,\s+16 replace_matched begin SFC0,8,SFC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSAC,\s+16 replace_matched begin SAC0,8,SAC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSVO,\s+16 replace_matched begin SVO0,8,SVO1,8 end;
+
+# fix 16-bit methods
+into method label WMCE code_regex \(SDTA, replaceall_matched begin (B1B2(DTA0,DTA1), end; 
+into method label GBIF code_regex \(BSDC, replaceall_matched begin (B1B2(SDC0,SDC1), end;
+into method label GBIF code_regex \(BSDV, replaceall_matched begin (B1B2(SDV0,SDV1), end;
+into method label GBIF code_regex \(BSSN, replaceall_matched begin (B1B2(SSN0,SSN1), end;
+into method label GBST code_regex \(BSRC, replaceall_matched begin (B1B2(SRC0,SRC1), end;
+into method label GBST code_regex \(BSFC, replaceall_matched begin (B1B2(SFC0,SFC1), end;
+into method label GBIF code_regex \(BSFC, replaceall_matched begin (B1B2(SFC0,SFC1), end;
+into method label GBST code_regex \(BSAC, replaceall_matched begin (B1B2(SAC0,SAC1), end;
+into method label GBST code_regex \(BSVO, replaceall_matched begin (B1B2(SVO0,SVO1), end;
+
+# 128-bit 
+into scope label _SB.PCI0.LPCB.EC0 code_regex (BSCH,)\s+(128) replace_matched begin SCHX,%2,//%1%2 end;
+into scope label _SB.PCI0.LPCB.EC0 insert begin Method (RSCH, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+into method label GBIF code_regex \(BSCH, replaceall_matched begin (RSCH(), end;
+
+into scope label _SB.PCI0.LPCB.EC0 code_regex (BSDN,)\s+(128) replace_matched begin SDNX,%2,//%1%2 end;
+into scope label _SB.PCI0.LPCB.EC0 insert begin Method (RSDN, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+into method label GBIF code_regex \(BSDN, replaceall_matched begin (RSDN(), end;
+
+into scope label _SB.PCI0.LPCB.EC0 code_regex (BSMN,)\s+(128) replace_matched begin SMNX,%2,//%1%2 end;
+into scope label _SB.PCI0.LPCB.EC0 insert begin Method (RSMN, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+into method label GBIF code_regex \(BSMN, replaceall_matched begin (RSMN(), end;
+

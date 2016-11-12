@@ -1,0 +1,14 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_MMTB.txt
+
+# To fix PARSEOP_STORE error when MMTB is not defined anywhere
+
+#into method label _INI parent_label _SB.PCI0 code_regex (Store\s\(\\_GPE\.MMTB.*) replace_matched begin // %1 end;
+#into method label _WAK code_regex (Store\s\(\\_GPE\.MMTB.*) replace_matched begin // %1 end;
+
+into_all method code_regex (Store\s\(\\_GPE\.MMTB.*) replaceall_matched begin // %1 end;
+
+# Also to fix HRPR which can reference MMTB in an OperationRegion definition
+
+into method label HRPR remove_entry;
+

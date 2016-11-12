@@ -1,0 +1,52 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-DV7-1120.txt
+
+# created by Swavek 2013-11-28
+# (credits to RehabMan for the guide)
+
+# works for:
+#  HP DV7-1120
+#  HP DV3-2150EL
+
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# remove WMI related items; makes it easier to patch battery EC0
+#into device label WMID remove_entry;
+#into method label _Q06 parent_label EC0 remove_entry;
+#into method label _Q08 parent_label EC0 remove_entry;
+#into method label _Q1F parent_label EC0 remove_entry;
+#into method label _Q3A parent_label EC0 remove_entry;
+#into method label _Q43 parent_label EC0 remove_entry;
+#into method label _Q20 parent_label EC0 remove_entry;
+#into method label _QCC parent_label EC0 remove_entry;
+
+
+# 16-bit EC0 registers
+into device label EC0 code_regex BDC0,\s+16 replace_matched begin BDCA,8,BDCB,8 end;
+into device label EC0 code_regex BFC0,\s+16 replace_matched begin BFCA,8,BFCB,8 end;
+into device label EC0 code_regex BDV0,\s+16 replace_matched begin BDVA,8,BDVB,8 end;
+into device label EC0 code_regex BRC0,\s+16 replace_matched begin BRCA,8,BRCB,8 end;
+into device label EC0 code_regex BPV0,\s+16 replace_matched begin BPVA,8,BPVB,8 end;
+
+# _BIF method
+into method label _BIF code_regex \(\^\^PCI0\.LPC\.EC0\.BDC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BDCA,^^PCI0.LPC.EC0.BDCB), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPC\.EC0\.BFC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BFCA,^^PCI0.LPC.EC0.BFCB), end;
+into method label _BIF code_regex \(\^\^PCI0\.LPC\.EC0\.BDV0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BDVA,^^PCI0.LPC.EC0.BDVB), end;
+
+# _BST method
+into method label _BST code_regex \(\^\^PCI0\.LPC\.EC0\.BRC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BRCA,^^PCI0.LPC.EC0.BRCB), end;
+into method label _BST code_regex \(\^\^PCI0\.LPC\.EC0\.BPV0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BPVA,^^PCI0.LPC.EC0.BPVB), end;
+
+#  Method BATT /WMID
+into method label BATT code_regex \(\^\^PCI0\.LPC\.EC0\.BDC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BDCA,^^PCI0.LPC.EC0.BDCB), end;
+into method label BATT code_regex \(\^\^PCI0\.LPC\.EC0\.BFC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BFCA,^^PCI0.LPC.EC0.BFCB), end;
+into method label BATT code_regex \(\^\^PCI0\.LPC\.EC0\.BDV0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BDVA,^^PCI0.LPC.EC0.BDVB), end;
+into method label BATT code_regex \(\^\^PCI0\.LPC\.EC0\.BRC0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BRCA,^^PCI0.LPC.EC0.BRCB), end;
+into method label BATT code_regex \(\^\^PCI0\.LPC\.EC0\.BPV0, replaceall_matched begin (B1B2(^^PCI0.LPC.EC0.BPVA,^^PCI0.LPC.EC0.BPVB), end;
+

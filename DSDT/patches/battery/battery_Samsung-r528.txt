@@ -1,0 +1,42 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Samsung-r528.txt
+
+# created by _e2_ 2013-12-07
+# minor corrections by RehabMan
+
+# works for:
+#  Samsung r528 DT02EE
+#  Samsung r540 (r530/r730 assumed, per Moorre)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# 16-bit registers
+
+# because my data fields are named with B1, it means that I need to change 1 to something else
+# so B1RA we will change to IRA0 and IRA1 and so on...
+
+into device label H_EC code_regex B1RA,\s+16, replace_matched begin IRA0,8,IRA1,8, end;
+into device label H_EC code_regex B1PR,\s+16, replace_matched begin IPR0,8,IPR1,8, end;
+into device label H_EC code_regex B1VO,\s+16, replace_matched begin IVO0,8,IVO1,8, end;
+into device label H_EC code_regex B1DA,\s+16, replace_matched begin IDA0,8,IDA1,8, end;
+into device label H_EC code_regex B1DF,\s+16, replace_matched begin IDF0,8,IDF1,8, end;
+into device label H_EC code_regex B1DV,\s+16, replace_matched begin IDV0,8,IDV1,8, end;
+into device label H_EC code_regex B1DL,\s+16, replace_matched begin IDL0,8,IDL1,8, end;
+
+# fix 16-bit methods
+into method label _BIF code_regex \(B1DA, replaceall_matched begin (B1B2(IDA0,IDA1), end;
+into method label _BIF code_regex \(B1DF, replaceall_matched begin (B1B2(IDF0,IDF1), end;
+into method label _BIF code_regex \(B1DV, replaceall_matched begin (B1B2(IDV0,IDV1), end;
+into method label _BIF code_regex \(B1DL, replaceall_matched begin (B1B2(IDL0,IDL1), end;
+into method label _BST code_regex \(B1PR, replaceall_matched begin (B1B2(IPR0,IPR1), end;
+into method label _BST code_regex \(B1RA, replaceall_matched begin (B1B2(IRA0,IRA1), end;
+into method label _BST code_regex \(B1VO, replaceall_matched begin (B1B2(IVO0,IVO1), end;
+
+
+# this "\_SB.PCI0.LPCB.H_EC.B1DF," we will change to this "B1B2(\_SB.PCI0.LPCB.H_EC.IDF0,\_SB.PCI0.LPCB.H_EC.IDF1),"
+into method label _PTS code_regex \\_SB\.PCI0\.LPCB\.H_EC\.B1DF, replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.H_EC.IDF0,\\_SB.PCI0.LPCB.H_EC.IDF1), end;
+into method label _WAK code_regex \\_SB\.PCI0\.LPCB\.H_EC\.B1DF, replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.H_EC.IDF0,\\_SB.PCI0.LPCB.H_EC.IDF1), end;

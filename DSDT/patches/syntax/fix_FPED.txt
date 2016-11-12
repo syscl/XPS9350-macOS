@@ -1,0 +1,5 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_FPED.txt
+
+# Fix FPED parse error
+into device label GFX0 code_regex If\s\(CondRefOf\s\(FPED\)\)\s*\n\s*\{\s*\n\s*FPED\s\(\)\s*\n\s*\} remove_matched;

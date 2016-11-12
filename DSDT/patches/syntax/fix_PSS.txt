@@ -1,0 +1,19 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_PSS.txt
+
+# for one of the CPU SSDTs...
+
+# remove bogus:
+#
+# Package (0x06)
+# {
+#   0x80000000,
+#   0x80000000,
+#   0x80000000,
+#   0x80000000,
+#   0x80000000,
+#   0x80000000
+# }
+
+into_all all code_regex Package\s+\(0x06\)\n.*\{\n(.*0x80000000.*\n){6}.*\} removeall_matched;
+

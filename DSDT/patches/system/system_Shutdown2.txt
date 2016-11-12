@@ -1,0 +1,10 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_Shutdown2.txt
+
+#  Shutdown fix v2
+into method label _PTS code_regex ([\s\S]*) replace_matched
+begin
+If (LNotEqual(Arg0,5)) {\n
+%1\n
+}\n
+end;

@@ -1,0 +1,136 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Envy-DV6.txt
+
+# created by RehabMan 8/12/2013
+# created originally for ginchenko
+
+# works for:
+#  HP Envy dv6
+#  HP dv6t-7000
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+
+# battery EC
+
+# 16-bit group1
+into scope label _SB.PCI0.LPCB.EC code_regex BSRC,\s+16 replace_matched begin BRC0,8,BRC1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSPE,\s+16 replace_matched begin BPE0,8,BPE1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSCU,\s+16 replace_matched begin BCU0,8,BCU1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSTV,\s+16 replace_matched begin BTV0,8,BTV1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSMA,\s+16 replace_matched begin BMA0,8,BMA1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSBS,\s+16 replace_matched begin BBS0,8,BBS1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSCY,\s+16 replace_matched begin BCY0,8,BCY1,8 end;
+
+# 16-bit group2
+into scope label _SB.PCI0.LPCB.EC code_regex BSCV,\s+16 replace_matched begin BCV0,8,BCV1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSMD,\s+16 replace_matched begin BMD0,8,BMD1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSCC,\s+16 replace_matched begin BCC0,8,BCC1,8 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSME,\s+16 replace_matched begin BME0,8,BME1,8 end;
+
+# 128-bit
+into scope label _SB.PCI0.LPCB.EC code_regex BSMN,\s+128 replace_matched begin BMN_,128 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSDN,\s+128 replace_matched begin BDN_,128 end;
+into scope label _SB.PCI0.LPCB.EC code_regex BSCH,\s+128 replace_matched begin BCH_,128 end;
+
+(same stuff as above, but for EC0, BIOS update?)
+# 16-bit group1
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSRC,\s+16 replace_matched begin BRC0,8,BRC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSPE,\s+16 replace_matched begin BPE0,8,BPE1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSCU,\s+16 replace_matched begin BCU0,8,BCU1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSTV,\s+16 replace_matched begin BTV0,8,BTV1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSMA,\s+16 replace_matched begin BMA0,8,BMA1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSBS,\s+16 replace_matched begin BBS0,8,BBS1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSCY,\s+16 replace_matched begin BCY0,8,BCY1,8 end;
+
+# 16-bit group2
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSCV,\s+16 replace_matched begin BCV0,8,BCV1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSMD,\s+16 replace_matched begin BMD0,8,BMD1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSCC,\s+16 replace_matched begin BCC0,8,BCC1,8 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSME,\s+16 replace_matched begin BME0,8,BME1,8 end;
+
+# 128-bit
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSMN,\s+128 replace_matched begin BMN_,128 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSDN,\s+128 replace_matched begin BDN_,128 end;
+into scope label _SB.PCI0.LPCB.EC0 code_regex BSCH,\s+128 replace_matched begin BCH_,128 end;
+
+
+
+
+# GBIF 16-bit
+into method label GBIF code_regex \(BSFC, replaceall_matched begin (B1B2(BFC0,BFC1), end;
+into method label GBIF code_regex \(BSDV, replaceall_matched begin (B1B2(BDV0,BDV1), end;
+into method label GBIF code_regex \(BSSN, replaceall_matched begin (B1B2(BSN0,BSN1), end;
+# GBIF 128-bit (just remove)
+into method label GBIF code_regex Store\s+\(BSDN.* remove_matched;
+into method label GBIF code_regex Store\s+\(BSCH.* remove_matched;
+into method label GBIF code_regex Store\s+\(BSMN.* remove_matched;
+
+# GBST 16-bit
+into method label GBST code_regex \(BSAC, replaceall_matched begin (B1B2(BAC0,BAC1), end;
+into method label GBST code_regex \(BSRC, replaceall_matched begin (B1B2(BRC0,BRC1), end;
+into method label GBST code_regex \(BSFC, replaceall_matched begin (B1B2(BFC0,BFC1), end;
+into method label GBST code_regex \(BSVO, replaceall_matched begin (B1B2(BVO0,BVO1), end;
+
+# GBAT (probably not called by OS X, but…) 16-bit
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BDC0,^^PCI0.LPCB.EC.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSCY, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BCY0,^^PCI0.LPCB.EC.BCY1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BDV0,^^PCI0.LPCB.EC.BDV1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSBS, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BBS0,^^PCI0.LPCB.EC.BBS1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BDC0,^^PCI0.LPCB.EC.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSSN, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BSN0,^^PCI0.LPCB.EC.BSN1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSMA, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BMA0,^^PCI0.LPCB.EC.BMA1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BDC0,^^PCI0.LPCB.EC.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BFC0,^^PCI0.LPCB.EC.BFC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSRC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BRC0,^^PCI0.LPCB.EC.BRC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSTV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BTV0,^^PCI0.LPCB.EC.BTV1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSVO, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BVO0,^^PCI0.LPCB.EC.BVO1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BDC0,^^PCI0.LPCB.EC.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSCU, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BCU0,^^PCI0.LPCB.EC.BCU1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSAC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BAC0,^^PCI0.LPCB.EC.BAC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSME, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BME0,^^PCI0.LPCB.EC.BME1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSMD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BMD0,^^PCI0.LPCB.EC.BMD1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSCC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BCC0,^^PCI0.LPCB.EC.BCC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC\.BSCV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC.BCV0,^^PCI0.LPCB.EC.BCV1), end;
+# GBAT (probably not called by OS X, but…) 16-bit (same as above but EC0)
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BDC0,^^PCI0.LPCB.EC0.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCY, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BCY0,^^PCI0.LPCB.EC0.BCY1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BDV0,^^PCI0.LPCB.EC0.BDV1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSBS, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BBS0,^^PCI0.LPCB.EC0.BBS1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BDC0,^^PCI0.LPCB.EC0.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSSN, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BSN0,^^PCI0.LPCB.EC0.BSN1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSMA, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BMA0,^^PCI0.LPCB.EC0.BMA1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BDC0,^^PCI0.LPCB.EC0.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSFC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BFC0,^^PCI0.LPCB.EC0.BFC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSRC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BRC0,^^PCI0.LPCB.EC0.BRC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSTV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTV0,^^PCI0.LPCB.EC0.BTV1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSVO, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BVO0,^^PCI0.LPCB.EC0.BVO1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSDC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BDC0,^^PCI0.LPCB.EC0.BDC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCU, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BCU0,^^PCI0.LPCB.EC0.BCU1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSAC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BAC0,^^PCI0.LPCB.EC0.BAC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSME, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BME0,^^PCI0.LPCB.EC0.BME1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSMD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BMD0,^^PCI0.LPCB.EC0.BMD1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCC, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BCC0,^^PCI0.LPCB.EC0.BCC1), end;
+into method label GBAT code_regex \(\^\^PCI0\.LPCB\.EC0\.BSCV, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BCV0,^^PCI0.LPCB.EC0.BCV1), end;
+# GBAT 128-bit (just remove)
+into method label GBAT code_regex Store\s+\(.*BSDN.* remove_matched;
+into method label GBAT code_regex Store\s+\(.*BSCH.* remove_matched;
+into method label GBAT code_regex Store\s+\(.*BSMN.* remove_matched;
+

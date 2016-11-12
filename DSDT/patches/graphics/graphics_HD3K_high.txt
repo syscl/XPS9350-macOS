@@ -1,0 +1,27 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_HD3K_high.txt
+
+#
+# Use this patch if your laptop has 1600x900 or higher
+# resolution screen.
+# 
+# For example, 47x0s (17") or 45x0s with 1080p user
+# upgraded screen.
+#
+
+#   Inject HDMI info and dual-link into GFX0/IGPU
+into method label _DSM parent_adr 0x00020000 remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "AAPL,snb-platform-id", Buffer() { 0x00, 0x00, 0x01, 0x00 },\n
+        "hda-gfx", Buffer() { "onboard-1" },\n
+        "AAPL00,DualLink", Buffer() { 0x01, 0x00, 0x00, 0x00 },\n
+    })\n
+}\n
+end;
+

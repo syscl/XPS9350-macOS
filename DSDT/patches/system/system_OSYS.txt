@@ -1,0 +1,16 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_OSYS.txt
+
+# Cause the DSDT to simulate "Windows 2006" when running under "Darwin" (OS X).
+#
+# This can fix various DSDT related problems for code within the DSDT
+# that is conditional on the operating system version.
+
+# sometimes in Scope (_SB.PCI0)
+into method label _INI parent_label _SB.PCI0 code_regex If\s+\([\\]?_OSI\s+\(\"Windows\s2006\"\)\) replace_matched begin If(LOr(_OSI("Darwin"),_OSI("Windows 2006"))) end;
+
+# sometimes in Scope (_SB)
+into method label _INI parent_label _SB code_regex If\s+\([\\]?_OSI\s+\(\"Windows\s2006\"\)\) replace_matched begin If(LOr(_OSI("Darwin"),_OSI("Windows 2006"))) end;
+
+# enable this one to be a bit more agressive...
+#into_all method code_regex If\s+\([\\]?_OSI\s+\(\"Windows\s2006\"\)\) replace_matched begin If(LOr(_OSI("Darwin"),_OSI("Windows 2006"))) end;

@@ -1,0 +1,32 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_IAOE.txt
+
+# _PTS and _WAK in this DSDT tend to manipulate externals
+# in the IAOE device.  Some manipulates are protected with
+# CondRefOf, and some not.  Because of the unprotected
+# references, the IAOE SSDT must be included for sleep to
+# work.
+
+# This patch is an attempt to fix _PTS/_WAK such that IAOE is
+# not required.
+
+# _PTS fixes
+into method label _PTS code_regex If\s+\(And\s+\(ICNF,\s+One\)\) replace_matched
+begin
+If (LAnd(CondRefOf(\\_SB.IAOE), And(ICNF,One)))
+end;
+
+# _WAK fixes
+into method label _WAK code_regex If\s+\(And\s+\(\\_SB\.PCI0\.GFX0\.TCHE,\s+0x0100\)\) replace_matched
+begin
+If (LAnd(CondRefOf(\\_SB.IAOE), And(\\_SB.PCI0.GFX0.TCHE, 0x0100)))
+end;
+ze
+into method label _WAK code_regex (If\s+\(LEqual\s+\(\\_SB\.IAOE\.ITMR,\s+Zero\)\)(\n.*){9}) replace_matched
+begin
+If (CondRefOf(\\_SB.IAOE)) {\n
+%1\n
+}
+end;
+
+into method label _WAK code_regex If\s+\(LEqual\s+\(\\_SB\.IAOE\.ITMR,\s+(Zero|0x00)\)\)\s+\{\} remove_matched;

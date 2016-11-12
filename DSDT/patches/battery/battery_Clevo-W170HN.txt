@@ -1,0 +1,62 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Clevo-W170HN.txt
+
+# created by hitman478 2015-03-05
+
+# works for:
+#  Clevo W170HN (Schenker XMG a702)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+
+into device label EC code_regex PSV,\s+16, replace_matched begin SV0,8,SV1,8, end;
+into method label _PSV parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.PSV replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.SV0,\\_SB.PCI0.LPCB.EC.SV1) end;
+
+into device label EC code_regex TMP,\s+16, replace_matched begin MP0,8,MP1,8, end;
+into method label _TMP parent_label TZ0 code_regex \(\\_SB\.PCI0\.LPCB\.EC\.TMP replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC.MP0,\\_SB.PCI0.LPCB.EC.MP1) end;
+
+into device label EC code_regex BDC0,\s+32 replace_matched begin DC0,8,DC1,8,DC2,8,DC3,8 end;
+into method label UPBI code_regex \(BDC0, replaceall_matched begin (B1B4(DC0,DC1,DC2,DC3), end;
+into method label WMBB code_regex \(\^\^PCI0\.LPCB\.EC\.BDC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.DC0,^^PCI0.LPCB.EC.DC1,^^PCI0.LPCB.EC.DC2,^^PCI0.LPCB.EC.DC3), end;
+
+into device label EC code_regex BFC0,\s+32 replace_matched begin FC0,8,FC1,8,FC2,8,FC3,8 end;
+into method label UPBI code_regex \(BFC0, replaceall_matched begin (B1B4(FC0,FC1,FC2,FC3), end;
+into method label WMBB code_regex \(\^\^PCI0\.LPCB\.EC\.BFC0, replaceall_matched begin (B1B4(^^PCI0.LPCB.EC.FC0,^^PCI0.LPCB.EC.FC1,^^PCI0.LPCB.EC.FC2,^^PCI0.LPCB.EC.FC3), end;
+
+into device label EC code_regex BDV0,\s+32 replace_matched begin DV0,8,DV1,8,DV2,8,DV3,8 end;
+into method label UPBI code_regex \(BDV0, replaceall_matched begin (B1B4(DV0,DV1,DV2,DV3), end;
+
+into device label EC code_regex BST0,\s+32 replace_matched begin ST0,8,ST1,8,ST2,8,ST3,8 end;
+into method label UPBS code_regex \(BST0, replaceall_matched begin (B1B4(ST0,ST1,ST2,ST3), end;
+
+into device label EC code_regex BPR0,\s+32 replace_matched begin PR0,8,PR1,8,PR2,8,PR3,8 end;
+into method label UPBS code_regex \(BPR0, replaceall_matched begin (B1B4(PR0,PR1,PR2,PR3), end;
+
+into device label EC code_regex BRC0,\s+32 replace_matched begin RC0,8,RC1,8,RC2,8,RC3,8 end;
+into method label UPBS code_regex \(BRC0, replaceall_matched begin (B1B4(RC0,RC1,RC2,RC3), end;
+
+into device label EC code_regex BPV0,\s+32 replace_matched begin PV0,8,PV1,8,PV2,8,PV3,8 end;
+into method label UPBS code_regex \(BPV0, replaceall_matched begin (B1B4(PV0,PV1,PV2,PV3), end;
+
+into device label EC code_regex BCW0,\s+32 replace_matched begin CW0,8,CW1,8,CW2,8,CW3,8 end;
+into method label UPBI code_regex \(BCW0, replaceall_matched begin (B1B4(CW0,CW1,CW2,CW3), end;
+
+into device label EC code_regex BCL0,\s+32 replace_matched begin CL0,8,CL1,8,CL2,8,CL3,8 end;
+into method label UPBI code_regex \(BCL0, replaceall_matched begin (B1B4(CL0,CL1,CL2,CL3), end;
+

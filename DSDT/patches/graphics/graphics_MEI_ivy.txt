@@ -1,0 +1,22 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_MEI_ivy.txt
+
+# For Ivy Bridge CPU on 6-series board
+
+into device label IMEI parent_label PCI0 remove_entry;
+into device label PCI0 insert
+begin
+Device (IMEI)\n
+{\n
+    Name (_ADR, 0x00160000)\n
+    Method (_DSM, 4, NotSerialized)\n                
+    {\n
+        If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+        Return (Package()\n
+        {\n
+            "device-id", Buffer() { 0x3A, 0x1E, 0x00, 0x00 },\n
+            "name", "pci8086,1e3a",\n
+        })\n
+    }\n
+}\n
+end;

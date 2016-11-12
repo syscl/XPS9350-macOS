@@ -1,0 +1,87 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PNLF-ACPI100.txt
+
+# This patch enables the brightness slider in SysPrefs->Displays
+# and will also enable activation of sleep mode by closing
+# the laptop lid.
+#
+# This patch works well for laptops that have working
+# ACPI methods with 64-or more levels (100 is common)
+# for good support for Windows 2012 (Windows 8)
+#
+# Based on information from the normal laptop DSDT methods,
+# optimized for use with ACPIBacklight.kext
+#
+# Note: This patch should be applied to the DSDT or SSDT that defines
+# your integrated graphics device (always at _ADR 0x00020000)
+# applied to one of the SSDTs, not DSDT.
+#
+# Note: Intended to be used with Windows 2012, so this should be done...
+# if you previously patched for Windows 2006, undo that patch!
+
+# sometimes in Scope (_SB.PCI0)
+into method label _INI parent_label _SB.PCI0 code_regex If\s+\(_OSI\s+\(\"Windows\s2012\"\)\) replace_matched
+begin If(LOr(_OSI("Darwin"),_OSI("Windows 2012"))) end;
+
+# sometimes in Scope (_SB)
+into method label _INI parent_label _SB code_regex If\s+\(_OSI\s+\(\"Windows\s2012\"\)\) replace_matched
+begin If(LOr(_OSI("Darwin"),_OSI("Windows 2012"))) end;
+
+
+into_all device label PNLF remove_entry;
+into device name_adr 0x00020000 insert
+begin
+Device (PNLF)\n
+{\n
+    // normal PNLF declares (note some of this probably not necessary)\n
+    Name (_ADR, Zero)\n
+    Name (_HID, EisaId ("APP0002"))\n
+    Name (_CID, "backlight")\n
+    Name (_UID, 10)\n
+    Name (_STA, 0x0B)\n
+    // _BCM/_BQC: set/get for brightness level\n
+    Method (_BCM, 1, NotSerialized)\n
+    {\n
+        // Update backlight via existing DSDT methods\n
+        ^^DD02._BCM(Arg0)\n
+    }\n
+    Method (_BQC, 0, NotSerialized)\n
+    {\n
+        Return(^^DD02._BQC())\n
+    }\n
+    Method (_BCL, 0, NotSerialized)\n
+    {\n
+        Return(^^DD02._BCL())\n
+    }\n
+    Method (_DOS, 1, NotSerialized)\n
+    {\n
+        ^^_DOS(Arg0)\n
+    }\n
+    // extended _BCM/_BQC for setting "in between" levels\n
+    Method (XBCM, 1, NotSerialized)\n
+    {\n
+        // Update backlight via existing DSDT methods\n
+        ^^DD02._BCM(Arg0)\n
+    }\n
+    Method (XBQC, 0, NotSerialized)\n
+    {\n
+        Return(^^DD02._BQC())\n
+    }\n
+    // Use XOPT=1 to disable smooth transitions\n
+    Name (XOPT, Zero)\n
+    // XRGL/XRGH: defines the valid range\n
+    Method (XRGL, 0, NotSerialized)\n
+    {\n
+        Store(_BCL(), Local0)\n
+        Store(DerefOf(Index(Local0, 2)), Local0)\n
+        Return(Local0)\n
+    }\n
+    Method (XRGH, 0, NotSerialized)\n
+    {\n
+        Store(_BCL(), Local0)\n
+        Store(DerefOf(Index(Local0, Subtract(SizeOf(Local0), 1))), Local0)\n
+        Return(Local0)\n
+    }\n
+}\n
+end;
+

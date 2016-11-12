@@ -1,0 +1,46 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Dell-XPS-18.txt
+
+# created by esaylors 2013-11-16
+# modifications/fixes by RehabMan 2014-09-24
+
+# works for:
+#  Dell XPS 18
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# new fixes (for more recent BIOS?)
+into method label BRCP code_regex ,\sB0RC, replaceall_matched begin ,B1B2(RC00,RC01), end;
+into method label BRCP code_regex Subtract\s+\((.*),\sB0RC\) replaceall_matched
+begin
+Store(Subtract(%1),RC00)\n
+Store(ShiftRight(Subtract(%1),8),RC01)\n
+end;
+
+# 16-bit registers
+into device label EC0 code_regex B0VL,\s+16 replace_matched begin VL00,8,VL01,8 end;
+into device label EC0 code_regex B0CC,\s+16 replace_matched begin CC01,8,CC02,8 end;
+into device label EC0 code_regex B0RC,\s+16 replace_matched begin RC00,8,RC01,8 end;
+into device label EC0 code_regex BFCP,\s+16 replace_matched begin FCP0,8,FCP1,8 end;
+into device label EC0 code_regex B0ST,\s+16 replace_matched begin ST00,8,ST01,8 end;
+into device label EC0 code_regex BDCP,\s+16 replace_matched begin DCP0,8,DCP1,8 end;
+into device label EC0 code_regex BDVL,\s+16 replace_matched begin DVL0,8,DVL1,8 end;
+into device label EC0 code_regex B0MD,\s+16 replace_matched begin MD00,8,MD01,8 end;
+
+# fix 16-bit methods
+into method label BCRT code_regex \(B0CC, replaceall_matched begin (B1B2(CC01,CC02), end;
+into method label BIF0 code_regex \(B0MD, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BIF1 code_regex \(BDCP, replaceall_matched begin (B1B2(DCP0,DCP1), end;
+into method label BIF2 code_regex \(BFCP, replaceall_matched begin (B1B2(FCP0,FCP1), end;
+into method label BIF3 code_regex \(B0MD, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BIF4 code_regex \(BDVL, replaceall_matched begin (B1B2(DVL0,DVL1), end;
+into method label BRCP code_regex \(B0RC, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label BRCP code_regex \(BFCP, replaceall_matched begin (B1B2(FCP0,FCP1), end;
+into method label BRCP code_regex \(B0ST, replaceall_matched begin (B1B2(ST00,ST01), end;
+into method label BSTS code_regex \(B0ST, replaceall_matched begin (B1B2(ST00,ST01), end;
+into method label BVOT code_regex \(B0VL, replaceall_matched begin (B1B2(VL00,VL01), end;
+

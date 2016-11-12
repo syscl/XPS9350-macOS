@@ -1,0 +1,42 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_nvidia_laptop.txt
+
+#
+# This is a capture from a DSDT for a laptop with nvidia
+#
+# These injects may or may not be of use, but use it as
+# ideas for what you might have to do.
+#
+
+into method label _DSM parent_label PEGP remove_entry;
+into device name_adr 0 label PEGP insert
+begin
+Method(_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "AAPL,slot-name", "PCI x16",
+        "@0,compatible", Buffer() { "NVDA,NVMac" },
+        "@0,connector-type", Buffer() { 0x00, 0x08, 0x00, 0x00 },
+        "@0,device_type", Buffer() { "display" },
+        "@0,name", Buffer() { "NVDA,Display-A" },
+        "@1,compatible", Buffer() { "NVDA,NVMac" },
+        "@1,connector-type", Buffer() { 0x00, 0x08, 0x00, 0x00 },
+        "@1,device_type", Buffer() { "display" },
+        "@1,name", Buffer() { "NVDA,Display-B" },
+        "NVCAP", Buffer(0x18)
+        {
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00,
+            0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A,
+            0x00, 0x00, 0x00, 0x00
+        }, 
+        "VRAM,totalsize", Buffer() { 0x00, 0x00, 0x00, 0xC0 },
+        "device_type", Buffer() { "NVDA,Parent" },
+        "model", Buffer() { "GeForce GTX 560M" },
+        "rom-revision", Buffer() { "nVidia GTX 560M OpenGL Engine" },
+        "hda-gfx", Buffer() { "onboard-1" }
+    })\n
+}\n
+end;
+

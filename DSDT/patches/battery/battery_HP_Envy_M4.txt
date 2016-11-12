@@ -1,0 +1,68 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Envy-M4.txt
+
+# created by javilepton 2015-10-15
+# completed by RehabMan 2015-10-16
+
+# works for:
+#  HP Envy M4-1150la
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# 16-bit registers
+into device label EC0 code_regex TA0R,\s+16 replace_matched begin A0R0,8,A0R1,8 end;
+into device label EC0 code_regex B0VL,\s+16 replace_matched begin VL00,8,VL01,8 end;
+into device label EC0 code_regex B0RC,\s+16 replace_matched begin RC00,8,RC01,8 end;
+into device label EC0 code_regex B0FC,\s+16 replace_matched begin FC00,8,FC01,8 end;
+into device label EC0 code_regex B0MD,\s+16 replace_matched begin MD00,8,MD01,8 end;
+into device label EC0 code_regex B0ST,\s+16 replace_matched begin ST00,8,ST01,8 end;
+into device label EC0 code_regex B0CC,\s+16 replace_matched begin CC00,8,CC01,8 end;
+into device label EC0 code_regex B0TM,\s+16 replace_matched begin TM00,8,TM01,8 end;
+into device label EC0 code_regex B1VL,\s+16 replace_matched begin VL10,8,VL11,8 end;
+into device label EC0 code_regex B1RC,\s+16 replace_matched begin RC10,8,RC11,8 end;
+into device label EC0 code_regex B1FC,\s+16 replace_matched begin FC10,8,FC11,8 end;
+into device label EC0 code_regex B1MD,\s+16 replace_matched begin MD10,8,MD11,8 end;
+into device label EC0 code_regex B1ST,\s+16 replace_matched begin ST10,8,ST11,8 end;
+into device label EC0 code_regex B1CC,\s+16 replace_matched begin CC10,8,CC11,8 end;
+into device label EC0 code_regex B0DC,\s+16 replace_matched begin DC00,8,DC01,8 end;
+into device label EC0 code_regex B0DV,\s+16 replace_matched begin DV00,8,DV01,8 end;
+into device label EC0 code_regex B0SN,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into device label EC0 code_regex B1DC,\s+16 replace_matched begin DC10,8,DC11,8 end;
+into device label EC0 code_regex B1DV,\s+16 replace_matched begin DV10,8,DV11,8 end;
+into device label EC0 code_regex B1SN,\s+16 replace_matched begin SN10,8,SN11,8 end;
+
+
+# fix 16-bit methods
+into method label GTDC code_regex \(TA0R, replaceall_matched begin (B1B2(A0R0,A0R1), end;
+into method label FRSP code_regex \(TA0R, replaceall_matched begin (B1B2(A0R0,A0R1), end;
+into method label BVOT code_regex \(B0VL, replaceall_matched begin (B1B2(VL00,VL01), end;
+into method label BRCP code_regex \(B0RC, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label BIF2 code_regex \(B0FC, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label BIF0 code_regex \(B0MD, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BIF3 code_regex \(B0MD, replaceall_matched begin (B1B2(MD00,MD01), end;
+into method label BSTS code_regex \(B0ST, replaceall_matched begin (B1B2(ST00,ST01), end;
+into method label BCRT code_regex \(B0CC, replaceall_matched begin (B1B2(CC00,CC01), end;
+into method label GTDC code_regex \(B0TM, replaceall_matched begin (B1B2(TM00,TM01), end;
+into method label BVOT code_regex \(B1VL, replaceall_matched begin (B1B2(VL10,VL11), end;
+into method label BRCP code_regex \(B1RC, replaceall_matched begin (B1B2(RC10,RC11), end;
+into method label BIF2 code_regex \(B1FC, replaceall_matched begin (B1B2(FC10,FC11), end;
+into method label BIF0 code_regex \(B1MD, replaceall_matched begin (B1B2(MD10,MD11), end;
+into method label BIF3 code_regex \(B1MD, replaceall_matched begin (B1B2(MD10,MD11), end;
+into method label BSTS code_regex \(B1ST, replaceall_matched begin (B1B2(ST10,ST11), end;
+into method label BCRT code_regex \(B1CC, replaceall_matched begin (B1B2(CC10,CC11), end;
+into method label BIF1 code_regex \(B0DC, replaceall_matched begin (B1B2(DC00,DC01), end;
+into method label BIF4 code_regex \(B0DV, replaceall_matched begin (B1B2(DV00,DV01), end;
+into method label BIFA code_regex \(B0SN, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label BIF1 code_regex \(B1DC, replaceall_matched begin (B1B2(DC10,DC11), end;
+into method label BIF4 code_regex \(B1DV, replaceall_matched begin (B1B2(DV10,DV11), end;
+into method label BIFA code_regex \(B1SN, replaceall_matched begin (B1B2(SN10,SN11), end;
+
+# rehabman adds
+into method label FRSP code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.TA0R, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.A0R0,\\_SB.PCI0.LPCB.EC0.A0R1), end;
+into method label GTDC code_regex \(\^\^PCI0\.LPCB\.EC0\.TA0R, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.A0R0,^^PCI0.LPCB.EC0.A0R1), end;
+into method label GTDC code_regex \(\^\^PCI0\.LPCB\.EC0\.B0TM, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.TM00,^^PCI0.LPCB.EC0.TM01), end;
+

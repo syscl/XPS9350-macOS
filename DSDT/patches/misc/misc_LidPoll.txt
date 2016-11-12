@@ -1,0 +1,30 @@
+#Maintained by: RehabMan for: Laptop Patches
+#misc_LidPoll.txt
+
+#
+# Work around for non-working LID notification.
+# 
+# EXPERIMENTAL
+#
+# In order for this to work, you must install ACPIPoller.kext
+#
+
+into device label LIDP remove_entry;
+into definitionblock code_regex . insert
+begin
+Device (LIDP)\n
+{\n
+    Name (_HID, "FAN00000")\n
+    Name (PLID, 0xFFFF)\n
+// Poll for _LID status changes, notify if different\n
+    Method (FCPU, 0, Serialized)\n
+    {\n
+     	Store(\_SB.LID0._LID(), Local0)\n
+        if (LNotEqual(Local0, PLID))\n
+        {\n
+            Store(Local0, PLID)\n
+            Notify(\_SB.LID0, 0x80)\n
+        }\n
+    }\n
+}\n
+end;

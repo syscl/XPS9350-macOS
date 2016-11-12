@@ -1,0 +1,9 @@
+#_BST-package-size
+
+into method label _BST parent_label TPWR replace_content
+begin
+		Return (Package (0x04)\n
+		{\n
+			Zero\n
+		})\n
+end; 

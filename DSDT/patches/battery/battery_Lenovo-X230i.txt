@@ -1,0 +1,92 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-X230i.txt
+
+# Created by Jarett, 2015-06-15
+# some fixes by Rehabman
+
+# Works for:
+#   Lenovo ThinkPad X230i
+
+# Note: This DSDT requires "Fix Mutex with non-zero SyncLevel"
+
+# Note: disable secondary battery
+#  *** remove this line if you have a second battery installed)
+into method label _STA parent_label BAT1 replace_content begin Return(0) end;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+{\n
+    OperationRegion(ECOR, EmbeddedControl, Arg0, 1)\n
+    Field(ECOR, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# Change EC register declarations bigger than 8 bit
+into device label EC code_regex HWAK,\s+16, replace_matched begin AK00,8,AK01,8, end;
+into device label EC code_regex SBRC,\s+16, replace_matched begin RC00,8,RC01,8, end;
+into device label EC code_regex SBFC,\s+16, replace_matched begin FC00,8,FC01,8, end;
+into device label EC code_regex SBAC,\s+16, replace_matched begin AC00,8,AC01,8, end;
+into device label EC code_regex SBVO,\s+16, replace_matched begin BV00,8,BV01,8, end;
+into device label EC code_regex SBBM,\s+16, replace_matched begin SB00,8,SB01,8, end;
+into device label EC code_regex SBDC,\s+16, replace_matched begin DC00,8,DC01,8, end;
+into device label EC code_regex SBDV,\s+16, replace_matched begin DV00,8,DV01,8, end;
+into device label EC code_regex SBSN,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into device label EC code_regex SBCH,\s+32 replace_matched begin CH00,8,CH01,8,CH02,8,CH03,8 end;
+into device label EC code_regex (SBMN,)\s+(128) replace_matched begin BMNX,%2,//%1%2 end;
+into device label EC code_regex (SBDN,)\s+(128) replace_matched begin BDNX,%2,//%1%2 end;
+
+#put 8-bit variable together
+into method label _L1D code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.AK00,\\_SB.PCI0.LPC.EC.AK01), end;
+into method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2(AC00,AC01), end;
+into method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2(BV00,BV01), end;
+into method label GBIF code_regex \(SBBM, replaceall_matched begin (B1B2(SB00,SB01), end;
+into method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2(DC00,DC01), end;
+into method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2(DV00,DV01)) end;
+into method label GBIF code_regex SBDV, replaceall_matched begin B1B2(DV00,DV01), end;
+into method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(CH00,CH01,CH02,CH03), end;
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RECB(0xA0,128), end;
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RECB(0xA0,128), end;
+

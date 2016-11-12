@@ -1,0 +1,68 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Pavilion-n012tx.txt
+
+# Created by rockvignesh25 2014-09-20
+
+# Works for:
+#  HP Pavilion n012tx
+#  HP Envy 15t-k100 (per bechhamba07)
+#  HP X360 (Haswell) (per lx86)
+#  HP Pavilion G6-2149TX (per computechnopro2)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into device label EC0 code_regex BADC,\s+16, replace_matched begin ADC0,8,ADC1,8, end;
+into device label EC0 code_regex BFCC,\s+16, replace_matched begin FCC0,8,FCC1,8, end;
+into device label EC0 code_regex MCUR,\s+16, replace_matched begin CUR0,8,CUR1,8, end;
+into device label EC0 code_regex MBRM,\s+16, replace_matched begin BRM0,8,BRM1,8, end;
+into device label EC0 code_regex MBCV,\s+16, replace_matched begin BCV0,8,BCV1,8, end;
+
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.BADC, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.ADC0,\^\^PCI0\.LPCB\.EC0\.ADC1), end;
+
+into method label GBIF code_regex \(\^\^PCI0\.LPCB\.EC0\.BFCC, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.FCC0,\^\^PCI0\.LPCB\.EC0\.FCC1), end;
+into method label UPBI code_regex \(\^\^PCI0\.LPCB\.EC0\.BFCC, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.FCC0,\^\^PCI0\.LPCB\.EC0\.FCC1), end;
+
+into method label GBCO code_regex \(\^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.CUR0,\^\^PCI0\.LPCB\.EC0\.CUR1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MCUR, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.CUR0,\^\^PCI0\.LPCB\.EC0\.CUR1), end;
+
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.BRM0,\^\^PCI0\.LPCB\.EC0\.BRM1), end;
+into method label CLRI code_regex \(\^\^LPCB\.EC0\.MBRM, replaceall_matched begin (B1B2(\^\^LPCB\.EC0\.BRM0,\^\^LPCB\.EC0\.BRM1), end;
+
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.MBCV, replaceall_matched begin (B1B2(\^\^PCI0\.LPCB\.EC0\.BCV0,\^\^PCI0\.LPCB\.EC0\.BCV1), end;
+
+into device label EC0 code_regex (SMD0,)\s+(256) replace_matched begin SMDX,%2,//%1%2 end;
+
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+// Arg2 - value to write\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+into method label SMWR code_regex Store\s?\(Arg3,\s?\SMD0\) replaceall_matched begin WECB(0x04,256,Arg3) end;

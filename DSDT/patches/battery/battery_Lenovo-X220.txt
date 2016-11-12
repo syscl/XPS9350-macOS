@@ -1,0 +1,229 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-X220.txt
+
+# created by RehabMan 8/14/2013
+# created originally for fraisdos125
+
+# works for:
+#  Lenovo x220
+#  Lenovo t431s
+#  Lenovo T410 model 2518-F5U
+#  Lenovo W510 model 4319RU
+#  Lenovo T440s
+#  Lenovo T60
+#  Lenovo T61 (courtesy Gringo Vermelho)
+#  Lenovo Thinkpad X1 Carbon, 3rd gen 20BS (per jcsnider)
+#  Lenovo L450 (tested by kaiomatico)
+#  Lenovo T530/T530i (per Swingkid)
+#  Lenovo W530 (2441A43) (per GerryGu)
+
+# Note: disable secondary battery
+#  *** remove this line if you have a second battery installed)
+into method label _STA parent_label BAT1 replace_content begin Return(0) end;
+
+# syntax fixes
+into_all all code_regex Name\s+\(_HID,\s+\"\*(.*)\"\) replaceall_matched begin Name (_HID, "%1") end;
+
+# some of these laptops need to fix _IRC error
+into device label VID parent_label PEG code_regex Name\s+\(_IRC,\s+([^\)].*)\) replace_matched
+begin
+Method(_IRC, 0, NotSerialized) { Return(%1) }
+end;
+
+# _PLD is supposed to return a variable length Package of Buffers
+into_all all code_regex (Name\s*\(_PLD,\s*)Buffer(\s\([^\)].*\)[^\)]*) replaceall_matched
+begin
+%1Package() { Buffer%2 }
+end;
+
+# requires mutex fix too (2x to work around MaciASL bug...)
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+into_all all code_regex_not Mutex\s+\([^,]*,\s+0x00\) code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# Change EC register declarations from 16-bit to 8-bit
+
+into device label EC code_regex SBRC,\s+16 replace_matched begin BRC0,8,BRC1,8 end;
+into device label EC code_regex SBFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into device label EC code_regex SBVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+
+into device label EC code_regex SBDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into device label EC code_regex SBDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into device label EC code_regex SBSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+
+into device label EC code_regex SBAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+
+# this one is fan related
+into device label EC code_regex HFN1,\s+16 replace_matched begin FN10,8,FN11,8 end;
+# might also be fan related
+into device label EC code_regex HSPD,\s+16 replace_matched begin SPD0,8,SPD1,8 end;
+
+# this one is sleep related
+into device label EC code_regex HWAK,\s+16 replace_matched begin WAK0,8,WAK1,8 end;
+
+# sleep related T440s
+into device label EC code_regex HWAC,\s+16 replace_matched begin WAC0,8,WAC1,8 end;
+
+
+# 32-bit
+into device label EC code_regex SBCH,\s+32 replace_matched begin BCH0,8,BCH1,8,BCH2,8,BCH3,8 end;
+
+# 128-bit
+#
+# Note: Offsets below into EC are based on the following data in the native DSDT
+#
+#                    Field (ECOR, ByteAcc, NoLock, Preserve)
+#                    {
+#                                Offset (0xA0),
+#                        SBMN,   128
+#                    }
+#
+#                    Field (ECOR, ByteAcc, NoLock, Preserve)
+#                    {
+#                                Offset (0xA0),
+#                        SBDN,   128
+#                    }
+# If the native DSDT has any such data re-organized such that the fields
+# being read with RECB are at a different offset, the offsets below
+# (first param to WECB/RECB) would need to be changed for the DSDT.
+#
+# This is something to watch out for when adapting this patch to another 
+# computer and maybe even after updating to a new BIOS.
+#
+
+# deal with 128-bit SBMN
+into device label EC code_regex (SBMN,)\s+(128) replace_matched begin BMNX,%2,//%1%2 end;
+into device label EC insert begin Method (RBMN, 0, Serialized) { Return(RECB(0xA0,128)) } end;
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RBMN(), end;
+
+# deal with 128-bit SBDN
+into device label EC code_regex (SBDN,)\s+(128) replace_matched begin BDNX,%2,//%1%2 end;
+into device label EC insert begin Method (RBDN, 0, Serialized) { Return(RECB(0xA0,128)) } end;
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RBDN(), end;
+
+
+# Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2 (BRC0, BRC1), end;
+into_all method label GBST code_regex \(SBFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2 (BVO0, BVO1), end;
+
+into_all method label GBST code_regex \(SBDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into_all method label GBST code_regex \(SBDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBST code_regex \(SBSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+
+into_all method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2 (BAC0, BAC1), end;
+
+into_all method label GBIF code_regex \(SBRC, replaceall_matched begin (B1B2 (BRC0, BRC1), end;
+into_all method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label GBIF code_regex \(SBVO, replaceall_matched begin (B1B2 (BVO0, BVO1), end;
+
+into_all method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into_all method label GBIF code_regex \(SBDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+
+into_all method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2 (BDV0, BDV1)) end;
+into_all method label GBIF code_regex ,\s+SBDV, replaceall_matched begin ,B1B2(BDV0, BDV1), end;
+
+into device label EC code_regex SBBM,\s+16 replace_matched begin BBM0,8,BBM1,8 end;
+into_all method label GBIF code_regex \(SBBM, replaceall_matched begin (B1B2(BBM0,BBM1), end;
+
+into_all method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(BCH0,BCH1,BCH2,BCH3), end;
+
+# this one is added in a patched DSDT to return fan speed
+into method label FAN0 parent_label SMCD code_regex \(\^\^EC\.HFN1, replaceall_matched begin (B1B2(^^EC.FN10,^^EC.FN11), end;
+into method label MHST code_regex \(HSPD, replaceall_matched begin (B1B2(SPD0,SPD1), end;
+into method label MHST code_regex \(\\_SB.PCI0.LPC.EC.HSPD, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.SPD0,\\_SB.PCI0.LPC.EC.SPD1), end;
+into method label RPM4 code_regex \(\^\^EC\.HSPD, replaceall_matched begin (B1B2(^^EC.SPD0,^^EC.SPD1), end;
+
+# sleep related
+into method label _L1D parent_label _GPE code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+into method label _L1D parent_label \_GPE code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+# for T61
+into method label _L18 parent_label _GPE code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+into method label _L18 parent_label \_GPE code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+
+
+# sleep related T440s
+into_all all code_regex \(HWAC, replaceall_matched begin (B1B2(WAC0,WAC1), end;
+into_all all code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAC, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAC0,\\_SB.PCI0.LPC.EC.WAC1), end;
+into_all all code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAC, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAC0,\\_SB.PCI0.LPC.EC.WAC1), end;
+
+# sleep releated L450
+into_all all code_regex \(HWAK, replaceall_matched begin (B1B2(WAC0,WAC1), end;
+into_all all code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.WAK0,\\_SB.PCI0.LPC.EC.WAK1), end;
+into_all all code_regex Store\s+\((.*),\s\\_SB\.PCI0\.LPC\.EC\.HWAK\) replaceall_matched
+begin
+Store(%1, \\_SB.PCI0.LPC.EC.WAK0) Store(ShiftRight(%1,8), \\_SB.PCI0.LPC.EC.WAK1)
+end;
+
+# remove dumb code from _WAK (and it is not needed)
+into method label \_WAK code_regex If.*LOr.*Equal.*Arg0.*LGreaterEqual.*Arg0.*0x05.*\n.*\{\n.*Return.*WAKI.*\n.*\} remove_matched;
+into method label _WAK code_regex If.*LOr.*Equal.*Arg0.*LGreaterEqual.*Arg0.*0x05.*\n.*\{\n.*Return.*WAKI.*\n.*\} remove_matched;
+
+# sleep related T450 (LED)... may affect other models
+#
+# Note: for T430... LED(0x0A,...) must be changed to LED(0x07,...)
+
+#into method label _WAK code_regex (Return\s+\(.*) replace_matched
+#begin
+#If (LEqual(Arg0,3))\n
+#{\n
+#    \\_SB.PCI0.LPC.EC.LED(Zero, 0x80)\n
+#    \\_SB.PCI0.LPC.EC.LED(0x0A, 0x80)\n
+#}\n
+#%1\n
+#end;
+#into method label \_WAK code_regex (Return\s+\(.*) replace_matched
+#begin
+#If (LEqual(Arg0,3))\n
+#{\n
+#    \\_SB.PCI0.LPC.EC.LED(Zero, 0x80)\n
+#    \\_SB.PCI0.LPC.EC.LED(0x0A, 0x80)\n
+#}\n
+#%1\n
+#end;

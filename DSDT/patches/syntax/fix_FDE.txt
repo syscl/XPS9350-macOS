@@ -1,0 +1,9 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_FDE.txt
+
+# _FDE is supposed to return a Buffer
+into_all all code_regex Name\s+\(_FDE,\s+Package\s+\(([^\)].*)\) replaceall_matched
+begin
+Name (_FDE, Buffer(%1)
+end;
+

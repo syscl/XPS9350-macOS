@@ -1,0 +1,187 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Sony-VAIO-SVE1511.txt
+
+# created by RehabMan 2013-09-18
+# created originally for boy_iran_64
+
+# works for:
+#  Sony VAIO SVE15117FDB
+#  Sony VPEH26EN
+#  Sony VPCEH3N6E
+#  Sony VAIO SVE1513AYCW (per giveup@github)
+#  Sony Vaio VPC S135FG
+
+# rename LPC to LPCB (if needed)
+into device label LPC set_label begin LPCB end;
+into_all all code_regex LPC\. replaceall_matched begin LPCB. end;
+
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# EC registers (that are likely battery related)
+
+into device label EC0 code_regex SMW0,\s+16 replace_matched begin SM00,8,SM01,8 end;
+into device label EC0 code_regex BT1I,\s+16 replace_matched begin BTI0,8,BTI1,8 end;
+into device label EC0 code_regex BT1C,\s+16 replace_matched begin BTC0,8,BTC1,8 end;
+into device label EC0 code_regex BT1V,\s+16 replace_matched begin BTV0,8,BTV1,8 end;
+into device label EC0 code_regex BATD,\s+16 replace_matched begin BTD0,8,BTD1,8 end;
+into device label EC0 code_regex ENCR,\s+16 replace_matched begin ENC0,8,ENC1,8 end;
+into device label EC0 code_regex HKDA,\s+16 replace_matched begin HKD0,8,HKD1,8 end;
+
+
+# method fixes
+
+into method label SELE code_regex \(BATD, replaceall_matched begin (B1B2(BTD0,BTD1), end;
+into method label GTEC code_regex \(HKDA, replaceall_matched begin (B1B2(HKD0,HKD1), end;
+into method label SMRW code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.SMW0, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.SM00,\\_SB.PCI0.LPCB.EC0.SM01), end;
+into method label SMRW code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.SMW0, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.SM00,\\_SB.PCI0.LPCB.EC0.SM01), end;
+into method label SMRW code_regex Store\s+\(Arg3,\s+\\_SB\.PCI0\.LPCB\.EC0\.SMW0\) replaceall_matched
+begin
+Store (Arg3, \\_SB.PCI0.LPCB.EC0.SM00)
+Store (ShiftRight(Arg3, 8), \\_SB.PCI0.LPCB.EC0.SM01)
+end;
+
+into method label SMWR code_regex Store\s+\(Arg3,\s+SMW0\) replaceall_matched
+begin
+Store (Arg3, SM00)
+Store (ShiftRight(Arg3, 8), SM01)
+end;
+
+into method label SMRD code_regex \(SMW0, replaceall_matched begin (B1B2(SM00,SM01), end;
+into method label _PSR parent_label ACAD code_regex \(\^\^PCI0\.LPCB\.EC0\.BATD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTD0,^^PCI0.LPCB.EC0.BTD1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.BT1I, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTI0,^^PCI0.LPCB.EC0.BTI1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.BT1C, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTC0,^^PCI0.LPCB.EC0.BTC1), end;
+into method label UPBS code_regex \(\^\^PCI0\.LPCB\.EC0\.BT1V, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTV0,^^PCI0.LPCB.EC0.BTV1), end;
+into method label _STA parent_label BAT0 code_regex \(\^\^PCI0\.LPCB\.EC0\.BATD, replaceall_matched begin (B1B2(^^PCI0.LPCB.EC0.BTD0,^^PCI0.LPCB.EC0.BTD1), end;
+
+into method label SN02 code_regex Store\s+\(Local1,\s+\^\^EC0\.ENCR\) replaceall_matched
+begin
+Store (Local1, ^^EC0.ENC0)
+Store (ShiftRight(Local1, 8), ^^EC0.ENC1)
+end;
+
+into method label SN03 code_regex Store\s+\(Local1,\s+\^\^EC0\.ENCR\) replaceall_matched
+begin
+Store (Local1, ^^EC0.ENC0)
+Store (ShiftRight(Local1, 8), ^^EC0.ENC1)
+end;
+
+into method label STEC code_regex Store\s+\(Arg1,\s+ENCR\) replaceall_matched
+begin
+Store (Arg1, ENC0)
+Store (ShiftRight(Arg1, 8), ENC1)
+end;
+
+
+# deal with 264-bit SMD0
+
+into device label EC0 code_regex SMD0,\s+264 replace_matched 
+begin
+//SMD0, 264,\n
+SD00,8,SD01,8,SD02,8,SD03,8,\n
+SD04,8,SD05,8,SD06,8,SD07,8,\n
+SD08,8,SD09,8,SD0A,8,SD0B,8,\n
+SD0C,8,SD0D,8,SD0E,8,SD0F,8,\n
+SD10,8,SD11,8,SD12,8,SD13,8,\n
+SD14,8,SD15,8,SD16,8,SD17,8,\n
+SD18,8,SD19,8,SD1A,8,SD1B,8,\n
+SD1C,8,SD1D,8,SD1E,8,SD1F,8,\n
+SD20,8\n
+end;
+
+
+into device label EC0 insert
+begin
+Method (RSMD, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x21) { })\n
+    Store (SD00, Index(TEMP, 0x00))\n
+    Store (SD01, Index(TEMP, 0x01))\n
+    Store (SD02, Index(TEMP, 0x02))\n
+    Store (SD03, Index(TEMP, 0x03))\n
+    Store (SD04, Index(TEMP, 0x04))\n
+    Store (SD05, Index(TEMP, 0x05))\n
+    Store (SD06, Index(TEMP, 0x06))\n
+    Store (SD07, Index(TEMP, 0x07))\n
+    Store (SD08, Index(TEMP, 0x08))\n
+    Store (SD09, Index(TEMP, 0x09))\n
+    Store (SD0A, Index(TEMP, 0x0A))\n
+    Store (SD0B, Index(TEMP, 0x0B))\n
+    Store (SD0C, Index(TEMP, 0x0C))\n
+    Store (SD0D, Index(TEMP, 0x0D))\n
+    Store (SD0E, Index(TEMP, 0x0E))\n
+    Store (SD0F, Index(TEMP, 0x0F))\n
+    Store (SD10, Index(TEMP, 0x10))\n
+    Store (SD11, Index(TEMP, 0x11))\n
+    Store (SD12, Index(TEMP, 0x12))\n
+    Store (SD13, Index(TEMP, 0x13))\n
+    Store (SD14, Index(TEMP, 0x14))\n
+    Store (SD15, Index(TEMP, 0x15))\n
+    Store (SD16, Index(TEMP, 0x16))\n
+    Store (SD17, Index(TEMP, 0x17))\n
+    Store (SD18, Index(TEMP, 0x18))\n
+    Store (SD19, Index(TEMP, 0x19))\n
+    Store (SD1A, Index(TEMP, 0x1A))\n
+    Store (SD1B, Index(TEMP, 0x1B))\n
+    Store (SD1C, Index(TEMP, 0x1C))\n
+    Store (SD1D, Index(TEMP, 0x1D))\n
+    Store (SD1E, Index(TEMP, 0x1E))\n
+    Store (SD1F, Index(TEMP, 0x1F))\n
+    Store (SD20, Index(TEMP, 0x20))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (WSMD, 1, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x21) { })\n
+    Store (Arg0, TEMP)\n
+    Store (DerefOf(Index(TEMP, 0x00)), SD00)\n
+    Store (DerefOf(Index(TEMP, 0x01)), SD01)\n
+    Store (DerefOf(Index(TEMP, 0x02)), SD02)\n
+    Store (DerefOf(Index(TEMP, 0x03)), SD03)\n
+    Store (DerefOf(Index(TEMP, 0x04)), SD04)\n
+    Store (DerefOf(Index(TEMP, 0x05)), SD05)\n
+    Store (DerefOf(Index(TEMP, 0x06)), SD06)\n
+    Store (DerefOf(Index(TEMP, 0x07)), SD07)\n
+    Store (DerefOf(Index(TEMP, 0x08)), SD08)\n
+    Store (DerefOf(Index(TEMP, 0x09)), SD09)\n
+    Store (DerefOf(Index(TEMP, 0x0A)), SD0A)\n
+    Store (DerefOf(Index(TEMP, 0x0B)), SD0B)\n
+    Store (DerefOf(Index(TEMP, 0x0C)), SD0C)\n
+    Store (DerefOf(Index(TEMP, 0x0D)), SD0D)\n
+    Store (DerefOf(Index(TEMP, 0x0E)), SD0E)\n
+    Store (DerefOf(Index(TEMP, 0x0F)), SD0F)\n
+    Store (DerefOf(Index(TEMP, 0x10)), SD10)\n
+    Store (DerefOf(Index(TEMP, 0x11)), SD11)\n
+    Store (DerefOf(Index(TEMP, 0x12)), SD12)\n
+    Store (DerefOf(Index(TEMP, 0x13)), SD13)\n
+    Store (DerefOf(Index(TEMP, 0x14)), SD14)\n
+    Store (DerefOf(Index(TEMP, 0x15)), SD15)\n
+    Store (DerefOf(Index(TEMP, 0x16)), SD16)\n
+    Store (DerefOf(Index(TEMP, 0x17)), SD17)\n
+    Store (DerefOf(Index(TEMP, 0x18)), SD18)\n
+    Store (DerefOf(Index(TEMP, 0x19)), SD19)\n
+    Store (DerefOf(Index(TEMP, 0x1A)), SD1A)\n
+    Store (DerefOf(Index(TEMP, 0x1B)), SD1B)\n
+    Store (DerefOf(Index(TEMP, 0x1C)), SD1C)\n
+    Store (DerefOf(Index(TEMP, 0x1D)), SD1D)\n
+    Store (DerefOf(Index(TEMP, 0x1E)), SD1E)\n
+    Store (DerefOf(Index(TEMP, 0x1F)), SD1F)\n
+    Store (DerefOf(Index(TEMP, 0x20)), SD20)\n
+}\n
+end;
+
+into method label SMRW code_regex Store\s+\(Arg3,\s+\\_SB\.PCI0\.LPCB\.EC0\.SMD0\) replaceall_matched begin \\_SB.PCI0.LPCB.EC0.WSMD(Arg3) end;
+into method label SMRW code_regex Store\s+\(\\_SB\.PCI0\.LPCB\.EC0\.SMD0,\s+Arg3\) replaceall_matched begin Store(\\_SB.PCI0.LPCB.EC0.RSMD(), Arg3) end;
+
+into method label SMRD code_regex Store\s+\(Arg3,\s+SMD0\) replaceall_matched begin WSMD(Arg3) end;
+into method label SMWR code_regex Store\s+\(Arg3,\s+SMD0\) replaceall_matched begin WSMD(Arg3) end;
+into method label SMRD code_regex Store\s+\(SMD0,\s+Arg3\) replaceall_matched begin Store(RSMD(), Arg3) end;

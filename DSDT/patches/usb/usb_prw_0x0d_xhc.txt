@@ -1,0 +1,124 @@
+#Maintained by: RehabMan for: Laptop Patches
+#usb_prw_0x0d_xhc.txt
+
+# remove _PRW methods to prevent instant wake
+
+# delete any existing XHC1 device
+into device label XHC1 name_adr 0x00140000 remove_entry;
+# delete any existing USB2 device
+into device label USB2 name_adr 0x001D0000 remove_entry;
+
+# if _PRW objects are methods
+into method label _PRW parent_adr 0x001D0000 remove_entry;
+into method label _PRW parent_adr 0x001A0000 remove_entry;
+into method label _PRW parent_adr 0x00140000 remove_entry;
+into method label _PRW parent_adr 0x001B0000 remove_entry;
+# some other LAN cards use 0x00190000
+into method label _PRW parent_adr 0x00190000 remove_entry;
+
+# if _PRW methods are stuffed into a separate scope
+into method label _PRW parent_label _SB.PCI0.EHC1 remove_entry;
+into method label _PRW parent_label _SB.PCI0.EHC2 remove_entry;
+into method label _PRW parent_label _SB.PCI0.XHC remove_entry;
+into method label _PRW parent_label \_SB.PCI0.EHC1 remove_entry;
+into method label _PRW parent_label \_SB.PCI0.EHC2 remove_entry;
+into method label _PRW parent_label \_SB.PCI0.XHC remove_entry;
+
+# if _PRW objects are names
+into device name_adr 0x001D0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001A0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00140000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001B0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00190000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+# some _PRW have three entries in the Package
+into device name_adr 0x001D0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001A0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00140000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001B0000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00190000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+
+# seems to work better if _PRW is present, but returns 0 (original was 3) for sleep state
+into device name_adr 0x001D0000 insert begin Name(_PRW, Package() { 0x0D, 0 }) end;
+into device name_adr 0x001A0000 insert begin Name(_PRW, Package() { 0x0D, 0 }) end;
+into device name_adr 0x00140000 insert begin Name(_PRW, Package() { 0x0D, 0 }) end;
+into device name_adr 0x001B0000 insert begin Name(_PRW, Package() { 0x0D, 0 }) end;
+into device name_adr 0x00190000 insert begin Name(_PRW, Package() { 0x0D, 0 }) end;
+
+# rename XHC to XHC1
+# rename is not a good idea for 10.11, maybe not for prior versions
+# disabled for now
+
+#into device label XHC set_label begin XHC1 end;
+#into_all all code_regex XHC\. replaceall_matched begin XHC1. end;
+#into_all all code_regex XHC_\. replaceall_matched begin XHC1. end;
+#into_all all code_regex \.XHC, replaceall_matched begin .XHC1, end;
+
+#Maintained by: RehabMan for: Laptop Patches
+#usb_USB_7-series.txt
+
+# USB property injection for 7-series boards (originally HM76)
+
+# Insert Apple USB properties into EHC1
+into method label _DSM parent_adr 0x001D0000 remove_entry;
+into device name_adr 0x001D0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "subsystem-id", Buffer() { 0x70, 0x72, 0x00, 0x00 },\n
+        "subsystem-vendor-id", Buffer() { 0x86, 0x80, 0x00, 0x00 },\n
+        "AAPL,current-available", 2100,\n
+        "AAPL,current-extra", 2200,\n
+        "AAPL,current-extra-in-sleep", 1600,\n
+        "AAPL,device-internal", 0x02,\n
+        "AAPL,max-port-current-in-sleep", 2100,\n
+    })\n
+}\n
+end;
+
+# Insert Apple USB properties into EHC2
+into method label _DSM parent_adr 0x001A0000 remove_entry;
+into device name_adr 0x001A0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "subsystem-id", Buffer() { 0x70, 0x72, 0x00, 0x00 },\n
+        "subsystem-vendor-id", Buffer() { 0x86, 0x80, 0x00, 0x00 },\n
+        "AAPL,current-available", 2100,\n
+        "AAPL,current-extra", 2200,\n
+        "AAPL,current-extra-in-sleep", 1600,\n
+        "AAPL,device-internal", 0x02,\n
+        "AAPL,max-port-current-in-sleep", 2100,\n
+    })\n
+}\n
+end;
+
+# Insert Apple USB properties into USB 3.0 XHC
+into method label _DSM parent_adr 0x00140000 remove_entry;
+into device name_adr 0x00140000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "subsystem-id", Buffer() { 0x70, 0x72, 0x00, 0x00 },\n
+        "subsystem-vendor-id", Buffer() { 0x86, 0x80, 0x00, 0x00 },\n
+        "AAPL,current-available", 2100,\n
+        "AAPL,current-extra", 2200,\n
+        "AAPL,current-extra-in-sleep", 1600,\n
+        "AAPL,device-internal", 0x02,\n
+        "AAPL,max-port-current-in-sleep", 2100,\n
+    })\n
+}\n
+end;
+
+
+# special cases... (not in u430 DSDT)
+#into scope label _SB.PCI0.XHC.RHUB.HS05 set_label begin _SB.PCI0.XHC1.RHUB.HS05 end;
+

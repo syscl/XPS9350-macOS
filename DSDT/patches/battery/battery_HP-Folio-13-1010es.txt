@@ -1,0 +1,176 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_HP-Folio-13-1010es.txt
+
+# created by jackito 2014-09-13
+# R100 series changes by saudsss 2015-03-26
+
+# works for:
+#   HP Folio 13 1010-es
+#   HP R100nx (and other R100 series)
+#   HP 15-r010si (and other r000 series, per XploRa1)
+#   HP 250 G3 (per jeanpierre)
+
+# Registers that needs to be patched:
+#
+# ERAM ——— 	ENIB , 16
+#
+# ECPR ———	BCTL , 128
+#		BTDC , 64
+#		BMNN , 72
+#		BDVN , 56
+#		MUAC , 16
+#		ATTE , 16
+#		RTTE , 16
+#		ATTF , 16
+#
+
+# Based on offsets here:
+#            OperationRegion (ECPR, EmbeddedControl, Zero, 0xFF)
+#            Field (ECPR, ByteAcc, Lock, Preserve)
+#            {
+#               ...
+#                        Offset (0x2D),
+#                BCTL,   128,//2d
+#                        Offset (0x88),
+#                BTDC,   64,//88
+#                BMNN,   72,//90
+#                BDVN,   56,
+#               ...
+#            }
+
+#  TNOT fix
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+into_all all code_regex CondRefOf\s+\(\\TNOT\) replaceall_matched begin CondRefOf(TNOT) end;
+
+# Create B1B2 Method by RehabMan
+into method label B1B2 parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# Utility methods to read/write buffers from/to EC by RehabMan
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into method label WE1B parent_label EC0 remove_entry;
+into method label WECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (WE1B, 2, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Store(Arg1, BYTE)\n
+}\n
+Method (WECB, 3, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Store(Arg2, TEMP)\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        WE1B(Arg0, DerefOf(Index(TEMP, Local0)))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+}\n
+end;
+
+#### 16-bit registers patch
+
+# FAN EC (not really necessary but might be handy for fan access)
+into device label EC0 code_regex ENIB,\s+16, replace_matched begin NIB0,8,NIB1,8, end;
+into device label EC0 code_regex ERIB,\s+16 replace_matched begin ERI0,8,ERI1,8 end;
+into method label FANG code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+into method label FANW code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched
+begin
+Store(Arg0, ERI0) Store(ShiftRight(Arg0, 8), ERI1)
+end;
+
+
+# BATT EC
+into device label EC0 code_regex MUAC,\s+16, replace_matched begin UAC0,8,UAC1,8, end;
+into device label EC0 code_regex ATTE,\s+16, replace_matched begin TTE0,8,TTE1,8, end;
+into device label EC0 code_regex RTTE,\s+16, replace_matched begin RTE0,8,RTE1,8, end;
+into device label EC0 code_regex ATTF,\s+16, replace_matched begin TTF0,8,TTF1,8, end;
+
+# FAN EC (not really necessary but might be handy for fan access)
+into method label FANG code_regex Store\s+\(Arg0,\s+ENIB\) replace_matched 
+begin
+Store(Arg0, NIB0) Store(ShiftRight(Arg0, 8), NIB1)
+end;
+
+into method label FANW code_regex Store\s+\(Arg0,\s+ENIB\) replace_matched
+begin
+Store(Arg0, NIB0) Store(ShiftRight(Arg0, 8), NIB1)
+end;
+
+# BATT EC
+into method label BATT code_regex \.MUAC, replaceall_matched begin .B1B2(^^PCI0.LPCB.EC0.UAC0,^^PCI0.LPCB.EC0.UAC1), end;
+into method label BATT code_regex \.ATTE, replaceall_matched begin .B1B2(^^PCI0.LPCB.EC0.TTE0,^^PCI0.LPCB.EC0.TTE1), end;
+into method label BATT code_regex \.RTTE, replaceall_matched begin .B1B2(^^PCI0.LPCB.EC0.RTE0,^^PCI0.LPCB.EC0.RTE1), end;
+into method label BATT code_regex \.ATTF, replaceall_matched begin .B1B2(^^PCI0.LPCB.EC0.TTF0,^^PCI0.LPCB.EC0.TTF1), end;
+
+#### Buffer registers patch
+# BATT EC
+into device label EC0 code_regex (BCTL,)\s+(128) replace_matched begin CTL0,%2,//%1%2 end;
+into device label EC0 code_regex (BTDC,)\s+(64) replace_matched begin TDC0,%2,//%1%2 end;
+into device label EC0 code_regex (BMNN,)\s+(72) replace_matched begin MNN0,%2,//%1%2 end;
+into device label EC0 code_regex (BDVN,)\s+(56) replace_matched begin DVN0,%2,//%1%2 end;
+
+# BATT EC
+into method label BATT code_regex BCTL, replaceall_matched begin RECB(0x2D,128), end;
+into method label BATT code_regex \.BTDC, replaceall_matched begin .RECB(0x88,64), end;
+into method label GUBT code_regex \(BTDC, replaceall_matched begin (RECB(0x88,64), end;
+into method label BATT code_regex \.BMNN, replaceall_matched begin .RECB(0x90,72), end;
+into method label GUBI code_regex \(BMNN, replaceall_matched begin (RECB(0x90,72), end;
+into method label BATT code_regex \.BDVN, replaceall_matched begin .RECB(0x99,56), end;
+into method label GBMN code_regex \(BDVN, replaceall_matched begin (RECB(0x99,56), end;
+
+# deal with 256-bit SMD0 (courtesy saudsss, HP R100 series)
+into device label EC0 code_regex SMD0,\s+256 replace_matched begin SDXX,256 end;
+into device label EC0 insert begin Method (RSMD, 0, Serialized) { Return (RECB(0x64, 256)) } end;
+into device label EC0 insert begin Method (WSMD, 1, Serialized) { WECB(0x64, 256, Arg0) } end;
+into method label ESMR code_regex Store\s+\((.*),\s+\^\^LPCB\.EC0\.SMD0\) replaceall_matched begin ^^LPCB.EC0.WSMD(%1) end;
+into method label ESMR code_regex \(\^\^LPCB\.EC0\.SMD0\, replaceall_matched begin (^^LPCB.EC0.RSMD(), end;
+into method label ESMW code_regex Store\s+\((.*),\s+\^\^LPCB\.EC0\.SMD0\) replaceall_matched begin ^^LPCB.EC0.WSMD(%1) end;
+into method label CFUN code_regex Store\s+\((.*),\s+SMD0\) replaceall_matched begin WSMD(%1) end;
+into method label CFUN code_regex \(SMD0\, replaceall_matched begin (RSMD(), end;
+
+# additional 16-bit items for HP R100 series
+into device label EC0 code_regex BFCB,\s+16, replace_matched begin BF11,8,BF12,8, end;
+into device label EC0 code_regex BTPB,\s+16, replace_matched begin BTP0,8,BTP1,8, end;
+into_all method label _BIF code_regex \.BFCB, replaceall_matched begin .B1B2(\\_SB.PCI0.LPCB.EC0.BF11,\\_SB.PCI0.LPCB.EC0.BF12), end;
+into_all method label _BTP code_regex \.BTPB replaceall_matched begin .B1B2(\\_SB.PCI0.LPCB.EC0.BTP0,\\_SB.PCI0.LPCB.EC0.BTP1) end;
+

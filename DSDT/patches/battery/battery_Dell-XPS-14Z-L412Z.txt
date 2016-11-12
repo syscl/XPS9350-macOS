@@ -1,0 +1,81 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Dell-XPS-14Z-L412Z.txt
+
+# created by hogfan 2015-05-06
+# works for:
+#  Dell XPS 14Z (L412Z)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# Discovered registers larger than 8 bits that are accessed
+#
+# BRC0,   16,
+# BSN0,   16,
+# BPV0,   16,
+# BDV0,   16,
+# BDC0,   16,
+# BFC0,   16,
+# BAC0,   16,
+# ERIB,   16,
+# BATN,   128,
+
+#Deal with 128-bit buffer field
+into device label EC0 code_regex (BATN,)\s+(128) replace_matched begin BATX,%2,//%1%2 end;
+into method label _BIF code_regex \(\^\^EC0\.BATN, replaceall_matched begin (^^EC0.RECB(0x90,128), end;
+
+#patch 16-bit registers
+into device label EC0 code_regex BRC0,\s+16, replace_matched begin RC00,8,RC01,8, end;
+into device label EC0 code_regex BSN0,\s+16, replace_matched begin SN00,8,SN01,8, end;
+into device label EC0 code_regex BPV0,\s+16, replace_matched begin PV00,8,PV01,8, end;
+into device label EC0 code_regex BDV0,\s+16, replace_matched begin DV00,8,DV01,8, end;
+into device label EC0 code_regex BDC0,\s+16, replace_matched begin DC00,8,DC01,8, end;
+into device label EC0 code_regex BFC0,\s+16, replace_matched begin FC00,8,FC01,8, end;
+into device label EC0 code_regex BAC0,\s+16, replace_matched begin AC00,8,AC01,8, end;
+into device label EC0 code_regex ERIB,\s+16, replace_matched begin RIB0,8,RIB1,8, end;
+
+#fix 16-bit _BST methods
+into method label _BST code_regex \(\^\^EC0\.BRC0, replaceall_matched begin (B1B2(^^EC0.RC00,^^EC0.RC01), end;
+into method label _BST code_regex \(\^\^EC0\.BPV0, replaceall_matched begin (B1B2(^^EC0.PV00,^^EC0.PV01), end;
+into method label _BST code_regex \(\^\^EC0\.BAC0, replaceall_matched begin (B1B2(^^EC0.AC00,^^EC0.AC01), end;
+
+#fix 16-bit _BIF methods
+into method label _BIF code_regex \(\^\^EC0\.BSN0, replaceall_matched begin (B1B2(^^EC0.SN00,^^EC0.SN01), end;
+into method label _BIF code_regex \(\^\^EC0\.BDV0, replaceall_matched begin (B1B2(^^EC0.DV00,^^EC0.DV01), end;
+into method label _BIF code_regex \(\^\^EC0\.BDC0, replaceall_matched begin (B1B2(^^EC0.DC00,^^EC0.DC01), end;
+into method label _BIF code_regex \(\^\^EC0\.BFC0, replaceall_matched begin (B1B2(^^EC0.FC00,^^EC0.FC01), end;
+
+#fix 16-bit fan-related methods
+into method label FANG code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched begin Store(Arg0, RIB0) Store(ShiftRight(Arg0, 8), RIB1) end;
+into method label FANW code_regex Store\s+\(Arg0,\s+ERIB\) replace_matched begin Store(Arg0, RIB0) Store(ShiftRight(Arg0, 8), RIB1) end;
+

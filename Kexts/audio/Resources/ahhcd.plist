@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>HDAConfigDefault</key>
+	<array>
+		<dict>
+			<key>AFGLowPowerState</key>
+			<data>
+			AwAAAA==
+			</data>
+			<key>CodecID</key>
+			<integer>283903592</integer>
+			<key>ConfigData</key>
+			<data>
+			ASccAQEnHQEBJx6gAScfkAFHHAIBRx0BAUceFwFHH5ABRwwCAVcc
+			AwFXHRABVx4rAVcfAwFXDAIBZxzwAWcdAAFnHgABZx9AAYcc8AGH
+			HQABhx4AAYcfQAGXHPABlx0AAZceAAGXH0ABpxzwAacdAAGnHgAB
+			px9AAbccBAG3HRABtx6LAbcfAwHXHPAB1x0AAdceAAHXH0AB5xzw
+			AecdAAHnHgAB5x9AAfcc8AH3HQAB9x4AAfcfQAIFAAECBL6+AgUA
+			AgIEqqoCBQADAgQAAAIFAAQCBAGAAgUABgIEAAACBQAHAgQPgAIF
+			AAgCBAAxAgUACgIEAGACBQALAgQAAAIFAAwCBHz3AgUADQIEEIAC
+			BQAOAgR/fwIFAA8CBMzMAgUAEAIE3cwCBQARAgQAAQIFABMCBAAA
+			AgUAFAIEKqACBQAXAgSpQAIFABkCBAAAAgUAGgIEAAACBQAbAgQA
+			AAIFABwCBAAAAgUAHQIEAAACBQAeAgR0GAIFAB8CBAgEAgUAIAIE
+			QgACBQAhAgQEaAIFACICBIzMAgUAIwIEAlACBQAkAgR0GAIFACcC
+			BAAAAgUAKAIEjMwCBQAqAgT/AAIFACsCBIAAAgUApwIE/wACBQCo
+			AgSAAAIFAKoCBC4XAgUAqwIEoMACBQCsAgQAAAIFAK0CBAAAAgUA
+			rgIEKsYCBQCvAgSkgAIFALACBAAAAgUAsQIEAAACBQCyAgQAAAIF
+			ALMCBAAAAgUAtAIEAAACBQC1AgQQQAIFALYCBNaXAgUAtwIEkCsC
+			BQC4AgTWlwIFALkCBJArAgUAugIEuLoCBQC7AgSqqwIFALwCBKqv
+			AgUAvQIEaqoCBQC+AgQcAgIFAMACBAD/AgUAwQIED6Y=
+			</data>
+			<key>FuncGroup</key>
+			<integer>1</integer>
+			<key>LayoutID</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+</dict>
+</plist>

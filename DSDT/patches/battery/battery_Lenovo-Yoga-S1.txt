@@ -1,0 +1,94 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-Yoga-13.txt
+
+# Created by stkov 2014-04-12
+# Modifications by akebono 2015-04-03
+
+# works for:
+#  Lenovo Yoga S1
+
+# fix 16-bit fields
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into device label EC0 code_regex SBFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into device label EC0 code_regex SBDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into device label EC0 code_regex SBDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into device label EC0 code_regex SBSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+into device label EC0 code_regex SBVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+into device label EC0 code_regex SBRC,\s+16 replace_matched begin BSC0,8,BSC1,8 end;
+into device label EC0 code_regex SBAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+
+into method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2(BFC0,BFC1), end;
+into method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2(BDC0,BDC1), end;
+into method label GBIF code_regex \(SBDV, replaceall_matched begin (B1B2(BDV0,BDV1), end;
+into method label GBIF code_regex ,\sSBDV, replaceall_matched begin ,B1B2(BDV0,BDV1), end;
+into method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2(BDV0,BDV1)) end;
+into method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2(BSN0,BSN1), end;
+into method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2(BVO0,BVO1), end;
+into method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2(BSC0,BSC1), end;
+into method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2(BAC0,BAC1), end;
+
+# fix 32-bit fields
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+into device label EC0 code_regex SBCH,\s+32 replace_matched begin BCH0,8,BCH1,8,BCH2,8,BCH3,8 end;
+into method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(BCH0,BCH1,BCH2,BCH3), end;
+
+# fix 128-bit buffer fields
+into method label RE1B parent_label EC0 remove_entry;
+into method label RECB parent_label EC0 remove_entry;
+into device label EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ECOR, EmbeddedControl, Arg0, 1)\n
+    Field(ECOR, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into device label EC0 code_regex SBDN,\s+128 replace_matched begin SBDX,128 end;
+into device label EC0 code_regex SBMN,\s+128 replace_matched begin SBMX,128 end;
+
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RECB(0xA0, 128), end;
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RECB(0xA0, 128), end;
+
+# Commenting out string data
+into method label GBIF code_regex Store\s\(B1B2\(BSN0 replace_matched begin /* Store (B1B2(BSN0 end;
+into method label GBIF code_regex Index\s\(Arg1,\s0x0C\)\) replace_matched begin Index (Arg1, 0x0C)) */ end;
+
+# Fix HWAK
+into device label EC0 code_regex HWAK,\s+16 replace_matched begin WAK0,8,WAK1,8 end;
+into method label _WAK code_regex \\\_SB.PCI0.LPCB.EC0.HWAK replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.EC0.WAK0,\\_SB.PCI0.LPCB.EC0.WAK1) end;
+into method label _L0F code_regex \\\_SB.PCI0.LPCB.EC0.HWAK replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.EC0.WAK0,\\_SB.PCI0.LPCB.EC0.WAK1) end;
+into method label BL0F code_regex \\\_SB.PCI0.LPCB.EC0.HWAK replaceall_matched begin B1B2(\\_SB.PCI0.LPCB.EC0.WAK0,\\_SB.PCI0.LPCB.EC0.WAK1) end;
+

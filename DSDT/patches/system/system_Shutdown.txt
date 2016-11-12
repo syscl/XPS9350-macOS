@@ -1,0 +1,12 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_Shutdown.txt
+
+#  Shutdown fix
+into method label _PTS code_regex_not If\s\(LEqual\s\(Arg0,\s0x05\)\) code_regex ^((?:.|\n)*)$ replace_matched
+begin
+    If (LEqual (Arg0, 0x05)) {}\n
+    Else\n
+    {\n
+%1
+    }\n
+end;

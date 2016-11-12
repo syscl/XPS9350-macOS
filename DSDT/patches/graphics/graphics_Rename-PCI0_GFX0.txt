@@ -1,0 +1,16 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_Rename-PCI0_GFX0.txt
+
+# Note: Most DSDT/SSDTs use GFX0 for only the integrated graphics
+#  device. But some use it for both the integrated device
+#  at PCI0.GFX0 and the discrete device at PCI0.PEGP.GFX0.
+#  This patch is for the latter scenario.
+
+# Note: This patch is a minimalistic rename that only
+#  touches PCI0.GFX0.  Useful for some machines
+#  that have both a PCI0.GFX0 and PCI0.PEG.GFX0.
+
+into device label GFX0 parent_label PCI0 set_label begin IGPU end;
+into_all all code_regex PCI0\.GFX0 replaceall_matched begin PCI0.IGPU end;
+into_all scope label \_SB.PCI0.GFX0.LCD0 set_label begin \_SB.PCI0.IGPU.LCD0 end;
+into_all scope label \_SB.PCI0.GFX0 set_label begin \_SB.PCI0.IGPU end;

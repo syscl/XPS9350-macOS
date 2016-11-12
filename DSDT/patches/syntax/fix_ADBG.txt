@@ -1,0 +1,5 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_ADBG.txt
+
+into method label ADBG replace_content begin Return(0) end;
+

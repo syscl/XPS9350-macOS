@@ -1,0 +1,152 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-Twist.txt
+
+# created by RehabMan 10/1/2013
+# created originally for dmkelley6812
+
+# works for:
+#  Lenovo Twist
+#  Lenovo G470 (per dhnguyen92)
+#  Lenovo G570 (per jhansi)
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return (Or (Arg0, ShiftLeft (Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+# Change EC register declarations from 16-bit to 8-bit
+
+into device label EC0 code_regex SBRC,\s+16 replace_matched begin BRCX,8,BRCY,8 end;
+into device label EC0 code_regex SBFC,\s+16 replace_matched begin BFC0,8,BFC1,8 end;
+into device label EC0 code_regex SBVO,\s+16 replace_matched begin BVO0,8,BVO1,8 end;
+
+into device label EC0 code_regex SBDC,\s+16 replace_matched begin BDC0,8,BDC1,8 end;
+into device label EC0 code_regex SBDV,\s+16 replace_matched begin BDV0,8,BDV1,8 end;
+into device label EC0 code_regex SBSN,\s+16 replace_matched begin BSN0,8,BSN1,8 end;
+
+into device label EC0 code_regex SBAC,\s+16 replace_matched begin BAC0,8,BAC1,8 end;
+
+into device label EC0 code_regex SBCH,\s+32 replace_matched begin BCH0,8,BCH1,8,BCH2,8,BCH3,8 end;
+
+into device label EC0 code_regex SBMN,\s+128 replace_matched 
+begin
+BMN0,8,BMN1,8,BMN2,8,BMN3,8,\n
+BMN4,8,BMN5,8,BMN6,8,BMN7,8,\n
+BMN8,8,BMN9,8,BMNA,8,BMNB,8,\n
+BMNC,8,BMND,8,BMNE,8,BMNF,8\n
+end;
+into device label EC0 code_regex SBDN,\s+128 replace_matched
+begin
+BDN0,8,BDN1,8,BDN2,8,BDN3,8,\n
+BDN4,8,BDN5,8,BDN6,8,BDN7,8,\n
+BDN8,8,BDN9,8,BDNA,8,BDNB,8,\n
+BDNC,8,BDND,8,BDNE,8,BDNF,8\n
+end;
+
+
+# Change access (reads) to those registers from 16-bit to 8-bit
+into_all method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2 (BRCX, BRCY), end;
+into_all method label GBST code_regex \(SBFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2 (BVO0, BVO1), end;
+
+into_all method label GBST code_regex \(SBDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into_all method label GBST code_regex \(SBDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBST code_regex \(SBSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+
+into_all method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2 (BAC0, BAC1), end;
+
+into_all method label GBIF code_regex \(SBRC, replaceall_matched begin (B1B2 (BRCX, BRCY), end;
+into_all method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2 (BFC0, BFC1), end;
+into_all method label GBIF code_regex \(SBVO, replaceall_matched begin (B1B2 (BVO0, BVO1), end;
+
+into_all method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2 (BDC0, BDC1), end;
+into_all method label GBIF code_regex \(SBDV, replaceall_matched begin (B1B2 (BDV0, BDV1), end;
+into_all method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2 (BSN0, BSN1), end;
+
+into_all method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2 (BDV0, BDV1)) end;
+into_all method label GBIF code_regex ,\s+SBDV, replaceall_matched begin , B1B2 (BDV0, BDV1), end;
+
+into device label EC code_regex SBBM,\s+16 replace_matched begin BBM0,8,BBM1,8 end;
+into_all method label GBIF code_regex \(SBBM, replaceall_matched begin (B1B2 (BBM0, BBM1), end;
+
+into_all method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(BCH0,BCH1,BCH2,BCH3), end;
+
+into device label EC0 insert
+begin
+Method (RBMN, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (BMN0, Index(TEMP, 0x00))\n
+    Store (BMN1, Index(TEMP, 0x01))\n
+    Store (BMN2, Index(TEMP, 0x02))\n
+    Store (BMN3, Index(TEMP, 0x03))\n
+    Store (BMN4, Index(TEMP, 0x04))\n
+    Store (BMN5, Index(TEMP, 0x05))\n
+    Store (BMN6, Index(TEMP, 0x06))\n
+    Store (BMN7, Index(TEMP, 0x07))\n
+    Store (BMN8, Index(TEMP, 0x08))\n
+    Store (BMN9, Index(TEMP, 0x09))\n
+    Store (BMNA, Index(TEMP, 0x0A))\n
+    Store (BMNB, Index(TEMP, 0x0B))\n
+    Store (BMNC, Index(TEMP, 0x0C))\n
+    Store (BMND, Index(TEMP, 0x0D))\n
+    Store (BMNE, Index(TEMP, 0x0E))\n
+    Store (BMNF, Index(TEMP, 0x0F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into device label EC0 insert
+begin
+Method (RBDN, 0, Serialized)\n
+{\n
+    Name (TEMP, Buffer(0x10) { })\n
+    Store (BDN0, Index(TEMP, 0x00))\n
+    Store (BDN1, Index(TEMP, 0x01))\n
+    Store (BDN2, Index(TEMP, 0x02))\n
+    Store (BDN3, Index(TEMP, 0x03))\n
+    Store (BDN4, Index(TEMP, 0x04))\n
+    Store (BDN5, Index(TEMP, 0x05))\n
+    Store (BDN6, Index(TEMP, 0x06))\n
+    Store (BDN7, Index(TEMP, 0x07))\n
+    Store (BDN8, Index(TEMP, 0x08))\n
+    Store (BDN9, Index(TEMP, 0x09))\n
+    Store (BDNA, Index(TEMP, 0x0A))\n
+    Store (BDNB, Index(TEMP, 0x0B))\n
+    Store (BDNC, Index(TEMP, 0x0C))\n
+    Store (BDND, Index(TEMP, 0x0D))\n
+    Store (BDNE, Index(TEMP, 0x0E))\n
+    Store (BDNF, Index(TEMP, 0x0F))\n
+    Return (TEMP)\n
+}\n
+end;
+
+into_all method label GBIF code_regex \(SBMN, replaceall_matched begin (RBMN(), end;
+into_all method label GBIF code_regex \(SBDN, replaceall_matched begin (RBDN(), end;
+
+
+# not really part of battery, but a bigger than 8-bit EC problem ...
+
+into device label EC0 code_regex HWAK,\s+16 replace_matched begin HWK0,8,HWK1,8 end;
+
+into method label _WAK code_regex \(\\_SB\.PCI0\.LPCB\.EC0\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPCB.EC0.HWK0,\\_SB.PCI0.LPCB.EC0.HWK1), end;
+
+into method label _WAK code_regex Store\s+\(([^,].*),\s+\\_SB\.PCI0\.LPCB\.EC0\.HWAK\) replaceall_matched
+begin
+Store(%1, \\_SB.PCI0.LPCB.EC0.HWK0) Store(ShiftRight(%1,8), \\_SB.PCI0.LPCB.EC0.HWK1)
+end;
+

@@ -1,0 +1,92 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Lenovo-T440p.txt
+
+# created by yekki 2014-09-18
+# cleanup/finished by RehabMan 2014-09-18
+
+# works for:
+#  Lenovo T440p
+#  Lenovo E540
+
+# Note: This DSDT requires "Fix Mutex with non-zero SyncLevel"
+
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into method label B1B4 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B4, 4, NotSerialized)\n
+{\n
+    Store(Arg3, Local0)\n
+    Or(Arg2, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg1, ShiftLeft(Local0, 8), Local0)\n
+    Or(Arg0, ShiftLeft(Local0, 8), Local0)\n
+    Return(Local0)\n
+}\n
+end;
+
+into device label EC code_regex HWAK,\s+16, replace_matched begin HWK0,8,HWK1,8, end;
+into method label _L1D code_regex \(\\_SB\.PCI0\.LPC\.EC\.HWAK, replaceall_matched begin (B1B2(\\_SB.PCI0.LPC.EC.HWK0,\\_SB.PCI0.LPC.EC.HWK1), end;
+
+into device label EC code_regex SBRC,\s+16, replace_matched begin BR00,8,BR01,8, end;
+into device label EC code_regex SBFC,\s+16, replace_matched begin BF00,8,BF01,8, end;
+into device label EC code_regex SBAC,\s+16, replace_matched begin BA00,8,BA01,8, end;
+into device label EC code_regex SBVO,\s+16, replace_matched begin BV00,8,BV01,8, end;
+into device label EC code_regex SBBM,\s+16, replace_matched begin BB00,8,BB01,8, end;
+into device label EC code_regex SBDC,\s+16, replace_matched begin BD00,8,BD01,8, end;
+into device label EC code_regex SBDV,\s+16, replace_matched begin SB00,8,SB01,8, end;
+into device label EC code_regex SBSN,\s+16 replace_matched begin BS00,8,BS01,8 end;
+
+into method label GBST code_regex \(SBRC, replaceall_matched begin (B1B2(BR00,BR01), end;
+into method label GBIF code_regex \(SBFC, replaceall_matched begin (B1B2(BF00,BF01), end;
+into method label GBST code_regex \(SBAC, replaceall_matched begin (B1B2(BA00,BA01), end;
+into method label GBST code_regex \(SBVO, replaceall_matched begin (B1B2(BV00,BV01), end;
+into method label GBIF code_regex \(SBBM, replaceall_matched begin (B1B2(BB00,BB01), end;
+into method label GBIF code_regex \(SBDC, replaceall_matched begin (B1B2(BD00,BD01), end;
+into method label GBIT code_regex \(SBDV, replaceall_matched begin (B1B2(SB00,SB01), end;
+into method label GBIT code_regex \(SBSN, replaceall_matched begin (B1B2(BS00,BS01), end;
+into method label GBIF code_regex \(SBSN, replaceall_matched begin (B1B2(BS00,BS01), end;
+into method label GBIF code_regex \(SBDV\) replaceall_matched begin (B1B2(SB00,SB01)) end;
+into method label GBIF code_regex SBDV, replaceall_matched begin B1B2(SB00,SB01), end;
+
+into device label EC code_regex SBCH,\s+32 replace_matched begin SH00,8,SH01,8,SH02,8,SH03,8 end;
+into method label GBIF code_regex \(SBCH, replaceall_matched begin (B1B4(SH00,SH01,SH02,SH03), end;
+
+into device label EC code_regex (SBMN,)\s+(128) replace_matched begin BMNX,%2,//%1%2 end;
+into device label EC code_regex (SBDN,)\s+(128) replace_matched begin BDNX,%2,//%1%2 end;
+
+into method label RE1B parent_label EC remove_entry;
+into method label RECB parent_label EC remove_entry;
+into device label EC insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+into method label GBIF code_regex \(SBMN, replaceall_matched begin (RECB(0xA0,128), end;
+into method label GBIF code_regex \(SBDN, replaceall_matched begin (RECB(0xA0,128), end;

@@ -1,0 +1,195 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PNLF_ivy_sandy.txt
+
+# This patch enables the brightness slider in SysPrefs->Displays
+# and will also enable activation of sleep mode by closing
+# the laptop lid.
+#
+# This particular version is intended to be used with ACPIBacklight.kext
+# although it can also be used with AppleBacklight.kext,
+# provided AppleBacklight.kext is patched to recognize your 
+# display or an injector is used to set brightness levels.
+#
+# See this thread for more information:
+#     http://www.tonymacx86.com/hp-probook-mavericks/121031-native-brightness-working-without-blinkscreen-using-patched-applebacklight-kext.html
+# (also read any linked threads)
+#
+# Note: This patch should be applied to the DSDT or SSDT that defines
+# your integrated graphics device (always at _ADR 0x00020000)
+#
+# This patch works for both Sandy Bridge and Ivy Bridge graphics.
+# also reported to work with graphics prior to Sandy Bridge (eg. Arrandale)
+#
+
+into_all device label PNLF remove_entry;
+into_all device name_adr 0x00020000 code_regex (OperationRegion\s\(RMPC,\sPCI_Config[^\}]*\}) remove_matched;
+
+into device name_adr 0x00020000 insert
+begin
+OperationRegion (RMPC, PCI_Config, 0x10, 4)\n
+Field (RMPC, AnyAcc, NoLock, Preserve)\n
+{\n
+    BAR1,32,\n
+}\n
+Device (PNLF)\n
+{\n
+    // normal PNLF declares (note some of this probably not necessary)\n
+    Name (_ADR, Zero)\n
+    Name (_HID, EisaId ("APP0002"))\n
+    Name (_CID, "backlight")\n
+    Name (_UID, 10)\n
+    Name (_STA, 0x0B)\n
+    //define hardware register access for brightness\n
+    // lower nibble of BAR1 is status bits and not part of the address\n
+    OperationRegion (BRIT, SystemMemory, And(^BAR1, Not(0xF)), 0xe1184)\n
+    Field (BRIT, AnyAcc, Lock, Preserve)\n
+    {\n
+        Offset(0x48250),\n
+        LEV2, 32,\n
+        LEVL, 32,\n
+        Offset(0x70040),\n
+        P0BL, 32,\n
+        Offset(0xc8250),\n
+        LEVW, 32,\n
+        LEVX, 32,\n
+        Offset(0xe1180),\n
+        PCHL, 32,\n
+    }\n
+    // DEB1 special for setting KLVX at runtime...\n
+    //Method (DEB1, 1, NotSerialized)\n
+    //{\n
+    //    Store(Arg0, KLVX)\n
+    //}\n
+    // LMAX: use 0x710 to force OS X value\n
+    //       or use any arbitrary value\n
+    //       or use 0 to capture BIOS setting\n
+    Name (LMAX, 0x710)\n
+    // KMAX: defines the unscaled range in the _BCL table below\n
+    Name (KMAX, 0x710)\n
+    // KPCH: saved value for PCHL\n
+    //   use Ones if PCHL does not need to be set (normal)\n
+    //   use Zero if your laptop nees PCHL set on every brightness set\n
+    //   you can also use a custom value (not Ones, not Zero)\n
+    Name(KPCH, Ones)\n
+    // _INI deals with differences between native setting and desired\n
+    Method (_INI, 0, NotSerialized)\n
+    {\n
+        // save value of PCHL for later\n
+        If (LNot(KPCH)) { Store(PCHL, KPCH) }\n
+        // determine LMAX to use\n
+        If (LNot(LMAX)) { Store(ShiftRight(LEVX,16), LMAX) }\n
+        If (LNot(LMAX)) { Store(KMAX, LMAX) }\n
+        Store(ShiftLeft(LMAX,16), KLVX)\n
+        If (LNotEqual(LMAX, KMAX))\n
+        {\n
+            // Scale all the values in _BCL to the PWM max in use\n
+            Store(0, Local0)\n
+            While (LLess(Local0, SizeOf(_BCL)))\n
+            {\n
+                Store(DerefOf(Index(_BCL,Local0)), Local1)\n
+                Divide(Multiply(Local1,LMAX), KMAX,, Local1)\n
+                Store(Local1, Index(_BCL,Local0))\n
+                Increment(Local0)\n
+            }\n
+            // Also scale XRGL and XRGH values\n
+            Divide(Multiply(XRGL,LMAX), KMAX,, XRGL)\n
+            Divide(Multiply(XRGH,LMAX), KMAX,, XRGH)\n
+        }\n
+        // adjust values to desired LMAX\n
+        Store(ShiftRight(LEVX,16), Local1)\n
+        If (LNotEqual(Local1, LMAX))\n
+        {\n
+            Store(LEVL, Local0)\n
+            If (LOr(LNot(Local0),LNot(Local1))) { Store(LMAX, Local0) Store(LMAX, Local1) }\n
+            Divide(Multiply(Local0,LMAX), Local1,, Local0)\n
+            //REVIEW: wait for vblank before setting new PWM config\n
+            //Store(P0BL, Local7)\n
+            //While (LEqual (P0BL, Local7)) {}\n
+            If (LGreater(LEVL, LMAX))\n
+                { Store(KLVX, LEVX) Store(Local0, LEVL) }\n
+            Else\n
+                { Store(Local0, LEVL) Store(KLVX, LEVX) }\n
+        }\n
+    }\n
+    // _BCM/_BQC: set/get for brightness level\n
+    Method (_BCM, 1, NotSerialized)\n
+    {\n
+        // initialize for consistent backlight level before/after sleep\n
+        If (LAnd(LNotEqual(KPCH, Ones),LNotEqual(PCHL, KPCH))) { Store(KPCH, PCHL) }\n
+        If (LNotEqual(LEVW, 0x80000000)) { Store (0x80000000, LEVW) }\n
+        If (LNotEqual(LEVX, KLVX)) { Store (KLVX, LEVX) }\n
+        // store new backlight level\n
+        Store(Match(_BCL, MGE, Arg0, MTR, 0, 2), Local0)\n
+        If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }\n
+        If (LNotEqual(LEV2, 0x80000000)) { Store(0x80000000, LEV2) }\n
+        Store(DerefOf(Index(_BCL, Local0)), LEVL)\n
+    }\n
+    Method (_BQC, 0, NotSerialized)\n
+    {\n
+        Store(Match(_BCL, MGE, LEVL, MTR, 0, 2), Local0)\n
+        If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }\n
+        Return(DerefOf(Index(_BCL, Local0)))\n
+    }\n
+    Method (_DOS, 1, NotSerialized)\n
+    {\n
+        // Note: Some systems have this defined in DSDT, so uncomment\n
+        // the next line if that is the case.\n
+        //External(^^_DOS, MethodObj)\n
+        ^^_DOS(Arg0)\n
+    }\n
+    // extended _BCM/_BQC for setting "in between" levels\n
+    Method (XBCM, 1, NotSerialized)\n
+    {\n
+        // initialize for consistent backlight level before/after sleep\n
+        If (LAnd(LNotEqual(KPCH, Ones),LNotEqual(PCHL, KPCH))) { Store(KPCH, PCHL) }\n
+        If (LNotEqual(LEVW, 0x80000000)) { Store (0x80000000, LEVW) }\n
+        If (LNotEqual(LEVX, KLVX)) { Store (KLVX, LEVX) }\n
+        // store new backlight level\n
+        If (LGreater(Arg0, XRGH)) { Store(XRGH, Arg0) }\n
+        If (LAnd(Arg0, LLess(Arg0, XRGL))) { Store(XRGL, Arg0) }\n
+        If (LNotEqual(LEV2, 0x80000000)) { Store(0x80000000, LEV2) } \n
+        Store(Arg0, LEVL)\n
+    }\n
+    Method (XBQC, 0, NotSerialized)\n
+    {\n
+        Store(LEVL, Local0)\n
+        If (LGreater(Local0, XRGH)) { Store(XRGH, Local0) }\n
+        If (LAnd(Local0, LLess(Local0, XRGL))) { Store(XRGL, Local0) }\n
+        Return(Local0)\n
+    }\n
+    // Set XOPT bit 0 to disable smooth transitions\n
+    // Set XOPT bit 1 to wait for native BacklightHandler\n
+    // Set XOPT bit 2 to force use of native BacklightHandler\n
+    Name (XOPT, 0x02)\n
+    // XRGL/XRGH: defines the valid range\n
+    Name (XRGL, 40)\n
+    Name (XRGH, 1808)\n
+    // KLVX is initialization value for LEVX\n
+    Name (KLVX, 0x7100000)\n
+    // _BCL: returns list of valid brightness levels\n
+    // first two entries describe ac/battery power levels\n
+    Name (_BCL, Package()\n
+    {\n
+        1808,\n
+        479,\n
+        0,\n
+        53, 55, 57, 59,\n
+        62, 66, 71, 77,\n
+        83, 91, 99, 108,\n
+        119, 130, 142, 154,\n
+        168, 183, 198, 214,\n
+        232, 250, 269, 289,\n
+        309, 331, 354, 377,\n
+        401, 426, 453, 479,\n
+        507, 536, 566, 596,\n
+        627, 660, 693, 727,\n
+        762, 797, 834, 872,\n
+        910, 949, 990, 1031,\n
+        1073, 1115, 1159, 1204,\n
+        1249, 1296, 1343, 1391,\n
+        1440, 1490, 1541, 1592,\n
+        1645, 1698, 1753, 1808,\n
+    })\n
+}\n
+end;
+

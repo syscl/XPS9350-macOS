@@ -1,0 +1,6 @@
+#Maintained by: RehabMan for: Laptop Patches
+#fix_TNOT.txt
+
+#  TNOT fix
+into definitionblock code_regex External\s+\(\\TNOT\) remove_matched;
+into_all all code_regex CondRefOf\s+\(\\TNOT\) replaceall_matched begin CondRefOf(TNOT) end;

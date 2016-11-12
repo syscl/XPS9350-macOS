@@ -1,0 +1,7 @@
+#Maintained by: RehabMan for: Laptop Patches
+#remove_DSM.txt
+
+# To remove all _DSM methods
+# If used, this should be one of the first patches you apply.
+
+into_all method label _DSM remove_entry;

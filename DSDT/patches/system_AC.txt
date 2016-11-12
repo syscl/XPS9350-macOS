@@ -1,0 +1,6 @@
+# Power fix - cause AppleACPIACAdapter to be loaded
+into device label ACAD code_regex Name\s+\(_PRW,[\s\S]*\}\) remove_matched;
+into device label ACAD insert
+begin
+Name (_PRW, Package() { 0x18, 0x03 })
+end;

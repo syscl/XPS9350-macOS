@@ -1,0 +1,10 @@
+# Rename B0D3 to HDAU
+into_all all code_regex B0D3\. replaceall_matched begin HDAU. end;
+into_all all code_regex \.B0D3 replaceall_matched begin .HDAU end;
+into_all all code_regex \sB0D3, replaceall_matched begin HDAU, end;
+into_all all code_regex \(B0D3 replaceall_matched begin (HDAU end;
+into_all all label B0D3 set_label begin HDAU end;
+into_all all label _SB.PCI0.B0D3 set_label begin _SB.PCI0.HDAU end;
+into_all all label \_SB.PCI0.B0D3 set_label begin \_SB.PCI0.HDAU end;
+into_all all label ^^B0D3 set_label begin ^^HDAU end;
+into_all all label ^B0D3 set_label begin ^HDAU end;

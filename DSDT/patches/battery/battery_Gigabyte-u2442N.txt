@@ -1,0 +1,41 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Gigabyte-u2442N.txt
+
+# created by venu2062 2013-11-25
+# changes for P34W by sztupy 2015-08-26
+
+# works for:
+#  Gigabyte u2442N Ultrabook
+#  Gigabyte P34W v3 gaming notebook
+
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+into device label H_EC code_regex B1DC,\s+16 replace_matched begin DC10,8,DC11,8 end;
+into device label H_EC code_regex B1FC,\s+16 replace_matched begin FC10,8,FC11,8 end;
+into device label H_EC code_regex B1RC,\s+16 replace_matched begin RC10,8,RC11,8 end;
+into device label H_EC code_regex B1FV,\s+16 replace_matched begin FV10,8,FV11,8 end;
+into device label H_EC code_regex B1DG,\s+16 replace_matched begin DG10,8,DG11,8 end;
+into device label H_EC code_regex B1CR,\s+16 replace_matched begin CR10,8,CR11,8 end;
+
+# added for P34W v3 (EC device is EC instead of H_EC)
+into device label EC code_regex B1DC,\s+16 replace_matched begin DC10,8,DC11,8 end;
+into device label EC code_regex B1FC,\s+16 replace_matched begin FC10,8,FC11,8 end;
+into device label EC code_regex B1RC,\s+16 replace_matched begin RC10,8,RC11,8 end;
+into device label EC code_regex B1FV,\s+16 replace_matched begin FV10,8,FV11,8 end;
+into device label EC code_regex B1DG,\s+16 replace_matched begin DG10,8,DG11,8 end;
+into device label EC code_regex B1CR,\s+16 replace_matched begin CR10,8,CR11,8 end;
+
+into method label _BIF code_regex \(B1DC, replaceall_matched begin (B1B2(DC10,DC11), end;
+into method label _BIF code_regex \(B1FC, replaceall_matched begin (B1B2(FC10,FC11), end;
+into method label _BIF code_regex \(B1DG, replaceall_matched begin (B1B2(DG10,DG11), end;
+into method label _BST code_regex \(B1CR, replaceall_matched begin (B1B2(CR10,CR11), end;
+into method label _BST code_regex \(B1RC, replaceall_matched begin (B1B2(RC10,RC11), end;
+into method label _BST code_regex \(B1FV, replaceall_matched begin (B1B2(FV10,FV11), end;
+into method label BATS code_regex \(B1RC, replaceall_matched begin (B1B2(RC10,RC11), end;
+into method label _BIF code_regex \(B1FC\) replaceall_matched begin (B1B2(FC10,FC11)) end;
+
+# added for P34W v3
+into method label _BST code_regex B1FC, replaceall_matched begin B1B2(FC10,FC11), end;

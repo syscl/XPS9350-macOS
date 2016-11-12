@@ -1,0 +1,15 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_MCHC.txt
+
+# Patch Name   : Add MCHC
+# Credits: From PJALM's Intel7 patches
+
+# Add the missing MCHC device
+into device label MCHC parent_label PCI0 remove_entry;
+into device label PCI0 insert begin
+Device (MCHC)\n
+{\n
+	Name (_ADR, Zero)\n
+}
+end;
+

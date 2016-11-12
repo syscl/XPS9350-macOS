@@ -1,0 +1,124 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PNLF-Lenovo-Ux10.txt
+
+# This patch enables the brightness slider in SysPrefs->Displays
+# and will also enable activation of sleep mode by closing
+# the laptop lid.
+#
+# This patch is specifically for the Lenovo Ux10 series
+# laptops.
+#
+# Based on information from the normal laptop DSDT methods,
+# optimized for use with ACPIBacklight.kext
+#
+# Note: This patch should be applied to the DSDT or SSDT that defines
+# your integrated graphics device (always at _ADR 0x00020000)
+#
+
+into_all device label PNLF remove_entry;
+into_all device name_adr 0x00020000 code_regex (OperationRegion\s\(RMPC,\sPCI_Config[^\}]*\}) remove_matched;
+
+into device name_adr 0x00020000 insert
+begin
+OperationRegion (RMPC, PCI_Config, 0x10, 4)\n
+Field (RMPC, AnyAcc, NoLock, Preserve)\n
+{\n
+    BAR1,32,\n
+}\n
+Device (PNLF)\n
+{\n
+    // normal PNLF declares (note some of this probably not necessary)\n
+    Name (_ADR, Zero)\n
+    Name (_HID, EisaId ("APP0002"))\n
+    Name (_CID, "backlight")\n
+    Name (_UID, 10)\n
+    Name (_STA, 0x0B)\n
+    //define hardware register access for brightness\n
+    // lower nibble of BAR1 is status bits and not part of the address\n
+    OperationRegion (BRIT, SystemMemory, And(^BAR1, Not(0xF)), 0xc8254)\n
+    Field (BRIT, AnyAcc, Lock, Preserve)\n
+    {\n
+        Offset(0x4824c),\n
+        LEV2, 32,\n
+        LEVL, 32,\n
+        Offset(0x7003C),\n
+        P0BL, 32,\n
+        Offset(0xc824c),\n
+        LEVW, 32,\n
+        LEVX, 32,\n
+    }\n
+    // DEB1 special for setting KLVX at runtime...\n
+    //Method (DEB1, 1, NotSerialized)\n
+    //{\n
+    //    Store(Arg0, KLVX)\n
+    //}\n
+    // _INI deals with differences between native setting and desired\n
+    Method (_INI, 0, NotSerialized)\n
+    {\n
+        /*\n
+        Store(ShiftRight(KLVX,16), Local0)\n
+        Store(ShiftRight(LEVX,16), Local1)\n
+        if (LNotEqual(Local0, Local1))\n
+        {\n
+            Divide(Multiply(LEVL, Local0), Local1,, Local0)\n
+            //Store(P0BL, Local1)\n
+            //While(LEqual (P0BL, Local1)) {}\n
+            Store(Local0, LEVL)\n
+            Store(KLVX, LEVX)\n
+        }\n
+        */\n
+    }\n
+    // _BCM/_BQC: set/get for brightness level\n
+    Method (_BCM, 1, NotSerialized)\n
+    {\n
+        /*\n
+        // initialize for consistent backlight level before/after sleep\n
+        If (LNotEqual(LEVW, 0x80000000)) { Store (0x80000000, LEVW) }\n
+        If (LNotEqual(LEVX, KLVX)) { Store (KLVX, LEVX) }\n
+        */\n
+        // Update backlight via existing DSDT methods\n
+        ^^DD02._BCM(Arg0)\n
+    }\n
+    Method (_BQC, 0, NotSerialized)\n
+    {\n
+        Return(^^DD02._BQC())\n
+    }\n
+    Method (_DOS, 1, NotSerialized)\n
+    {\n
+        ^^_DOS(Arg0)\n
+    }\n
+    // Use XOPT=1 to disable smooth transitions\n
+    Name (XOPT, 1)\n
+    // XRGL/XRGH: defines the valid range\n
+    Name (XRGL, 1)\n
+    Name (XRGH, 0x64)\n
+    // KLVX is initialization value for LEVX\n
+    Name (KLVX, 0x7100000)\n
+    // _BCL: returns list of valid brightness levels\n
+    // first two entries describe ac/battery power levels\n
+    Name (_BCL, Package()\n
+    {\n
+        //Note: data from IBCL + zero + duplicated max\n
+        0x64,\n
+        0x23,\n
+        0x14,// equivalent to 0\n
+        0x19,\n
+        0x1E,\n
+        0x23,\n
+        0x28,\n
+        0x2D,\n
+        0x32,\n
+        0x37,\n
+        0x3C,\n
+        0x41,\n
+        0x46,\n
+        0x4B,\n
+        0x50,\n
+        0x55,\n
+        0x5A,\n
+        0x5A,\n
+        0x64,\n
+    })\n
+}\n
+end;
+

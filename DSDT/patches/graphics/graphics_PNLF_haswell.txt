@@ -1,0 +1,169 @@
+#Maintained by: RehabMan for: Laptop Patches
+#graphics_PNLF_haswell.txt
+
+# This patch enables the brightness slider in SysPrefs->Displays
+# and will also enable activation of sleep mode by closing
+# the laptop lid.
+#
+# This particular version is intended to be used with ACPIBacklight.kext
+# although it can also be used with AppleBacklight.kext,
+# provided AppleBacklight.kext is patched to recognize your
+# display or an injector is used to set brightness levels.
+#
+# See this thread for more information:
+#     http://www.tonymacx86.com/hp-probook-mavericks/121031-native-brightness-working-without-blinkscreen-using-patched-applebacklight-kext.html
+# (also read any linked threads)
+#
+# Note: This patch should be applied to the DSDT or SSDT that defines
+# your integrated graphics device (always at _ADR 0x00020000)
+#
+# This patch works for both Haswell and Broadwell graphics
+#
+
+into_all device label PNLF remove_entry;
+into_all device name_adr 0x00020000 code_regex (OperationRegion\s\(RMPC,\sPCI_Config[^\}]*\}) remove_matched;
+
+into device name_adr 0x00020000 insert
+begin
+OperationRegion (RMPC, PCI_Config, 0x10, 4)\n
+Field (RMPC, AnyAcc, NoLock, Preserve)\n
+{\n
+    BAR1,32,\n
+}\n
+Device (PNLF)\n
+{\n
+    // normal PNLF declares (note some of this probably not necessary)\n
+    Name (_ADR, Zero)\n
+    Name (_HID, EisaId ("APP0002"))\n
+    Name (_CID, "backlight")\n
+    Name (_UID, 15)\n
+    Name (_STA, 0x0B)\n
+    //define hardware register access for brightness\n
+    // lower nibble of BAR1 is status bits and not part of the address\n
+    OperationRegion (BRIT, SystemMemory, And(^BAR1, Not(0xF)), 0xe1184)\n
+    Field (BRIT, AnyAcc, Lock, Preserve)\n
+    {\n
+        Offset(0x48250),\n
+        LEV2, 32,\n
+        LEVL, 32,\n
+        Offset(0x70040),\n
+        P0BL, 32,\n
+        Offset(0xc8250),\n
+        LEVW, 32,\n
+        LEVX, 32,\n
+        Offset(0xe1180),\n
+        PCHL, 32,\n
+    }\n
+    // LMAX: use 0xad9/0x56c/0x5db to force OS X value\n
+    //       or use any arbitrary value\n
+    //       or use 0 to capture BIOS setting\n
+    Name (LMAX, 0xad9)\n
+    // KMAX: defines the unscaled range in the _BCL table below\n
+    Name (KMAX, 0xad9)\n
+    // _INI deals with differences between native setting and desired\n
+    Method (_INI, 0, NotSerialized)\n
+    {\n
+        // This 0xC value comes from looking what OS X initializes this\n
+        // register to after display sleep (using ACPIDebug/ACPIPoller)\n
+        Store(0xC0000000, LEVW)\n
+        // determine LMAX to use\n
+        If (LNot(LMAX)) { Store(ShiftRight(LEVX,16), LMAX) }\n
+        If (LNot(LMAX)) { Store(KMAX, LMAX) }\n
+        If (LNotEqual(LMAX, KMAX))\n
+        {\n
+            // Scale all the values in _BCL to the PWM max in use\n
+            Store(0, Local0)\n
+            While (LLess(Local0, SizeOf(_BCL)))\n
+            {\n
+                Store(DerefOf(Index(_BCL,Local0)), Local1)\n
+                Divide(Multiply(Local1,LMAX), KMAX,, Local1)\n
+                Store(Local1, Index(_BCL,Local0))\n
+                Increment(Local0)\n
+            }\n
+            // Also scale XRGL and XRGH values\n
+            Divide(Multiply(XRGL,LMAX), KMAX,, XRGL)\n
+            Divide(Multiply(XRGH,LMAX), KMAX,, XRGH)\n
+        }\n
+        // adjust values to desired LMAX\n
+        Store(ShiftRight(LEVX,16), Local1)\n
+        If (LNotEqual(Local1, LMAX))\n
+        {\n
+            Store(And(LEVX,0xFFFF), Local0)\n
+            If (LOr(LNot(Local0),LNot(Local1))) { Store(LMAX, Local0) Store(LMAX, Local1) }\n
+            Divide(Multiply(Local0,LMAX), Local1,, Local0)\n
+            //REVIEW: wait for vblank before setting new PWM config\n
+            //Store(P0BL, Local7)\n
+            //While (LEqual (P0BL, Local7)) {}\n
+            Store(Or(Local0,ShiftLeft(LMAX,16)), LEVX)\n
+        }\n
+    }\n
+    // _BCM/_BQC: set/get for brightness level\n
+    Method (_BCM, 1, NotSerialized)\n
+    {\n
+        // store new backlight level\n
+        Store(Match(_BCL, MGE, Arg0, MTR, 0, 2), Local0)\n
+        If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }\n
+        Store(Or(DerefOf(Index(_BCL,Local0)),ShiftLeft(LMAX,16)), LEVX)\n
+    }\n
+    Method (_BQC, 0, NotSerialized)\n
+    {\n
+        Store(Match(_BCL, MGE, And(LEVX, 0xFFFF), MTR, 0, 2), Local0)\n
+        If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }\n
+        Return(DerefOf(Index(_BCL, Local0)))\n
+    }\n
+    Method (_DOS, 1, NotSerialized)\n
+    {\n
+        // Note: Some systems have this defined in DSDT, so uncomment\n
+        // the next line if that is the case.\n
+        //External(^^_DOS, MethodObj)\n
+        ^^_DOS(Arg0)\n
+    }\n
+    // extended _BCM/_BQC for setting "in between" levels\n
+    Method (XBCM, 1, NotSerialized)\n
+    {\n
+        // store new backlight level\n
+        If (LGreater(Arg0, XRGH)) { Store(XRGH, Arg0) }\n
+        If (LAnd(Arg0, LLess(Arg0, XRGL))) { Store(XRGL, Arg0) }\n
+        Store(Or(Arg0,ShiftLeft(LMAX,16)), LEVX)\n
+    }\n
+    Method (XBQC, 0, NotSerialized)\n
+    {\n
+        Store(And(LEVX,0xFFFF), Local0)\n
+        If (LGreater(Local0, XRGH)) { Store(XRGH, Local0) }\n
+        If (LAnd(Local0, LLess(Local0, XRGL))) { Store(XRGL, Local0) }\n
+        Return(Local0)\n
+    }\n
+    // Set XOPT bit 0 to disable smooth transitions\n
+    // Set XOPT bit 1 to wait for native BacklightHandler\n
+    // Set XOPT bit 2 to force use of native BacklightHandler\n
+    Name (XOPT, 0x02)\n
+    // XRGL/XRGH: defines the valid range\n
+    Name (XRGL, 25)\n
+    Name (XRGH, 2777)\n
+    // _BCL: returns list of valid brightness levels\n
+    // first two entries describe ac/battery power levels\n
+    Name (_BCL, Package()\n
+    {\n
+        2777,\n
+        748,\n
+        0,\n
+        35, 39, 44, 50,\n
+        58, 67, 77, 88,\n
+        101, 115, 130, 147,\n
+        165, 184, 204, 226,\n
+        249, 273, 299, 326,\n
+        354, 383, 414, 446,\n
+        479, 514, 549, 587,\n
+        625, 665, 706, 748,\n
+        791, 836, 882, 930,\n
+        978, 1028, 1079, 1132,\n
+        1186, 1241, 1297, 1355,\n
+        1414, 1474, 1535, 1598,\n
+        1662, 1728, 1794, 1862,\n
+        1931, 2002, 2074, 2147,\n
+        2221, 2296, 2373, 2452,\n
+        2531, 2612, 2694, 2777,\n
+    })\n
+}\n
+end;
+

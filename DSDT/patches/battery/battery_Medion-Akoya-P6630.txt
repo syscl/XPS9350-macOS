@@ -1,0 +1,88 @@
+#Maintained by: RehabMan for: Laptop Patches
+#battery_Medion-Akoya-P6630.txt
+
+# Created by Blu_Dread 2014-11-29
+
+# works for:
+#  Medion Akoya P6630
+
+# convert two 8-bit registers to 16-bit
+into method label B1B2 remove_entry;
+into definitionblock code_regex . insert
+begin
+Method (B1B2, 2, NotSerialized) { Return(Or(Arg0, ShiftLeft(Arg1, 8))) }\n
+end;
+
+# has non-zero SyncLevel in Mutex objects
+into_all all code_regex Mutex\s+\(([^,]*),\s+[^)]*\) replaceall_matched begin Mutex(%1, 0) end;
+
+# _PLD is supposed to return a variable length Package of Buffers
+into_all all code_regex (Name\s*\(_PLD,\s*)Buffer(\s\([^\)].*\)[^\)]*) replaceall_matched
+begin
+%1Package() { Buffer%2 }
+end;
+
+# 16-bit conversions
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSDC,\s+16, replace_matched begin DC00,8,DC01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSDV,\s+16, replace_matched begin DV00,8,DV01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSSN,\s+16 replace_matched begin SN00,8,SN01,8 end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSRC,\s+16, replace_matched begin RC00,8,RC01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSFC,\s+16, replace_matched begin FC00,8,FC01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSAC,\s+16, replace_matched begin AC00,8,AC01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSVO,\s+16, replace_matched begin VO00,8,VO01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSPE,\s+16, replace_matched begin PE00,8,PE01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSCU,\s+16, replace_matched begin CU00,8,CU01,8, end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex BSTV,\s+16 replace_matched begin TV00,8,TV01,8 end;
+
+into method label GBIF code_regex \(BSDC, replaceall_matched begin (B1B2(DC00,DC01), end;
+into method label GBIF code_regex \(BSDV, replaceall_matched begin (B1B2(DV00,DV01), end;
+into method label GBIF code_regex \(BSSN, replaceall_matched begin (B1B2(SN00,SN01), end;
+into method label GBIF code_regex \(BSFC, replaceall_matched begin (B1B2(FC00,FC01), end;
+
+into method label GBST code_regex \(BSRC, replaceall_matched begin (B1B2(RC00,RC01), end;
+into method label GBST code_regex \(BSFC, replaceall_matched begin (B1B2(FC00,FC01), end;
+into method label GBST code_regex \(BSAC, replaceall_matched begin (B1B2(AC00,AC01), end;
+into method label GBST code_regex \(BSVO, replaceall_matched begin (B1B2(VO00,VO01), end;
+
+
+# utility methods to read/write buffers from/to EC
+into method label RE1B parent_label _SB.PCI0.SBRG.EC0 remove_entry;
+into method label RECB parent_label _SB.PCI0.SBRG.EC0 remove_entry;
+into scope label _SB.PCI0.SBRG.EC0 insert
+begin
+Method (RE1B, 1, NotSerialized)\n
+{\n
+    OperationRegion(ERAM, EmbeddedControl, Arg0, 1)\n
+    Field(ERAM, ByteAcc, NoLock, Preserve) { BYTE, 8 }\n
+    Return(BYTE)\n
+}\n
+Method (RECB, 2, Serialized)\n
+// Arg0 - offset in bytes from zero-based EC\n
+// Arg1 - size of buffer in bits\n
+{\n
+    ShiftRight(Arg1, 3, Arg1)\n
+    Name(TEMP, Buffer(Arg1) { })\n
+    Add(Arg0, Arg1, Arg1)\n
+    Store(0, Local0)\n
+    While (LLess(Arg0, Arg1))\n
+    {\n
+        Store(RE1B(Arg0), Index(TEMP, Local0))\n
+        Increment(Arg0)\n
+        Increment(Local0)\n
+    }\n
+    Return(TEMP)\n
+}\n
+end;
+
+# 128-bit registers
+into scope label _SB.PCI0.SBRG.EC0 code_regex (BSCH),\s+(128) replace_matched begin BSCX,%2,//%1%2 end;
+into scope label _SB.PCI0.SBRG.EC0 insert begin Method (BSC0, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex (BSDN),\s+(128) replace_matched begin BSDY,%2,//%1%2 end;
+into scope label _SB.PCI0.SBRG.EC0 insert begin Method (BSD0, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+into scope label _SB.PCI0.SBRG.EC0 code_regex (BSMN),\s+(128) replace_matched begin BSMZ,%2,//%1%2 end;
+into scope label _SB.PCI0.SBRG.EC0 insert begin Method (BSM0, 0, Serialized) { Return(RECB(0xE0,128)) } end;
+
+into method label GBIF code_regex \(BSCH, replaceall_matched begin (RECB(0xE0,128), end;
+into method label GBIF code_regex \(BSDN, replaceall_matched begin (RECB(0xE0,128), end;
+into method label GBIF code_regex \(BSMN, replaceall_matched begin (RECB(0xE0,128), end;
+

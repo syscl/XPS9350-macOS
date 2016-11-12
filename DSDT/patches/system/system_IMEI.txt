@@ -1,0 +1,14 @@
+#Maintained by: RehabMan for: Laptop Patches
+#system_IMEI.txt
+
+# add missing IMEI device
+
+into device label IMEI parent_label PCI0 remove_entry;
+into device label PCI0 insert
+begin
+Device (IMEI)\n
+{\n
+    Name (_ADR, 0x00160000)\n
+}\n
+end;
+
