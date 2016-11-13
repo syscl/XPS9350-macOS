@@ -9,7 +9,7 @@
 			<key>Debug</key>
 			<false/>
 			<key>DropOEM_DSM</key>
-			<true/>
+			<false/>
 			<key>DropTables</key>
 			<array>
 				<dict>
@@ -26,11 +26,68 @@
 				<key>FixRegions_10000000</key>
 				<true/>
 			</dict>
+			<key>Patches</key>
+			<array>
+				<dict>
+					<key>Comment</key>
+					<string> _OSI -&gt; XOSI</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>X09TSQ==</data>
+					<key>Replace</key>
+					<data>WE9TSQ==</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>HDAS -&gt; HDEF</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>SERBUw==</data>
+					<key>Replace</key>
+					<data>SERFRg==</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>HECI -&gt; IMEI</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>SEVDSQ==</data>
+					<key>Replace</key>
+					<data>SU1FSQ==</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>GFX0 -&gt; IGPU</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>R0ZYMA==</data>
+					<key>Replace</key>
+					<data>SUdQVQ==</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>ALSD -&gt; ALS0</string>
+					<key>Disabled</key>
+					<true/>
+					<key>Find</key>
+					<data>QUxTRA==</data>
+					<key>Replace</key>
+					<data>QUxTMA==</data>
+				</dict>
+			</array>
 			<key>Name</key>
 			<string>DSDT.aml</string>
 			<key>ReuseFFFF</key>
 			<false/>
 		</dict>
+		<key>DisableASPM</key>
+		<true/>
+		<key>HaltEnabler</key>
+		<true/>
 		<key>SSDT</key>
 		<dict>
 			<key>DropOem</key>
@@ -60,8 +117,6 @@
 	</dict>
 	<key>Boot</key>
 	<dict>
-		<key>Arguments</key>
-		<string>dart=0 nv_disable=1 kext-dev-mode=1</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
@@ -73,7 +128,7 @@
 		<key>Secure</key>
 		<false/>
 		<key>Timeout</key>
-		<integer>5</integer>
+		<integer>2</integer>
 		<key>XMPDetection</key>
 		<false/>
 	</dict>
@@ -186,7 +241,7 @@
 		<key>NvidiaSingle</key>
 		<false/>
 		<key>ig-platform-id</key>
-		<string>0x0a2e0008</string>
+		<string>0x19260002</string>
 	</dict>
 	<key>KernelAndKextPatches</key>
 	<dict>
@@ -208,18 +263,6 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>Enable TRIM support for non-Apple SSD</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>QVBQTEUgU1NEAA==</data>
-				<key>Name</key>
-				<string>IOAHCIBlockStorage</string>
-				<key>Replace</key>
-				<data>AAAAAAAAAAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
 				<string>10.10.2+ BT4LE-Handoff-Hotspot, Dokterdok</string>
 				<key>Disabled</key>
 				<false/>
@@ -232,20 +275,6 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Boot graphics glitch, 10.10.x/10.11.x (credit lisai9093, cecekpawon)</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>AQAAdRc=</data>
-				<key>MatchOS</key>
-				<string>10.10.x,10.11.x</string>
-				<key>Name</key>
-				<string>IOGraphicsFamily</string>
-				<key>Replace</key>
-				<data>AQAA6xc=</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
 				<string>10.11.dp1+ BT4LE-Handoff-Hotspot, credit RehabMan based on Dokterdok original</string>
 				<key>Disabled</key>
 				<false/>
@@ -255,42 +284,6 @@
 				<string>IOBluetoothFamily</string>
 				<key>Replace</key>
 				<data>Qb4PAAAA60Q=</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable lid wake after sleep for 0a2e0008 (c) syscl/lighting/Yating Zhou</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>QAAAAB4AAAAFBQkB</data>
-				<key>Name</key>
-				<string>AppleIntelFramebufferAzul</string>
-				<key>Replace</key>
-				<data>QAAAAA8AAAAFBQkB</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0xa2e0008</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>CAAuCgEDAwMAAAAEAAAgAgAAUAE=</data>
-				<key>Name</key>
-				<string>AppleIntelFramebufferAzul</string>
-				<key>Replace</key>
-				<data>CAAuCgEDAwMAAAAIAAAAAwAAAAM=</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable HD4600 HDMI Audio </string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>PQwKAAA=</data>
-				<key>Name</key>
-				<string>AppleHDAController</string>
-				<key>Replace</key>
-				<data>PQwMAAA=</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
