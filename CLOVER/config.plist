@@ -25,9 +25,13 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>X09TSQ==</data>
+					<data>
+					X09TSQ==
+					</data>
 					<key>Replace</key>
-					<data>WE9TSQ==</data>
+					<data>
+					WE9TSQ==
+					</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -35,9 +39,13 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>SERBUw==</data>
+					<data>
+					SERBUw==
+					</data>
 					<key>Replace</key>
-					<data>SERFRg==</data>
+					<data>
+					SERFRg==
+					</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -45,9 +53,13 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>SEVDSQ==</data>
+					<data>
+					SEVDSQ==
+					</data>
 					<key>Replace</key>
-					<data>SU1FSQ==</data>
+					<data>
+					SU1FSQ==
+					</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -55,9 +67,13 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>R0ZYMA==</data>
+					<data>
+					R0ZYMA==
+					</data>
 					<key>Replace</key>
-					<data>SUdQVQ==</data>
+					<data>
+					SUdQVQ==
+					</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -65,9 +81,13 @@
 					<key>Disabled</key>
 					<true/>
 					<key>Find</key>
-					<data>QUxTRA==</data>
+					<data>
+					QUxTRA==
+					</data>
 					<key>Replace</key>
-					<data>QUxTMA==</data>
+					<data>
+					QUxTMA==
+					</data>
 				</dict>
 			</array>
 			<key>ReuseFFFF</key>
@@ -250,87 +270,359 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 2 of 5</string>
+				<string>Enable Realtek ALC256 stage 4 of 5</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>hQjsEA==</data>
+				<data>
+				hBnUEQ==
+				</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>AAAAAA==</data>
+				<data>
+				VgLsEA==
+				</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 4 of 5</string>
-				<key>Disabled</key>
-				<true/>
-				<key>Find</key>
-				<data>hBnUEQ==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>aAbsEA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>10.11.dp1+ BT4LE-Handoff-Hotspot, credit RehabMan based on Dokterdok original</string>
+				<string>IONVMeFamily Pike R. Alpha Patch 02</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>SIX/dEdIiwc=</data>
+				<data>
+				D7aMiIIAAACD+QwPhTIBAA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				D7aMiIIAAACD+QkPhTIBAA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 06-07</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				icGB4f8PAABIAdFIgfn/DwAAdzs=
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				icGB4f8BAABIAdFIgfn/AQAAdzs=
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 14</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				iWTY+EmBxAAQAABJgccA8A==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				iWTY+EmBxAACAABJgccA8A==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 04</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				SYnGTYX2dGFBwecMSWP/vg==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				SYnGTYX2dGFBwecJSWP/vg==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 stage 1 of 5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				gxnUEQ==
+				</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>
+				AAAAAA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 12</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				yAAAAEkp17gAEAAATYskJA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				yAAAAEkp17gAAgAATYskJA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 05</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				hv8PAABIwegMD7cPgeH/Dw==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				hv8PAABIwegJD7cPgeH/Dw==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 09-10</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				BgIAAEyNuAAQAABMiflIgeEA8P//SYmGGgEAAEmJjiIB
+				AABBvAAQAABJKfQ=
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				BgIAAEyNuAACAABMiflIgeEA8P//SYmGGgEAAEmJjiIB
+				AABBvAACAABJKfQ=
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 17</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				RYTJD5XAD7bAweAMRAnYRA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				RYTJD5XAD7bAweAJRAnYRA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 15</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				Bf8PAABIwegMZvfB/w8PlQ==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				Bf8PAABIwegJZvfB/w8PlQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 11</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				AABJiY4iAQAAugAQAABIKQ==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				AABJiY4iAQAAugACAABIKQ==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>10.10.2+ BT4LE-Handoff-Hotspot, Dokterdok</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				SIX/dEdIiwc=
+				</data>
 				<key>Name</key>
 				<string>IOBluetoothFamily</string>
 				<key>Replace</key>
-				<data>Qb4PAAAA60Q=</data>
+				<data>
+				Qb4PAAAA60Q=
+				</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>AirPortBrcm4360 5ghz</string>
+				<string>IONVMeFamily Pike R. Alpha Patch 01</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>QYP8/3QsSA==</data>
+				<data>
+				ibP4AgAAweAMBQAQAACJgw==
+				</data>
+				<key>MatchOS</key>
+				<string>10.12.1</string>
 				<key>Name</key>
-				<string>AirPortBrcm4360</string>
+				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>ZscGVVPrKw==</data>
+				<data>
+				ibPwAgAAweAJBQAQAACJgw==
+				</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 1 of 5</string>
+				<string>Enable Realtek ALC256 stage 3 of 5</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>hAjsEA==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 5 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>ihnUEQ==</data>
+				<data>
+				YQLsEA==
+				</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>AAAAAA==</data>
+				<data>
+				AAAAAA==
+				</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 3 of 5</string>
+				<string>IONVMeFamily Pike R. Alpha Patch 03</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>ixnUEQ==</data>
+				<data>
+				AMeDpAAAAAAQAABIi0gISA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				AMeDpAAAAAACAABIi0gISA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 stage 3 of 5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				YgLsEA==
+				</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>aAbsEA==</data>
+				<data>
+				AAAAAA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 stage 2 of 5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				hQjsEA==
+				</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>
+				AAAAAA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 stage 5 of 5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				ihnUEQ==
+				</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>
+				AAAAAA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 16</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				weIIQQ+2wcHgDEQJ0EQJwA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				weIIQQ+2wcHgCUQJ0EQJwA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 08</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				SYHF/w8AAEnB7QxJiwQkSA==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				SYHF/w8AAEnB7QlJiwQkSA==
+				</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>IONVMeFamily Pike R. Alpha Patch 13</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				4b+AQBUGTYnWugAQAABFMQ==
+				</data>
+				<key>Name</key>
+				<string>IONVMeFamily</string>
+				<key>Replace</key>
+				<data>
+				4b+AQBUGTYnWugACAABFMQ==
+				</data>
 			</dict>
 		</array>
 	</dict>
