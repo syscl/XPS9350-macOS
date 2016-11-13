@@ -10,22 +10,13 @@
 			<false/>
 			<key>DropOEM_DSM</key>
 			<false/>
-			<key>DropTables</key>
-			<array>
-				<dict>
-					<key>Signature</key>
-					<string>MCFG</string>
-				</dict>
-				<dict>
-					<key>Signature</key>
-					<string>DMAR</string>
-				</dict>
-			</array>
 			<key>Fixes</key>
 			<dict>
 				<key>FixRegions_10000000</key>
 				<true/>
 			</dict>
+			<key>Name</key>
+			<string>DSDT.aml</string>
 			<key>Patches</key>
 			<array>
 				<dict>
@@ -79,13 +70,9 @@
 					<data>QUxTMA==</data>
 				</dict>
 			</array>
-			<key>Name</key>
-			<string>DSDT.aml</string>
 			<key>ReuseFFFF</key>
 			<false/>
 		</dict>
-		<key>DisableASPM</key>
-		<true/>
 		<key>HaltEnabler</key>
 		<true/>
 		<key>SSDT</key>
@@ -151,7 +138,7 @@
 			<key>IMEI</key>
 			<string>0x0</string>
 			<key>IntelGFX</key>
-			<string>0x04128086</string>
+			<string>0x0</string>
 			<key>LAN</key>
 			<string>0x0</string>
 			<key>NVidia</key>
@@ -258,20 +245,32 @@
 		<key>KernelLapic</key>
 		<false/>
 		<key>KernelPm</key>
-		<false/>
+		<true/>
 		<key>KextsToPatch</key>
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>10.10.2+ BT4LE-Handoff-Hotspot, Dokterdok</string>
+				<string>Enable Realtek ALC668 stage 2 of 5</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>SIXAdFwPt0g=</data>
+				<data>hQjsEA==</data>
 				<key>Name</key>
-				<string>IOBluetoothFamily</string>
+				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>Qb4PAAAA61k=</data>
+				<data>AAAAAA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC668 stage 4 of 5</string>
+				<key>Disabled</key>
+				<true/>
+				<key>Find</key>
+				<data>hBnUEQ==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>aAbsEA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -311,11 +310,11 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 2 of 5</string>
+				<string>Enable Realtek ALC668 stage 5 of 5</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>hQjsEA==</data>
+				<data>ihnUEQ==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
@@ -333,42 +332,6 @@
 				<key>Replace</key>
 				<data>aAbsEA==</data>
 			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 4 of 5</string>
-				<key>Disabled</key>
-				<true/>
-				<key>Find</key>
-				<data>hBnUEQ==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>aAbsEA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage 5 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>ihnUEQ==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC668 stage for 10.11</string>
-				<key>Find</key>
-				<data>gxnUEQ==</data>
-				<key>MatchOS</key>
-				<string>10.11.x</string>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
 		</array>
 	</dict>
 	<key>RtVariables</key>
@@ -381,17 +344,15 @@
 	<key>SMBIOS</key>
 	<dict>
 		<key>BiosReleaseDate</key>
-		<string>10/18/13</string>
+		<string>04/19/16</string>
 		<key>BiosVendor</key>
 		<string>Apple Inc.</string>
 		<key>BiosVersion</key>
-		<string>MBP112.88Z.0138.B02.1310181745</string>
+		<string>MB91.88Z.0154.B04.1604191425</string>
 		<key>Board-ID</key>
-		<string>Mac-3CBD00234E554E41</string>
+		<string>Mac-9AE82516C7C6B903</string>
 		<key>BoardManufacturer</key>
 		<string>Apple Inc.</string>
-		<key>BoardSerialNumber</key>
-		<string>C02K7SNAFD56A0CF3</string>
 		<key>BoardType</key>
 		<integer>10</integer>
 		<key>ChassisAssetTag</key>
@@ -399,17 +360,17 @@
 		<key>ChassisManufacturer</key>
 		<string>Apple Inc.</string>
 		<key>ChassisType</key>
-		<string>08</string>
+		<string>10</string>
 		<key>Family</key>
-		<string>MacBook Pro</string>
+		<string>MacBook</string>
 		<key>Manufacturer</key>
 		<string>Apple Inc.</string>
 		<key>Mobile</key>
 		<true/>
 		<key>ProductName</key>
-		<string>MacBookPro11,2</string>
+		<string>MacBook9,1</string>
 		<key>SerialNumber</key>
-		<string>C02K7SNAFD56</string>
+		<string>C02RRANSHDNK</string>
 		<key>Trust</key>
 		<false/>
 		<key>Version</key>
