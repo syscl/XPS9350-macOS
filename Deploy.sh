@@ -2,7 +2,7 @@
 
 #
 # syscl/Yating Zhou/lighting from bbs.PCBeta.com
-# Merge for Dell Precision M3800 and XPS15 (9530).
+# Merge for Dell XPS 13 9350(Skylake)
 #
 
 #================================= GLOBAL VARS ==================================
@@ -146,7 +146,7 @@ let gDelimitation_OSVer=12
 #
 # Define target website
 #
-target_website=https://github.com/syscl/M3800
+target_website=https://github.com/syscl/XPS9350-macOS
 
 #
 #--------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ function _PRINT_MSG()
 function _update()
 {
     #
-    # Sync all files from https://github.com/syscl/M3800
+    # Sync all files from https://github.com/syscl/XPS9350-macOS
     #
     # Check if github is available
     #
@@ -1343,7 +1343,7 @@ function main()
     fi
 
     #
-    # Sync all files from https://github.com/syscl/M3800
+    # Sync all files from https://github.com/syscl/XPS9350-macOS
     #
     # Check if github is available
     #
