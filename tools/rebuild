@@ -41,6 +41,20 @@ let gID=$(id -u)
 REPO=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 #
+# Define variables.
+#
+# Gvariables stands for getting datas from OS X.
+#
+gProductVer="$(sw_vers -productVersion)"
+gOSVer=${gProductVer:0:5}
+gMINOR_VER=${gProductVer:3:2}
+
+#
+# Set delimitation OS ver
+#
+let gDelimitation_OSVer=12
+
+#
 #--------------------------------------------------------------------------------
 #
 
@@ -107,6 +121,14 @@ function _tidy_exec()
 
 function rebuild_kernel_cache()
 {
+    if [ $gMINOR_VER -ge $gDelimitation_OSVer ];
+      then
+        #
+        # syscl: 10.12+: we need to first remove kernelcache and prelinked cache
+        #
+        sudo rm -rf /System/Library/Caches/com.apple.kext.caches/Startup/kernelcache
+        sudo rm -rf /System/Library/PrelinkedKernels/prelinkedkernel
+    fi
     #
     # Repair the permission & refresh kernelcache.
     #
@@ -143,20 +165,7 @@ function main()
 
 #==================================== START =====================================
 
-if [[ $gID -ne 0 ]];
-  then
-    _PRINT_MSG "NOTE: This script ${RED}MUST${OFF} be run as ${BOLD}root${OFF}"
-    printf "[ ${RED}Note${OFF} ]  Type in "
-    #
-    # Re-run script with arguments.
-    #
-    sudo "$0" "$@"
-else
-    #
-    # We are root. Call main with arguments.
-    #
-    main "$@"
-fi
+main "$@"
 
 #================================================================================
 
