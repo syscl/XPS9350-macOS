@@ -44,6 +44,10 @@ Note: For two finger scrolling you need to change the speed of the Scrolling onc
 
 Change Log
 ----------------
+2016-11-15
+
+- Fixed screen blank when resume from sleep credit syscl/lighting/Yating Zhou
+
 2016-11-12
 
 - First commit 
