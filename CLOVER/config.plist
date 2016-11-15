@@ -233,7 +233,7 @@
 		<key>NvidiaSingle</key>
 		<false/>
 		<key>ig-platform-id</key>
-		<string>0x19260002</string>
+		<string>0x19260004</string>
 	</dict>
 	<key>KernelAndKextPatches</key>
 	<dict>
@@ -253,6 +253,30 @@
 		<true/>
 		<key>KextsToPatch</key>
 		<array>
+			<dict>
+				<key>Comment</key>
+				<string>Enable lid wake for 0x19260004 #1 of 2 credit syscl/lighting/Yating Zhou</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>CgsDAAAHBgADAAAABAAAAA==</data>
+				<key>Name</key>
+				<string>AppleIntelSKLGraphicsFramebuffer</string>
+				<key>Replace</key>
+				<data>DwkAAAAAAAAAAAAAAAAAAA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>UO4aAAAAAAAA7xoAAAAAAA==</data>
+				<key>Name</key>
+				<string>AppleIntelSKLGraphicsFramebuffer</string>
+				<key>Replace</key>
+				<data>UO4aAAAAAACw7hoAAAAAAA==</data>
+			</dict>
 			<dict>
 				<key>Comment</key>
 				<string>Enable Realtek ALC256 stage 4 of 5</string>
