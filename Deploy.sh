@@ -1406,12 +1406,12 @@ function main()
     # DSDT Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syntax "fix_PARSEOP_ZERO"" "Fix PARSEOP_ZERO"
+#    _tidy_exec "patch_acpi DSDT syntax "fix_PARSEOP_ZERO"" "Fix PARSEOP_ZERO"
     _tidy_exec "patch_acpi DSDT syntax "fix_ADBG"" "Fix ADBG Error"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
-    _tidy_exec "patch_acpi DSDT usb "usb_7-series"" "7-series/8-series USB"
+#    _tidy_exec "patch_acpi DSDT usb "usb_7-series"" "7-series/8-series USB"
     _tidy_exec "patch_acpi DSDT usb "usb_prw_0x0d_xhc"" "Fix USB _PRW"
-    _tidy_exec "patch_acpi DSDT battery "battery_Acer-Aspire-E1-571"" "Acer Aspire E1-571"
+#    _tidy_exec "patch_acpi DSDT battery "battery_Acer-Aspire-E1-571"" "Acer Aspire E1-571"
     _tidy_exec "patch_acpi DSDT system "system_IRQ"" "IRQ Fix"
     _tidy_exec "patch_acpi DSDT system "system_SMBUS"" "SMBus Fix"
     _tidy_exec "patch_acpi DSDT system "system_ADP1"" "AC Adapter Fix"

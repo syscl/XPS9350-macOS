@@ -1,9 +1,12 @@
 #Maintained by: RehabMan for: Laptop Patches
 #system_IMEI.txt
 
-# add missing IMEI device
-
+# if you already have an IMEI/HECI/MEI device, you should not use this patch
+# but if you do, these patches will remove the existing one
+into device name_adr 0x00160000 remove_entry;
 into device label IMEI parent_label PCI0 remove_entry;
+
+# add missing IMEI device
 into device label PCI0 insert
 begin
 Device (IMEI)\n
