@@ -12,11 +12,11 @@
 			<false/>
 			<key>Fixes</key>
 			<dict>
+				<key>NewWay_80000000</key>
+				<true/>
 				<key>FixRegions_10000000</key>
 				<true/>
 			</dict>
-			<key>Name</key>
-			<string>DSDT.aml</string>
 			<key>Patches</key>
 			<array>
 				<dict>
@@ -70,15 +70,15 @@
 					<data>QUxTMA==</data>
 				</dict>
 			</array>
+			<key>Name</key>
+			<string>DSDT.aml</string>
 			<key>ReuseFFFF</key>
 			<false/>
 		</dict>
-		<key>HaltEnabler</key>
-		<true/>
 		<key>SSDT</key>
 		<dict>
 			<key>DropOem</key>
-			<true/>
+			<false/>
 			<key>Generate</key>
 			<dict>
 				<key>CStates</key>
@@ -104,8 +104,12 @@
 			<string>SSDT-15.aml</string>
 			<string>SSDT-pr.aml</string>
 			<string>SSDT-rmne.aml</string>
-			<string>SSDT-m-M3800.aml</string>
+			<string>SSDT-m-xps13.aml</string>
 		</array>
+		<key>HaltEnabler</key>
+		<true/>
+		<key>DisableASPM</key>
+		<true/>
 	</dict>
 	<key>Boot</key>
 	<dict>
@@ -226,7 +230,7 @@
 			<key>ATI</key>
 			<false/>
 			<key>Intel</key>
-			<false/>
+			<true/>
 			<key>NVidia</key>
 			<false/>
 		</dict>
