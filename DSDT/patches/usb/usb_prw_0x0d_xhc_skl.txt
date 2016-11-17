@@ -1,0 +1,64 @@
+#Maintained by: RehabMan for: Laptop Patches
+#usb_prw_0x0d_xhc_skl.txt
+
+# remove _PRW methods to prevent instant wake
+
+# delete any existing XHC1 device
+into device label XHC1 name_adr 0x00140000 remove_entry;
+
+# if _PRW objects are methods
+into method label _PRW parent_adr 0x00140000 remove_entry;
+into method label _PRW parent_adr 0x00140001 remove_entry;
+into method label _PRW parent_adr 0x001F0003 remove_entry;
+# some other LAN cards use 0x00190000
+into method label _PRW parent_adr 0x00190000 remove_entry;
+into method label _PRW parent_adr 0x001F0006 remove_entry;
+
+# if _PRW methods are stuffed into a separate scope
+into method label _PRW parent_label _SB.PCI0.EHC1 remove_entry;
+into method label _PRW parent_label _SB.PCI0.EHC2 remove_entry;
+into method label _PRW parent_label _SB.PCI0.XHC remove_entry;
+into method label _PRW parent_label \_SB.PCI0.EHC1 remove_entry;
+into method label _PRW parent_label \_SB.PCI0.EHC2 remove_entry;
+into method label _PRW parent_label \_SB.PCI0.XHC remove_entry;
+
+# if _PRW objects are names
+into device name_adr 0x00140000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00140001 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001F0003 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00190000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+# some _PRW have three entries in the Package
+into device name_adr 0x00140000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00140001 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x001F0003 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+into device name_adr 0x00190000 code_regex Name.*_PRW.*\n.*\n.*\n.*\n.*\n.*\}\) remove_matched;
+
+# seems to work better if _PRW is present, but returns 0 (original was 3) for sleep state
+# Note: These are methods because some Skylake DSDT call _PRW as a method for no reason
+into device name_adr 0x00140000 insert begin Method(_PRW) { Return(Package() { 0x0D, 0 }) } end;
+into device name_adr 0x00140001 insert begin Method(_PRW) { Return(Package() { 0x0D, 0 }) } end;
+into device name_adr 0x001F0003 insert begin Method(_PRW) { Return(Package() { 0x0D, 0 }) } end;
+into device name_adr 0x00190000 insert begin Method(_PRW) { Return(Package() { 0x0D, 0 }) } end;
+into device name_adr 0x001F0006 insert begin Method(_PRW) { Return(Package() { 0x0D, 0 }) } end;
+
+# Insert Apple USB properties into USB 3.0 XHC
+into method label _DSM parent_adr 0x00140000 remove_entry;
+into device name_adr 0x00140000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "subsystem-id", Buffer() { 0x70, 0x72, 0x00, 0x00 },\n
+        "subsystem-vendor-id", Buffer() { 0x86, 0x80, 0x00, 0x00 },\n
+        "AAPL,current-available", 2100,\n
+        "AAPL,current-extra", 2200,\n
+        "AAPL,current-extra-in-sleep", 1600,\n
+        "AAPL,device-internal", 0x02,\n
+        "AAPL,max-port-current-in-sleep", 2100,\n
+    })\n
+}\n
+end;
+
+
