@@ -1,0 +1,3 @@
+#PPMC -> PMCR to fit the OS X/macOS’s required credit syscl
+into device label PPMC set_label begin PMCR end;
+into_all all code_regex PPMC replaceall_matched begin PMCR end;
