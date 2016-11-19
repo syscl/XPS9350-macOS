@@ -1,0 +1,12 @@
+#Maintained by: syscl/lighting/Yating Zhou for: PCBeta
+#Insert Device (SLPB) for macOS 
+
+# Replace all instances of SBTN with SLPB
+into device label SBTN set_label begin SLPB end;
+into_all all code_regex SBTN replaceall_matched begin SLPB end;
+
+# Status fix 
+into device name_hid PNP0C0E insert
+begin
+Name (_STA, 0x0B)  // correct status by syscl\n
+end;
