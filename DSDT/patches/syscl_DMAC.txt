@@ -1,0 +1,40 @@
+#Maintained by: syscl/lighting/Yating Zhou for: PCBeta
+#Insert Device(DMAC) for macOS 
+
+# add missing DMAC device
+into scope label _SB.PCI0.LPCB insert
+begin
+Device (DMAC) // macOS desires DMAC credit syscl\n
+{\n
+	Name (_HID, EisaId ("PNP0200"))\n
+	Name (_CRS, ResourceTemplate ()\n
+	{\n
+		IO (Decode16,\n
+		0x0000,\n
+		0x0000,\n
+		0x01,\n
+		0x20,\n
+		)\n
+		IO (Decode16,\n
+		0x0081,\n
+		0x0081,\n
+		0x01,\n
+		0x11,\n
+		)\n
+		IO (Decode16,\n
+		0x0093,\n
+		0x0093,\n
+		0x01,\n
+		0x0D,\n
+		)\n
+		IO (Decode16,\n
+		0x00C0,\n
+		0x00C0,\n
+		0x01,\n
+		0x20,\n
+		)\n
+		DMA (Compatibility, NotBusMaster, Transfer8_16, )\n
+			{4}\n
+	})\n
+}\n
+end;
