@@ -1413,6 +1413,10 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
+    #
+    # Modificate ACPI for macOS to load devices correctly
+    #
+    _tidy_exec "patch_acpi DSDT syscl "syscl_PPMC2PMCR"" "PPMC->PMCR"
 
     #
     # DptfTa Patches.
