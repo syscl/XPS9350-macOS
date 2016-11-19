@@ -6,20 +6,15 @@
 	<array>
 		<dict>
 			<key>AFGLowPowerState</key>
-			<data>
-			AwAAAA==
-			</data>
+			<data>AwAAAA==</data>
 			<key>CodecID</key>
-			<integer>283902550</integer>
+			<real>283902550</real>
 			<key>ConfigData</key>
-			<data>
-			ASccEAEnHQABJx6mAScfkAFHHCABRx0AAUceFwFHH5ABlxwwAZcd
-			EAGXHosBlx8AAhccUAIXHRACFx4rAhcfAgFHDAI=
-			</data>
+			<data>ASccEAEnHQABJx6mAScfkAFHHCABRx0AAUceFwFHH5ABlxwwAZcdEAGXHosBlx8AAhccUAIXHRACFx4rAhcfAgFHDAI=</data>
 			<key>FuncGroup</key>
 			<integer>1</integer>
 			<key>LayoutID</key>
-			<integer>3</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 </dict>
