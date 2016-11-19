@@ -859,19 +859,6 @@ function _find_acpi()
           SgRef=SSDT-${index}
       fi
     done
-
-    #
-    # Search OptRef.
-    #
-    for ((index = 1; index <= ${number}; index++))
-    do
-      grep -i "OptRef" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
-
-      if [ "${RETURN_VAL}" == 0 ];
-        then
-          OptRef=SSDT-${index}
-      fi
-    done
 }
 
 #
@@ -1451,14 +1438,6 @@ function main()
     _tidy_exec "patch_acpi ${SgRef} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
-    # OptRef Patches.
-    #
-    _PRINT_MSG "--->: ${BLUE}Patching ${OptRef}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${OptRef} syscl "WMMX-invalid-operands"" "Remove invalid operands"
-    _tidy_exec "patch_acpi ${OptRef} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
-    _tidy_exec "patch_acpi ${OptRef} syscl "graphics_Disable_Nvidia"" "Disable Nvidia card (Non-operational in OS X)"
-
-    #
     # Copy all tables to precompile.
     #
     _PRINT_MSG "--->: ${BLUE}Copying tables to precompile...${OFF}"
@@ -1478,7 +1457,6 @@ function main()
     _tidy_exec "compile_table "${DptfTa}"" "Compile DptfTa"
     _tidy_exec "compile_table "${SaSsdt}"" "Compile SaSsdt"
     _tidy_exec "compile_table "${SgRef}"" "Compile SgRef"
-    _tidy_exec "compile_table "${OptRef}"" "Compile OptRef"
 
     #
     # Copy SSDT-rmne.aml.
