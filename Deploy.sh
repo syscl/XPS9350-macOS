@@ -1418,6 +1418,7 @@ function main()
     #
     _tidy_exec "patch_acpi DSDT syscl "syscl_PPMC2PMCR"" "PPMC->PMCR"
     _tidy_exec "patch_acpi DSDT syscl "syscl_DMAC"" "Insert DMAC(PNP0200)"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_MATH"" "Make Device(MATH) load correctly in macOS"
 
     #
     # DptfTa Patches.
