@@ -1,0 +1,6 @@
+#Maintained by: syscl/lighting/Yating Zhou for: PCBeta
+#Let macOS load Device(MATH)
+#Note: Eliminate/refine code inside MATH, otherwise macOS would not load it
+
+#Remove _STA method for PNP0C04 to load
+into method label _STA parent_hid PNP0C04 remove_entry;
