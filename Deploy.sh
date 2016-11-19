@@ -846,19 +846,6 @@ function _find_acpi()
           SaSsdt=SSDT-${index}
       fi
     done
-
-    #
-    # Search SgRef.
-    #
-    for ((index = 1; index <= ${number}; index++))
-    do
-      grep -i "SgRef" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
-
-      if [ "${RETURN_VAL}" == 0 ];
-        then
-          SgRef=SSDT-${index}
-      fi
-    done
 }
 
 #
@@ -1438,11 +1425,6 @@ function main()
     _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
     _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_Intel_HD4600"" "Insert HDAU device"
 
-    #
-    # SgRef Patches.
-    #
-    _PRINT_MSG "--->: ${BLUE}Patching ${SgRef}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${SgRef} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # Copy all tables to precompile.
@@ -1463,7 +1445,6 @@ function main()
     _tidy_exec "compile_table "DSDT"" "Compiling DSDT"
     _tidy_exec "compile_table "${DptfTa}"" "Compile DptfTa"
     _tidy_exec "compile_table "${SaSsdt}"" "Compile SaSsdt"
-    _tidy_exec "compile_table "${SgRef}"" "Compile SgRef"
 
     #
     # Copy SSDT-rmne.aml.
