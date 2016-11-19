@@ -1417,6 +1417,7 @@ function main()
     # Modificate ACPI for macOS to load devices correctly
     #
     _tidy_exec "patch_acpi DSDT syscl "syscl_PPMC2PMCR"" "PPMC->PMCR"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_DMAC"" "Insert DMAC(PNP0200)"
 
     #
     # DptfTa Patches.
