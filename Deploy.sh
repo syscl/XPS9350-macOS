@@ -609,9 +609,9 @@ function _upd_EFI()
 function _check_and_fix_config()
 {
     #
-    # Check if the ig-platform-id is correct(i.e. ig-platform-id = 0x0a2e0008).
+    # Check if the ig-platform-id is correct(i.e. ig-platform-id = 0x19260004).
     #
-    target_ig_platform_id="0x0a2e0008"
+    target_ig_platform_id="0x19260004"
     gClover_ig_platform_id=$(awk '/<key>ig-platform-id<\/key>.*/,/<\/string>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
 
     #
@@ -661,16 +661,16 @@ function _check_and_fix_config()
 
 
     #
-    # Repair the lid wake problem for 0x0a2e0008 by syscl/lighting/Yating Zhou.
+    # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
     #
-    cLidWake="Enable lid wake after sleep for 0x0a2e0008 (c) syscl/lighting/Yating Zhou"
+    cLidWake="Enable lid wake after sleep for 0x19260004 (c) syscl/lighting/Yating Zhou"
     fLidWake="40000000 1e000000 05050901"
     rLidWake="40000000 0f000000 05050901"
     nLidWake="AppleIntelFramebufferAzul"
     #
-    # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x0a2e0008.
+    # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x19260004.
     #
-    cAzulFrameBuffer="Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x0a2e0008"
+    cAzulFrameBuffer="Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x19260004"
     fAzulFrameBuffer="08002e0a 01030303 00000004 00002002 00005001"
     rAzulFrameBuffer="08002e0a 01030303 00000008 00000003 00000003"
     nAzulFrameBuffer="AppleIntelFramebufferAzul"
@@ -1531,10 +1531,10 @@ function main()
     fi
 
     #
-    # Lead to lid wake on 0x0a2e0008 by syscl/lighting/Yating Zhou.
+    # Lead to lid wake on 0x19260004 by syscl/lighting/Yating Zhou.
     #
-    _PRINT_MSG "--->: ${BLUE}Leading to lid wake on 0x0a2e0008 (c) syscl/lighting/Yating Zhou...${OFF}"
-    _tidy_exec "_check_and_fix_config" "Lead to lid wake on 0x0a2e0008"
+    _PRINT_MSG "--->: ${BLUE}Leading to lid wake on 0x19260004 (c) syscl/lighting/Yating Zhou...${OFF}"
+    _tidy_exec "_check_and_fix_config" "Lead to lid wake on 0x19260004"
 
     #
     # Fix issue that external devices ejected improperly upon sleep (c) syscl/lighting/Yating Zhou.
