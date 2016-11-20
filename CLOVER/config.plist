@@ -502,7 +502,7 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>10.10.2+ BT4LE-Handoff-Hotspot, Dokterdok</string>
+				<string>Enable BT4LE-Handoff-Hotspot</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
