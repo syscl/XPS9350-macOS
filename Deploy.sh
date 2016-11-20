@@ -663,10 +663,16 @@ function _check_and_fix_config()
     #
     # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
     #
-    cLidWake="Enable lid wake after sleep for 0x19260004 (c) syscl/lighting/Yating Zhou"
-    fLidWake="40000000 1e000000 05050901"
-    rLidWake="40000000 0f000000 05050901"
-    nLidWake="AppleIntelFramebufferAzul"
+    cLidWake_1="Enable lid wake for 0x19260004 #1 of 2 credit syscl/lighting/Yating Zhou"
+    fLidWake_1="0a0b0300 00070600 03000000 04000000"
+    rLidWake_1="0f090000 00000000 00000000 00000000"
+    nLidWake_1="AppleIntelSKLGraphicsFramebuffer"
+
+    cLidWake_2="Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou"
+    fLidWake_2="50ee1a00 00000000 00ef1a00 00000000"
+    rLidWake_2="50ee1a00 00000000 b0ee1a00 00000000"
+    nLidWake_2="AppleIntelSKLGraphicsFramebuffer"
+
     #
     # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x19260004.
     #
@@ -692,10 +698,10 @@ function _check_and_fix_config()
     #
     # Now let's inject it.
     #
-    cBinData=("$cLidWake" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
-    fBinData=("$fLidWake" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
-    rBinData=("$rLidWake" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
-    nBinData=("$nLidWake" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
+    cBinData=("$cLidWake_1" "$cLidWake_2" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
+    fBinData=("$fLidWake_1" "$fLidWake_2" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
+    rBinData=("$rLidWake_1" "$rLidWake_2" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
+    nBinData=("$nLidWake_1" "$nLidWake_2" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
 
     for ((j=0; j<${#nBinData[@]}; ++j))
     do
