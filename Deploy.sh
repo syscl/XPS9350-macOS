@@ -685,44 +685,17 @@ function _check_and_fix_config()
     # Check if "BT4LE-Handoff-Hotspot" is in place of kextstopatch.
     #
     cHandoff="Enable BT4LE-Handoff-Hotspot"
-    #
-    # Check the minor version of OS X(e.g. 10.10 vs. 10.11) and then we can choose the patch accordingly to the system.
-    #
-    if [[ $gMINOR_VER -ge 11 ]];
-      then
-        #
-        # OS X is 10.11+.
-        #
-        fHandoff="4885ff74 47488b07"
-        rHandoff="41be0f00 0000eb44"
-      else
-        #
-        # OS X is 10.10-.
-        #
-        fHandoff="4885c074 5c0fb748"
-        rHandoff="41be0f00 0000eb59"
-    fi
+    fHandoff="4885ff74 47488b07"
+    rHandoff="41be0f00 0000eb44"
     nHandoff="IOBluetoothFamily"
 
     #
     # Now let's inject it.
     #
-    if [[ $gMINOR_VER -ge 12 ]];
-      then
-#        cBinData=("$cLidWake" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff" "$cHaswellLive")
-#        fBinData=("$fLidWake" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff" "$fHaswellLive")
-#        rBinData=("$rLidWake" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff" "$rHaswellLive")
-#        nBinData=("$nLidWake" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff" "$nHaswellLive")
-        cBinData=("$cLidWake" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
-        fBinData=("$fLidWake" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
-        rBinData=("$rLidWake" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
-        nBinData=("$nLidWake" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
-      else
-        cBinData=("$cLidWake" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
-        fBinData=("$fLidWake" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
-        rBinData=("$rLidWake" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
-        nBinData=("$nLidWake" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
-    fi
+    cBinData=("$cLidWake" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
+    fBinData=("$fLidWake" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
+    rBinData=("$rLidWake" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
+    nBinData=("$nLidWake" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
 
     for ((j=0; j<${#nBinData[@]}; ++j))
     do
