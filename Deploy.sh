@@ -634,9 +634,9 @@ function _check_and_fix_config()
         fi
     fi
     #
-    # Check SSDT-m-M3800.aml
+    # Check SSDT-XPS13SKL.aml
     #
-    local dCheck_SSDT="SSDT-m-M3800.aml"
+    local dCheck_SSDT="SSDT-XPS13SKL.aml"
     local gSortedOrder=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
     local gSortedNumber=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g' | wc -l)
     if [[ $gSortedOrder != *"$dCheck_SSDT"* ]];
@@ -1435,8 +1435,8 @@ function main()
     #
     # Install SSDT-m for ALS0.
     #
-    _PRINT_MSG "--->: ${BLUE}Installing SSDT-m-M3800.aml to ./DSDT/compile...${OFF}"
-    _tidy_exec "cp "${prepare}"/SSDT-m-M3800.aml "${compile}"" "Copy SSDT-m-M3800.aml to ./DSDT/compile"
+    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
 
     #
     # Clean up dynamic SSDTs.

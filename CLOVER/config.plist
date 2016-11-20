@@ -104,7 +104,7 @@
 			<string>SSDT-15.aml</string>
 			<string>SSDT-pr.aml</string>
 			<string>SSDT-rmne.aml</string>
-			<string>SSDT-m-xps13.aml</string>
+			<string>SSDT-XPS13SKL.aml</string>
 		</array>
 		<key>HaltEnabler</key>
 		<true/>
