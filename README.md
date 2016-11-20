@@ -44,6 +44,25 @@ Note: For two finger scrolling you need to change the speed of the Scrolling onc
 
 Change Log
 ----------------
+2016-11-20
+
+- Correct SKL laptops' internal display connector type from LVDS to eDP credit syscl
+- Added lid wake auto patches for deploy.sh
+- Inject SSDT-XPS13SKL.aml
+
+2016-11-19
+
+- PPMC -> PMCR
+- Insert DMAC for macOS credit syscl
+- Make Device (MATH) load correctly credit syscl
+- SBTN -> SLPB with _STA 0x0B credit syscl
+- Eliminate SgRef
+
+2016-11-18
+
+- Fixed HD520 glitches on Sierra credit Pikeralpha 
+- Eliminate redundant acpi table & patches
+
 2016-11-17
 
 - Fixed brightness save issue: EmuVariableUefi-64 + IntelBacklight + /nvram.plist
