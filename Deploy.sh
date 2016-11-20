@@ -704,17 +704,6 @@ function _check_and_fix_config()
     fi
     nHandoff="IOBluetoothFamily"
 
-    if [[ $gMINOR_VER -ge 12 ]];
-      then
-        #
-        # OS X is 10.12+.
-        #
-        cHaswellLive="Fix Intel HD4600 Safari Video Crash credit vit9696"
-        fHaswellLive="48898ba8 000000"
-        rHaswellLive="90909090 909090"
-        nHaswellLive="AppleIntelFramebufferAzul"
-    fi
-
     #
     # Now let's inject it.
     #
