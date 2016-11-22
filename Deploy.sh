@@ -1179,6 +1179,20 @@ function _bakBaseSystem()
 #--------------------------------------------------------------------------------
 #
 
+function _installExTool()
+{
+    local gExecutableFiles = ("iasl" "lspci" "mnt" "rebuild" "umnt")
+    local gBinRepo="/usr/sbin"
+    for file in "${gExecutableFiles}"
+    do
+      _tidy_exec "sudo cp -RX ${REPO}/tools/${file} ${gBinRepo}" "Install ${file} to ${gBinRepo}"
+    done
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
 function _recoveryhd_fix()
 {
     #
