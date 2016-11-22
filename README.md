@@ -1,3 +1,4 @@
+
 macOS on DELL XPS13 (9350)
 ====================================
 
@@ -11,6 +12,7 @@ This project targets at giving the relatively complete functional macOS for XPS1
 - AHCI instead of AHCI RAID
 5. Install macOS
 6. Once you finish installation of macOS, you can do the following steps to finish the post installation of macOS
+
 
 How to use deploy.sh?
 ----------------
@@ -42,8 +44,13 @@ Reboot your macOS to see the change. If you have any problem about the script, t
 
 Note: For two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences.
 
+
 Change Log
 ----------------
+2016-11-22
+
+- Added lspci to list all pci devices
+
 2016-11-20
 
 - Correct SKL laptops' internal display connector type from LVDS to eDP credit syscl
