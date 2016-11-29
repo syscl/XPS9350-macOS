@@ -45,8 +45,27 @@ Reboot your macOS to see the change. If you have any problem about the script, t
 Note: For two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences.
 
 
+TODO List
+----------------
+
+Next week I have 3 ```final exams```, so I will be back in next Wednesday! What I will do next week are listed below
+
+- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table
+- Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)
+- Refine AppleHDA 
+- New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS
+- Import IOPowerManagement
+- ACPI Keyboard
+
+
+
 Change Log
 ----------------
+
+2016-11-29
+
+- Fixed reboot unstable issue and speed up reboot progress ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` credit syscl
+
 2016-11-22
 
 - Added lspci to list all pci devices
