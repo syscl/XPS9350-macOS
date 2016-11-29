@@ -107,7 +107,7 @@
 			<string>SSDT-XPS13SKL.aml</string>
 		</array>
 		<key>HaltEnabler</key>
-		<true/>
+		<false/>
 		<key>ResetAddress</key>
 		<string>0xB2</string>
 		<key>ResetValue</key>
