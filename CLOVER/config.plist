@@ -108,6 +108,10 @@
 		</array>
 		<key>HaltEnabler</key>
 		<true/>
+		<key>ResetAddress</key>
+		<string>0xB2</string>
+		<key>ResetValue</key>
+		<string>0x73</string>
 		<key>DisableASPM</key>
 		<true/>
 	</dict>
