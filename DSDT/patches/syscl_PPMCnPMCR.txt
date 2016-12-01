@@ -1,0 +1,8 @@
+#PPMC and PMCR combine together for macOS to load LPCB correctly credit syscl
+into device label PMCR remove_entry;
+into device label PCI0 insert begin
+Device (PMCR)\n
+{\n
+	Name (_ADR, 0x001F0002)  // macOS expect PMCR for PPMC to load correctly credit syscl\n
+}\n
+end

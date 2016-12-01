@@ -1385,7 +1385,7 @@ function main()
     #
     # Modificate ACPI for macOS to load devices correctly
     #
-    _tidy_exec "patch_acpi DSDT syscl "syscl_PPMC2PMCR"" "PPMC->PMCR"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_PPMCnPMCR"" "PPMC and PMCR combine together credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "syscl_DMAC"" "Insert DMAC(PNP0200)"
     _tidy_exec "patch_acpi DSDT syscl "syscl_MATH"" "Make Device(MATH) load correctly in macOS"
     _tidy_exec "patch_acpi DSDT syscl "syscl_SLPB"" "SBTN->SLPB with correct _STA 0x0B"
