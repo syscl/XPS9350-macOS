@@ -61,6 +61,9 @@ Next week I have 3 ```final exams```, so I will be back in next Wednesday! What 
 
 Change Log
 ----------------
+2016-12-01
+
+- Inject PMCR then macOS will combine PPMC together to make AppleIntelPCHPMC load correctly credit syscl
 
 2016-11-29
 
