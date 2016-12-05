@@ -1,4 +1,4 @@
-#graphics_Intel_HD4600 credit syscl
+#graphics_Intel_Skylake_Graphics credit syscl
 
 into method label _DSM parent_adr 0x00020000 remove_entry;
 into device name_adr 0x00020000 insert
@@ -8,7 +8,6 @@ Method (_DSM, 4, NotSerialized)\n
     If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
     Return (Package()\n
     {\n
-        "model", Buffer() { "Intel Iris Pro" },\n
         "hda-gfx", Buffer() { "onboard-1" },\n
     })\n
 }\n

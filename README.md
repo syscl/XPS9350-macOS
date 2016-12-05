@@ -65,6 +65,7 @@ Change Log
 
 - Fixed boot issue by ```AddClockID``` and ```FixOwnership```
 - Fixed syntax error 
+- Correct frame buffer name for SKL
 
 2016-12-01
 
