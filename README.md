@@ -61,6 +61,10 @@ Next week I have 3 ```final exams```, so I will be back in next Wednesday! What 
 
 Change Log
 ----------------
+2016-12-04
+
+- Fixed boot issue by ```AddClockID``` and ```FixOwnership```
+
 2016-12-01
 
 - Inject PMCR then macOS will combine PPMC together to make AppleIntelPCHPMC load correctly credit syscl
