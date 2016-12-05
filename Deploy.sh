@@ -117,10 +117,10 @@ cLidWake=""
 fLidWake=""
 rLidWake=""
 nLidWake=""
-cAzulFrameBuffer=""
-fAzulFrameBuffer=""
-rAzulFrameBuffer=""
-nAzulFrameBuffer=""
+cIntelGraphicsFrameBuffer=""
+fIntelGraphicsFrameBuffer=""
+rIntelGraphicsFrameBuffer=""
+nIntelGraphicsFrameBuffer=""
 cHDMI=""
 fHDMI=""
 rHDMI=""
@@ -477,9 +477,13 @@ function _initIntel()
 function _getEDID()
 {
     #
+    # dump kext load status
+    #
+    local gKextStatus=$(kextstat)
+    #
     # Whether the Intel Graphics kernel extensions are loaded in cache?
     #
-    if [[ `kextstat` == *"Azul"* && `kextstat` == *"HD5000"* ]];
+    if [[ ${gKextStatus} == *"AppleIntelSKLGraphicsFramebuffer"* && ${gKextStatus} == *"AppleIntelSKLGraphics"* ]];
       then
         #
         # Yes. Then we can directly assess EDID from ioreg.
@@ -674,12 +678,12 @@ function _check_and_fix_config()
     nLidWake_2="AppleIntelSKLGraphicsFramebuffer"
 
     #
-    # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x19260004.
+    # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Skylake framebuffer 0x19260004.
     #
-    cAzulFrameBuffer="Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Azul framebuffer 0x19260004"
-    fAzulFrameBuffer="08002e0a 01030303 00000004 00002002 00005001"
-    rAzulFrameBuffer="08002e0a 01030303 00000008 00000003 00000003"
-    nAzulFrameBuffer="AppleIntelFramebufferAzul"
+    cIntelGraphicsFrameBuffer="Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Skylake framebuffer 0x19260004"
+    fIntelGraphicsFrameBuffer="08002e0a 01030303 00000004 00002002 00005001"
+    rIntelGraphicsFrameBuffer="08002e0a 01030303 00000008 00000003 00000003"
+    nIntelGraphicsFrameBuffer="AppleIntelSKLGraphicsFramebuffer"
     #
     # Check if "Enable HD4600 HDMI Audio" is located in config.plist.
     #
@@ -698,10 +702,10 @@ function _check_and_fix_config()
     #
     # Now let's inject it.
     #
-    cBinData=("$cLidWake_1" "$cLidWake_2" "$cAzulFrameBuffer" "$cHDMI" "$cHandoff")
-    fBinData=("$fLidWake_1" "$fLidWake_2" "$fAzulFrameBuffer" "$fHDMI" "$fHandoff")
-    rBinData=("$rLidWake_1" "$rLidWake_2" "$rAzulFrameBuffer" "$rHDMI" "$rHandoff")
-    nBinData=("$nLidWake_1" "$nLidWake_2" "$nAzulFrameBuffer" "$nHDMI" "$nHandoff")
+    cBinData=("$cLidWake_1" "$cLidWake_2" "$cIntelGraphicsFrameBuffer" "$cHDMI" "$cHandoff")
+    fBinData=("$fLidWake_1" "$fLidWake_2" "$fIntelGraphicsFrameBuffer" "$fHDMI" "$fHandoff")
+    rBinData=("$rLidWake_1" "$rLidWake_2" "$rIntelGraphicsFrameBuffer" "$rHDMI" "$rHandoff")
+    nBinData=("$nLidWake_1" "$nLidWake_2" "$nIntelGraphicsFrameBuffer" "$nHDMI" "$nHandoff")
 
     for ((j=0; j<${#nBinData[@]}; ++j))
     do
