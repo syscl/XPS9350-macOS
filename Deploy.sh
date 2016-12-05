@@ -1181,7 +1181,7 @@ function _bakBaseSystem()
 
 function _installExTool()
 {
-    local gExecutableFiles = ("iasl" "lspci" "mnt" "rebuild" "umnt")
+    local gExecutableFiles=("iasl" "lspci" "mnt" "rebuild" "umnt")
     local gBinRepo="/usr/sbin"
     for file in "${gExecutableFiles}"
     do
