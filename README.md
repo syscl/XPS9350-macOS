@@ -64,6 +64,7 @@ Change Log
 2016-12-04
 
 - Fixed boot issue by ```AddClockID``` and ```FixOwnership```
+- Fixed syntax error 
 
 2016-12-01
 
