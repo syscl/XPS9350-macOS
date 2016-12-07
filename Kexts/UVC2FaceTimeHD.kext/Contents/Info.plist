@@ -4,21 +4,21 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
-	<key>CFBundleIdentifier</key>
-	<string>org.syscl.injector.UVC2iSight</string>
 	<key>CFBundleGetInfoString</key>
 	<string>1.0.0, Copyright © 2000-2016 syscl/Yating Zhou. All Rights Reserved.</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.syscl.injector.UVC2iSight</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>Syscl:UVC2FaceTimeHD</string>
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.0</string>
-	<key>CFBundleShortVersionString</key>
 	<string>1.0.0</string>
 	<key>IOKitPersonalities</key>
 	<dict>
@@ -56,9 +56,9 @@
 				<string>yes</string>
 			</dict>
 			<key>idProduct</key>
-			<integer>22332</integer>
+			<integer>26380</integer>
 			<key>idVendor</key>
-			<integer>3034</integer>
+			<integer>3141</integer>
 		</dict>
 	</dict>
 	<key>OSBundleRequired</key>
