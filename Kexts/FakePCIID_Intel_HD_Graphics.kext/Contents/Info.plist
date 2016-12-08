@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>15E65</string>
+	<string>15G1108</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.rehabman.injector.FakePCIID-Intel-HD-Graphics</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -13,17 +13,17 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.0</string>
+	<string>1.3.3</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.3.0</string>
+	<string>1.3.3</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>7D175</string>
+	<string>8B62</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
@@ -31,9 +31,9 @@
 	<key>DTSDKName</key>
 	<string>macosx10.6</string>
 	<key>DTXcode</key>
-	<string>0730</string>
+	<string>0810</string>
 	<key>DTXcodeBuild</key>
-	<string>7D175</string>
+	<string>8B62</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>HD4200 HD4400 HD4600 P4600</key>
@@ -60,7 +60,7 @@
 			<key>IOProviderClass</key>
 			<string>IOPCIDevice</string>
 		</dict>
-		<key>HD510 HD515 HD520 HD530</key>
+		<key>HD510 HD515 HD520 HD530 P530</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>org.rehabman.driver.FakePCIID</string>
@@ -78,7 +78,7 @@
 			<key>IOPCIClassMatch</key>
 			<string>0x03000000&amp;0xff000000</string>
 			<key>IOPCIPrimaryMatch</key>
-			<string>0x19068086 0x19138086 0x191e8086 0x19168086 0x191b8086</string>
+			<string>0x19068086 0x19138086 0x191e8086 0x19168086 0x191b8086 0x19028086 0x191d8086</string>
 			<key>IOProbeScore</key>
 			<integer>9001</integer>
 			<key>IOProviderClass</key>
@@ -103,6 +103,30 @@
 			<string>0x03000000&amp;0xff000000</string>
 			<key>IOPCIPrimaryMatch</key>
 			<string>0x19268086 0x19278086 0x193b8086</string>
+			<key>IOProbeScore</key>
+			<integer>9001</integer>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+		<key>P4000</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.rehabman.driver.FakePCIID</string>
+			<key>FakeProperties</key>
+			<dict>
+				<key>RM,device-id</key>
+				<data>
+				ZgEAAA==
+				</data>
+			</dict>
+			<key>IOClass</key>
+			<string>FakePCIID</string>
+			<key>IOMatchCategory</key>
+			<string>FakePCIID</string>
+			<key>IOPCIClassMatch</key>
+			<string>0x03000000&amp;0xff000000</string>
+			<key>IOPCIPrimaryMatch</key>
+			<string>0x01668086 0x016a8086</string>
 			<key>IOProbeScore</key>
 			<integer>9001</integer>
 			<key>IOProviderClass</key>

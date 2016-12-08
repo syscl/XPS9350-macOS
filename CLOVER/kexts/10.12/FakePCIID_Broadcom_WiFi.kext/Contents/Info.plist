@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>15E65</string>
+	<string>15G1108</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.rehabman.injector.FakePCIID-Broadcom-WiFi</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -13,17 +13,17 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.0</string>
+	<string>1.3.3</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.3.0</string>
+	<string>1.3.3</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>7D175</string>
+	<string>8B62</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
@@ -31,9 +31,9 @@
 	<key>DTSDKName</key>
 	<string>macosx10.6</string>
 	<key>DTXcode</key>
-	<string>0730</string>
+	<string>0810</string>
 	<key>DTXcodeBuild</key>
-	<string>7D175</string>
+	<string>8B62</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>Airport_Brcm4360</key>
@@ -52,84 +52,11 @@
 				<string>pci14e4,43b2</string>
 			</array>
 			<key>IOProbeScore</key>
-			<integer>901</integer>
+			<integer>1110</integer>
 			<key>IOProviderClass</key>
 			<string>IOPCIDevice</string>
 			<key>TruePowerOff</key>
 			<true/>
-		</dict>
-		<key>Broadcom FakePCIID WiFi 43224</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.rehabman.driver.FakePCIID</string>
-			<key>FakeProperties</key>
-			<dict>
-				<key>RM,subsystem-id</key>
-				<data>
-				NAEAAA==
-				</data>
-				<key>RM,subsystem-vendor-id</key>
-				<data>
-				axAAAA==
-				</data>
-			</dict>
-			<key>IOClass</key>
-			<string>FakePCIID</string>
-			<key>IOMatchCategory</key>
-			<string>FakePCIID</string>
-			<key>IONameMatch</key>
-			<array>
-				<string>pci106b,4e</string>
-				<string>pci14e4,4311</string>
-				<string>pci14e4,4312</string>
-				<string>pci14e4,4313</string>
-				<string>pci14e4,4318</string>
-				<string>pci14e4,4319</string>
-				<string>pci14e4,431a</string>
-				<string>pci14e4,4320</string>
-				<string>pci14e4,4324</string>
-				<string>pci14e4,4325</string>
-				<string>pci14e4,4328</string>
-				<string>pci14e4,432c</string>
-				<string>pci14e4,432d</string>
-			</array>
-			<key>IOProviderClass</key>
-			<string>IOPCIDevice</string>
-		</dict>
-		<key>Broadcom FakePCIID WiFi 43a0</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.rehabman.driver.FakePCIID</string>
-			<key>FakeProperties</key>
-			<dict>
-				<key>RM,device-id</key>
-				<data>
-				oEMAAA==
-				</data>
-				<key>RM,subsystem-id</key>
-				<data>
-				NAEAAA==
-				</data>
-				<key>RM,subsystem-vendor-id</key>
-				<data>
-				axAAAA==
-				</data>
-				<key>RM,vendor-id</key>
-				<data>
-				5BQAAA==
-				</data>
-			</dict>
-			<key>IOClass</key>
-			<string>FakePCIID</string>
-			<key>IOMatchCategory</key>
-			<string>FakePCIID</string>
-			<key>IONameMatch</key>
-			<array>
-				<string>pci14e4,4357</string>
-				<string>pci14e4,43b1</string>
-			</array>
-			<key>IOProviderClass</key>
-			<string>IOPCIDevice</string>
 		</dict>
 		<key>Broadcom FakePCIID WiFi no device-id</key>
 		<dict>
@@ -145,10 +72,6 @@
 				<data>
 				axAAAA==
 				</data>
-				<key>RM,vendor-id</key>
-				<data>
-				5BQAAA==
-				</data>
 			</dict>
 			<key>IOClass</key>
 			<string>FakePCIID</string>
@@ -156,12 +79,27 @@
 			<string>FakePCIID</string>
 			<key>IONameMatch</key>
 			<array>
+				<string>pci14e4,4357</string>
+				<string>pci14e4,43b1</string>
 				<string>pci14e4,43a0</string>
 				<string>pci14e4,4331</string>
 				<string>pci14e4,4353</string>
 				<string>pci14e4,432b</string>
 				<string>pci14e4,43ba</string>
 				<string>pci14e4,43a3</string>
+				<string>pci106b,4e</string>
+				<string>pci14e4,4311</string>
+				<string>pci14e4,4312</string>
+				<string>pci14e4,4313</string>
+				<string>pci14e4,4318</string>
+				<string>pci14e4,4319</string>
+				<string>pci14e4,431a</string>
+				<string>pci14e4,4320</string>
+				<string>pci14e4,4324</string>
+				<string>pci14e4,4325</string>
+				<string>pci14e4,4328</string>
+				<string>pci14e4,432c</string>
+				<string>pci14e4,432d</string>
 			</array>
 			<key>IOProviderClass</key>
 			<string>IOPCIDevice</string>
