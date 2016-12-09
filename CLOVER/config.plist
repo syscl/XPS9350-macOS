@@ -350,7 +350,7 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable lid wake for 0x19260004 #1 of 2 credit syscl/lighting/Yating Zhou</string>
+				<string>Enable lid wake for 0x19260004 credit syscl/lighting/Yating Zhou</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
@@ -362,13 +362,13 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou</string>
+				<string>Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou - deprecated</string>
 				<key>Disabled</key>
-				<false/>
+				<true/>
 				<key>Find</key>
 				<data>UO4aAAAAAAAA7xoAAAAAAA==</data>
 				<key>Name</key>
-				<string>AppleIntelSKLGraphicsFramebuffer</string>
+				<string>disable::AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
 				<data>UO4aAAAAAACw7hoAAAAAAA==</data>
 			</dict>
