@@ -358,19 +358,7 @@
 				<key>Name</key>
 				<string>AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
-				<data>DwkAAAAAAAAAAAAAAAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou - deprecated</string>
-				<key>Disabled</key>
-				<true/>
-				<key>Find</key>
-				<data>UO4aAAAAAAAA7xoAAAAAAA==</data>
-				<key>Name</key>
-				<string>disable::AppleIntelSKLGraphicsFramebuffer</string>
-				<key>Replace</key>
-				<data>UO4aAAAAAACw7hoAAAAAAA==</data>
+				<data>DwsDAAAHBgADAAAABAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
