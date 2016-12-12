@@ -23,7 +23,7 @@
 					<key>Comment</key>
 					<string> _OSI -&gt; XOSI</string>
 					<key>Disabled</key>
-					<false/>
+					<true/>
 					<key>Find</key>
 					<data>X09TSQ==</data>
 					<key>Replace</key>
