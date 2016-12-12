@@ -1,0 +1,8 @@
+#Created by syscl/lighting/Yating Zhou for Dell XPS 13 9350
+#Fix word field length error/warnings
+#Word field must be fixed otherwise system will miss information (c) syscl
+
+into_all all code_regex CreateDWordField\s\(BUF0,\s\\_SB.PCI0._Y0F._LEN,\sMSLN\).*\n replace_matched
+begin
+CreateQWordField (BUF0, \\_SB.PCI0._Y0F._LEN, MSLN)  // fix by syscl\n
+end;
