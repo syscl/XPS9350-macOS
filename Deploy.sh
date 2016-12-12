@@ -1386,6 +1386,7 @@ function main()
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
 #    _tidy_exec "patch_acpi DSDT syntax "fix_PARSEOP_ZERO"" "Fix PARSEOP_ZERO"
     _tidy_exec "patch_acpi DSDT syntax "fix_ADBG"" "Fix ADBG Error"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 #    _tidy_exec "patch_acpi DSDT usb "usb_7-series"" "7-series/8-series USB"
     _tidy_exec "patch_acpi DSDT usb "usb_prw_0x6d_xhc_skl"" "Fix USB _PRW"
