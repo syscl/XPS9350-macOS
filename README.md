@@ -61,6 +61,22 @@ Next week I have 3 ```final exams```, so I will be back in next Wednesday! What 
 
 Change Log
 ----------------
+2016-12-11
+
+- Fix MDBG issue credit syscl
+
+2016-12-10
+
+- Refined lid wake issue: 0a -> 0f for 0x19260004 credit syscl
+
+2016-12-08
+
+- Sync fixUSB to latest version: 2016-9-17
+
+2016-12-07
+
+- Fixed the Sunix camera issue I mentioned before credit syscl
+
 2016-12-04
 
 - Fixed boot issue by ```AddClockID``` and ```FixOwnership```
