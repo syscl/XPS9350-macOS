@@ -64,6 +64,8 @@ Change Log
 2016-12-11
 
 - Fix MDBG issue credit syscl
+- Fix word field mismatch issue credit syscl
+- Fix brightness key function credit azlvda, tdmsn
 
 2016-12-10
 
