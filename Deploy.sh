@@ -1397,6 +1397,7 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys F11, F12 function"
 #    _tidy_exec "patch_acpi DSDT syscl "syscl_Iris_Pro"" "Inject Intel Graphics"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
     _tidy_exec "patch_acpi DSDT syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"

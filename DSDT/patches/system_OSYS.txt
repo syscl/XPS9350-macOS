@@ -1,19 +1,23 @@
-#Maintained by: RehabMan for: Laptop Patches
+#Maintained by: syscl for: Dell XPS 13 9350
 #system_OSYS.txt
 # Obtained from https://github.com/vbourachot/Dell-XPS13-9333-DSDT-Patch/blob/master/patches/system_OSYS.txt
 
-# Cause the DSDT to simulate "Windows 2006" when running under "Darwin" (OS X).
+# Cause the DSDT to simulate "Windows 2012" when running under "Darwin" (OS X).
 #
 # This can fix various DSDT related problems for code within the DSDT
 # that is conditional on the operating system version.
 
-# Modified to match Windows 2015 for XPS 13 9350 credit syscl
+# Modified to match Windows 2012 for XPS 13 9350 credit syscl
 # ReplaceALL to patch second reference
 
+# Add name for "Darwin"(OS X)
+into_all all code_regex Name\s\(LINX,\s\"Linux\"\) replace_matched
+begin
+    Name (LINX, "Linux")\n
+    Name (OSX, "Darwin")\n
+end;
 
-# in Scope (_SB.PCI0)
-into method label _INI parent_label _SB.PCI0 code_regex If\s+\(_OSI\s+\(\"Windows\s2015\"\)\) replaceall_matched
-begin If(LOr(_OSI("Darwin"),_OSI("Windows 2015"))) end;
-
-#into method label _INI parent_label _SB.PCI0 code_regex If\s+\(_OSI\s+\(\"Linux\"\)\) replaceall_matched
-#begin If(LOr(_OSI("Darwin"),_OSI("Linux"))) end;
+into_all method code_regex If\s+\([\\]?_OSI\s+\(WN81\)\) replace_matched
+begin
+If (LOr (_OSI (OSX), _OSI (WN81)))
+end;
