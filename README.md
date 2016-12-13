@@ -48,9 +48,10 @@ Note: For two finger scrolling you need to change the speed of the Scrolling onc
 TODO List
 ----------------
 
-Next week I have 3 ```final exams```, so I will be back in next Wednesday! What I will do next week are listed below
+<s>Next week I have 3 ```final exams```, so I will be back in next Wednesday!</s> What I will do next week are listed below
 
-- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table
+- Remove patched ACPI tables directories(precomiple, raw, comiple) every time before acpi compile
+<s>- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table</s>
 - Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)
 - Refine AppleHDA 
 - New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS
@@ -61,6 +62,12 @@ Next week I have 3 ```final exams```, so I will be back in next Wednesday! What 
 
 Change Log
 ----------------
+2016-12-12
+
+- Fixed/refined DSDT patch
+- Reading FACP to correct reset value and reset address credit syscl
+- Remove Glan patch
+
 2016-12-11
 
 - Fix MDBG issue credit syscl
