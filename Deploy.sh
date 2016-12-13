@@ -51,6 +51,7 @@ tools="${REPO}/tools/"
 raw="${REPO}/DSDT/raw"
 prepare="${REPO}/DSDT/prepare"
 config_plist="/Volumes/EFI/EFI/CLOVER/config.plist"
+gConfigBuffer=$(cat ${config_plist})
 EFI_INFO="${REPO}/DSDT/EFIINFO"
 gInstall_Repo="/usr/local/sbin/"
 gFrom="${REPO}/tools"
@@ -668,22 +669,16 @@ function _check_and_fix_config()
     #
     # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
     #
-    cLidWake_1="Enable lid wake for 0x19260004 #1 of 2 credit syscl/lighting/Yating Zhou"
-    fLidWake_1="0a0b0300 00070600 03000000 04000000"
-    rLidWake_1="0f090000 00000000 00000000 00000000"
-    nLidWake_1="AppleIntelSKLGraphicsFramebuffer"
-
-    cLidWake_2="Enable lid wake for 0x19260004 #2 of 2 credit syscl/lighting/Yating Zhou"
-    fLidWake_2="50ee1a00 00000000 00ef1a00 00000000"
-    rLidWake_2="50ee1a00 00000000 b0ee1a00 00000000"
-    nLidWake_2="AppleIntelSKLGraphicsFramebuffer"
-
+    cLidWake="Enable lid wake for 0x19260004 credit syscl/lighting/Yating Zhou"
+    fLidWake="0a0b0300 00070600 03000000 04000000"
+    rLidWake="0f0b0300 00070600 03000000 04000000"
+    nLidWake="AppleIntelSKLGraphicsFramebuffer"
     #
-    # Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Skylake framebuffer 0x19260004.
+    # eDP, port 0000, 0x191e0000, 0x19160000, 0x19260000, 0x19270000, 0x191b0000, 0x19160002, 0x19260002, 0x191e0003, 0x19260004, 0x19270004, 0x193b0005 credit syscl
     #
-    cIntelGraphicsFrameBuffer="Enable 160MB BIOS, 48MB Framebuffer, 48MB Cursor for Skylake framebuffer 0x19260004"
-    fIntelGraphicsFrameBuffer="08002e0a 01030303 00000004 00002002 00005001"
-    rIntelGraphicsFrameBuffer="08002e0a 01030303 00000008 00000003 00000003"
+    cIntelGraphicsFrameBuffer="eDP, port 0000, 0x191e0000, 0x19160000, 0x19260000, 0x19270000, 0x191b0000, 0x19160002, 0x19260002, 0x191e0003, 0x19260004, 0x19270004, 0x193b0005 credit syscl"
+    fIntelGraphicsFrameBuffer="00000800 02000000 98000000 01050900 00040000"
+    rIntelGraphicsFrameBuffer="00000800 00040000 98000000 01050900 00040000"
     nIntelGraphicsFrameBuffer="AppleIntelSKLGraphicsFramebuffer"
     #
     # Check if "Enable HD4600 HDMI Audio" is located in config.plist.
@@ -703,10 +698,10 @@ function _check_and_fix_config()
     #
     # Now let's inject it.
     #
-    cBinData=("$cLidWake_1" "$cLidWake_2" "$cIntelGraphicsFrameBuffer" "$cHDMI" "$cHandoff")
-    fBinData=("$fLidWake_1" "$fLidWake_2" "$fIntelGraphicsFrameBuffer" "$fHDMI" "$fHandoff")
-    rBinData=("$rLidWake_1" "$rLidWake_2" "$rIntelGraphicsFrameBuffer" "$rHDMI" "$rHandoff")
-    nBinData=("$nLidWake_1" "$nLidWake_2" "$nIntelGraphicsFrameBuffer" "$nHDMI" "$nHandoff")
+    cBinData=("$cLidWake" "$cIntelGraphicsFrameBuffer" "$cHDMI" "$cHandoff")
+    fBinData=("$fLidWake" "$fIntelGraphicsFrameBuffer" "$fHDMI" "$fHandoff")
+    rBinData=("$rLidWake" "$rIntelGraphicsFrameBuffer" "$rHDMI" "$rHandoff")
+    nBinData=("$nLidWake" "$nIntelGraphicsFrameBuffer" "$nHDMI" "$nHandoff")
 
     for ((j=0; j<${#nBinData[@]}; ++j))
     do
@@ -819,6 +814,49 @@ function _find_acpi()
           SaSsdt=SSDT-${index}
       fi
     done
+
+    #
+    # Search FACP
+    #
+    FACP=FACP
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _fixReboot()
+{
+    _gRstValnAdr
+    gRstAdrConf=$(awk '/<key>ResetAddress<\/key>.*/,/<\/string>/' ${config_plist} |egrep -o '(<string>.*</string>)' |sed -e 's/<\/*string>//g')
+    if [ -z $gRstAdrConf ];
+      then
+        ${doCommands[1]} "Add ':ACPI:ResetAddress' string" ${config_plist}
+    fi
+    ${doCommands[1]} "Set ':ACPI:ResetAddress' $gResetAddress" ${config_plist}
+
+    gRstValConf=$(awk '/<key>ResetAddress<\/key>.*/,/<\/string>/' ${config_plist} |egrep -o '(<string>.*</string>)' |sed -e 's/<\/*string>//g')
+    if [ -z $gRstValConf ];
+      then
+        ${doCommands[1]} "Add ':ACPI:ResetValue' string" ${config_plist}
+    fi
+    ${doCommands[1]} "Set ':ACPI:ResetValue' $gResetValue" ${config_plist}
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _gRstValnAdr()
+{
+    local gTargetTabl="${decompile}/${FACP}.dsl"
+    local tmpRstAdr=$(grep -i -B 2 "Value to cause reset" ${gTargetTabl} |grep -i "Address" |sed "/.*: /s///")
+    #
+    # you can use 4 instead of 2, but in XPS 13(SKL) that's it
+    #
+    gResetAddress=$(printf "0x${tmpRstAdr:(-2)}")
+    local tmpRstVal=$(grep -i "Value to cause reset" ${gTargetTabl} |sed "/.*: /s///")
+    gResetValue=$(printf "0x${tmpRstVal:(-2)}")
 }
 
 #
@@ -1358,7 +1396,7 @@ function main()
     #
     if [ -f /Volumes/EFI/EFI/CLOVER/ACPI/origin/DSDT.aml ];
       then
-        _tidy_exec "cp /Volumes/EFI/EFI/CLOVER/ACPI/origin/DSDT.aml /Volumes/EFI/EFI/CLOVER/ACPI/origin/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
+        _tidy_exec "cp /Volumes/EFI/EFI/CLOVER/ACPI/origin/DSDT.aml /Volumes/EFI/EFI/CLOVER/ACPI/origin/FACP.aml /Volumes/EFI/EFI/CLOVER/ACPI/origin/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
       else
         _PRINT_MSG "NOTE: Warning!! DSDT and SSDTs doesn't exist! Press Fn+F4 under Clover to dump ACPI tables"
         # ERROR.
@@ -1375,6 +1413,7 @@ function main()
     cd "${REPO}"
     _PRINT_MSG "--->: ${BLUE}Disassembling tables...${OFF}"
     _tidy_exec ""${REPO}"/tools/iasl -w1 -da -dl "${REPO}"/DSDT/raw/DSDT.aml "${REPO}"/DSDT/raw/SSDT-*.aml" "Disassemble tables"
+    _tidy_exec ""${REPO}"/tools/iasl "${REPO}"/DSDT/raw/FACP.aml" "Disassemble FACP"
 
     #
     # Search specification tables by syscl/Yating Zhou.
@@ -1402,10 +1441,6 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_WAK2"" "Fix _WAK Arg0 v2"
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
-
-#    _tidy_exec "patch_acpi DSDT syscl "syscl_Iris_Pro"" "Inject Intel Graphics"
-#    _tidy_exec "patch_acpi DSDT syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
-#    _tidy_exec "patch_acpi DSDT syscl "remove_glan"" "Remove GLAN device"
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
     #
     # Modificate ACPI for macOS to load devices correctly
@@ -1417,12 +1452,10 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
 
-
     #
     # DptfTa Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${DptfTa}.dsl${OFF}"
-#    _tidy_exec "patch_acpi ${DptfTa} syscl "_BST-package-size"" "_BST package size"
     _tidy_exec "patch_acpi ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
@@ -1430,11 +1463,12 @@ function main()
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
-#    _tidy_exec "patch_acpi ${SaSsdt} syscl "syscl_Iris_Pro"" "Rename HD4600 to Iris Pro"
-#    _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_PNLF_haswell"" "Brightness fix (Haswell)"
-#    _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
-#    _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_Intel_HD4600"" "Insert HDAU device"
 
+    #
+    # fix reboot issue credit syscl
+    #
+    _PRINT_MSG "--->: ${BLUE}Fixing reboot issue${OFF}"
+    _tidy_exec "_fixReboot" "Fix reboot issue credit syscl"
 
     #
     # Copy all tables to precompile.
@@ -1465,26 +1499,14 @@ function main()
     #
     # Detect which SSDT for processor to be installed.
     #
-    if [[ `sysctl machdep.cpu.brand_string` == *"i7-4702HQ"* ]];
-      then
-        _tidy_exec "cp "${prepare}"/CpuPm-4702HQ.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}i7-4702HQ${OFF}"
-    fi
-
-    if [[ `sysctl machdep.cpu.brand_string` == *"i7-4712HQ"* ]]
-      then
-        _tidy_exec "cp "${prepare}"/CpuPm-4712HQ.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}i7-4712HQ${OFF}"
-    fi
-
-    if [[ `sysctl machdep.cpu.brand_string` == *"i5-4200H"* ]]
-      then
-        _tidy_exec "cp "${prepare}"/CpuPm-4200H.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}i5-4200H${OFF}"
-    fi
+    gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/CPU.*/s///")
+    _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
 
     #
     # Install SSDT-m for ALS0.
     #
-    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
-    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
+#    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
+#    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
 
     #
     # Clean up dynamic SSDTs.
@@ -1516,8 +1538,6 @@ function main()
     #
     # Patch IOKit/CoreDisplay.
     #
-    _PRINT_MSG "NOTE: Set ${BOLD}System Agent (SA) Configuration—>Graphics Configuration->DVMT Pre-Allocated->${RED}『160MB』${OFF}"
-
     if [ $gPatchIOKit -eq 0 ];
       then
         #

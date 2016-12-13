@@ -3,8 +3,8 @@
 #Patch fix the brightness keys F11 and F12 for XPS 13 9350 and XPS 15 9550
 #Credit azlvda, tdmsn
 
-
-into method label BRT6 parent_label _SB.PCI0.IGPU replace_content begin
+into method label BRT6 replace_content
+begin
 If (LEqual (Arg0, One))\n
 {\n
     Notify (LCD, 0x86)\n
