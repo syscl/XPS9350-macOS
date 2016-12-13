@@ -816,6 +816,19 @@ function _find_acpi()
     done
 
     #
+    # Search sensrhub
+    #
+    for ((index = 1; index <= ${number}; index++))
+    do
+      grep -i "sensrhub" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
+
+      if [ "${RETURN_VAL}" == 0 ];
+        then
+          sensrhub=SSDT-${index}
+      fi
+    done
+
+    #
     # Search FACP
     #
     FACP=FACP
@@ -1465,6 +1478,12 @@ function main()
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
+    # sensrhub patches
+    #
+    _PRINT_MSG "${BLUE}Fixing ${sensrhub}.dsl${OFF}"
+    _tidy_exec "patch_acpi ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
+
+    #
     # fix reboot issue credit syscl
     #
     _PRINT_MSG "--->: ${BLUE}Fixing reboot issue${OFF}"
@@ -1489,6 +1508,7 @@ function main()
     _tidy_exec "compile_table "DSDT"" "Compiling DSDT"
     _tidy_exec "compile_table "${DptfTa}"" "Compile DptfTa"
     _tidy_exec "compile_table "${SaSsdt}"" "Compile SaSsdt"
+    _tidy_exec "compile_table "${sensrhub}"" "Compile sensrhub"
 
     #
     # Copy SSDT-rmne.aml.

@@ -1,0 +1,24 @@
+#Created by syscl for XPS 13 9350(SkyLake)
+#syscl_fix_PARSEOP_IF
+#credit syscl
+
+#\_SB.GGOV (0x02010016)
+#OLDV
+into_all all code_regex \\_SB.GGOV\s\(0x02010016\)\n.*OLDV replace_matched
+begin
+\\_SB.GGOV (0x02010016, OLDV)
+end;
+
+#\_SB.GGOV (0x02010014)
+#OLDV
+into_all all code_regex \\_SB.GGOV\s\(0x02010014\)\n.*OLDV replace_matched
+begin
+\\_SB.GGOV (0x02010014, OLDV)
+end;
+
+#\_SB.GGOV (0x02010014)
+#DFUE
+into_all all code_regex \\_SB.GGOV\s\(0x02010014\)\n.*DFUE replace_matched
+begin
+\\_SB.GGOV (0x02010014, DFUE)
+end;
