@@ -286,7 +286,8 @@ function _tidy_exec()
 
 function compile_table()
 {
-    "${REPO}"/tools/iasl -vr -w1 -ve -p "${compile}"$1.aml "${precompile}"$1.dsl
+#"${REPO}"/tools/iasl -vr -w1 -ve -p "${compile}"$1.aml "${precompile}"$1.dsl
+    "${REPO}"/tools/iasl -vr -p "${compile}"$1.aml "${precompile}"$1.dsl
 }
 
 #
@@ -1306,7 +1307,7 @@ function main()
     # Get argument.
     #
     gArgv=$(echo "$@" | tr '[:lower:]' '[:upper:]')
-    if [[ $# -eq 1 && "$gArgv" == "-D" || "$gArgv" == "-DEBUG" ]];
+    if [[ "$gArgv" == *"-D"* || "$gArgv" == *"-DEBUG"* ]];
       then
         #
         # Yes, we do need debug mode.
@@ -1384,10 +1385,15 @@ function main()
     # DSDT Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syntax "fix_ADBG"" "Fix ADBG Error"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixSDSM"" "Fix SDSM Error credit syscl"
+    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
+    _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys F11, F12 function"
+    _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
+    _tidy_exec "patch_acpi DSDT graphics "graphics_PNLF"" "Brightness fix"
     _tidy_exec "patch_acpi DSDT usb "usb_prw_0x6d_xhc_skl"" "Fix USB _PRW"
     _tidy_exec "patch_acpi DSDT system "system_IRQ"" "IRQ Fix"
     _tidy_exec "patch_acpi DSDT system "system_SMBUS"" "SMBus Fix"
@@ -1396,14 +1402,10 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_WAK2"" "Fix _WAK Arg0 v2"
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
-    _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys F11, F12 function"
+
 #    _tidy_exec "patch_acpi DSDT syscl "syscl_Iris_Pro"" "Inject Intel Graphics"
-    _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
-    _tidy_exec "patch_acpi DSDT syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
+#    _tidy_exec "patch_acpi DSDT syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
 #    _tidy_exec "patch_acpi DSDT syscl "remove_glan"" "Remove GLAN device"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
     #
     # Modificate ACPI for macOS to load devices correctly
@@ -1412,6 +1414,9 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_DMAC"" "Insert DMAC(PNP0200)"
     _tidy_exec "patch_acpi DSDT syscl "syscl_MATH"" "Make Device(MATH) load correctly in macOS"
     _tidy_exec "patch_acpi DSDT syscl "syscl_SLPB"" "SBTN->SLPB with correct _STA 0x0B"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
+
 
     #
     # DptfTa Patches.
@@ -1426,8 +1431,8 @@ function main()
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 #    _tidy_exec "patch_acpi ${SaSsdt} syscl "syscl_Iris_Pro"" "Rename HD4600 to Iris Pro"
-    _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_PNLF_haswell"" "Brightness fix (Haswell)"
-    _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
+#    _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_PNLF_haswell"" "Brightness fix (Haswell)"
+#    _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_B0D3_HDAU"" "Rename B0D3 to HDAU"
 #    _tidy_exec "patch_acpi ${SaSsdt} syscl "audio_Intel_HD4600"" "Insert HDAU device"
 
 

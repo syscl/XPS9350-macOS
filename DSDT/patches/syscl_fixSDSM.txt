@@ -1,0 +1,19 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#fix_SDSM
+
+#If (CondRefOf (\_SB.PCI0.SAT0.SDSM))
+#{
+#   Return (SDSM)
+#   Arg0
+#   Arg1
+#   Arg2
+#   Arg3
+#}
+
+into_all all code_regex If\s\(CondRefOf\s+\(\\_SB.PCI0.SAT0.SDSM\)\)\n.*\{\n(.*\n){5}.*\} replace_matched
+begin
+If (CondRefOf (\_SB.PCI0.SAT0.SDSM))\n
+{\n
+    Return (SDSM (Arg0, Arg1, Arg2, Arg3)) // syscl found the definintion to fix it\n
+}\n
+end;

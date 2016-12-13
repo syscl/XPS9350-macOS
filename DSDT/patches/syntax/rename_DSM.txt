@@ -1,0 +1,10 @@
+#Maintained by: RehabMan for: Laptop Patches
+#rename_DSM.txt
+
+# To remove all _DSM methods by renaming to XDSM.
+#
+# Since "Remove _DSM methods" exposes a MaciASL bug with certain files,
+#  this one can be used instead.
+
+into_all method label _DSM set_label begin XDSM end;
+into_all method code_regex _DSM replaceall_matched begin XDSM end;

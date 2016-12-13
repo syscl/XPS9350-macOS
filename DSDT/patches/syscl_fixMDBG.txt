@@ -2,13 +2,34 @@
 #fix_MDBG
 #Error
 
-#If (CondRefOf (\_SB.PCI0.SAT0.SDSM))
+# fix declare
+into_all all code_regex External\s\(MDBG,\sIntObj\) replace_matched
+begin
+External (MDBG, MethodObj)\n
+External (_SB_.PCI0.SAT1.SDSM, MethodObj)\n
+External (_GPE.MMTB, MethodObj)\n
+External (_GPE.VHOV, MethodObj)\n
+External (_SB_.PCI0.GFX0.DD02._BCM, MethodObj)\n
+External (_SB_.PCI0.LPCB.H_EC.ECRD, MethodObj)\n
+External (_SB_.PCI0.LPCB.H_EC.ECWT, MethodObj)\n
+External (_SB_.PCI0.PEG0.PEGP.SGPO, MethodObj)\n
+External (_SB_.PCI0.SAT0.SDSM, MethodObj)
+end;
+
+#Method (ADBG, 1, Serialized)
 #{
-#   Return (SDSM)
-#   Arg0
-#   Arg1
-#   Arg2
-#   Arg3
+#	If (CondRefOf (MDBG))
+#	{
+#		Return (MDBG)
+#		Arg0
+#	}
+#	Return (Zero)
 #}
 
-into_all all code_regex If\s\(CondRefOf\s+\(\\_SB.PCI0.SAT0.SDSM\)\)\n.*\{\n(.*\n){5}.*\} removeall_matched;
+into_all all code_regex If\s\(CondRefOf\s+\(MDBG\)\)\n.*\{\n(.*\n){2}.*\} replace_matched
+begin
+If (CondRefOf (\_SB.PCI0.SAT0.SDSM))\n
+{\n
+	Return (MDBG (Arg0))\n
+}\n
+end;
