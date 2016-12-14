@@ -217,7 +217,7 @@
 		<key>Audio</key>
 		<dict>
 			<key>Inject</key>
-			<string>0</string>
+			<string>1</string>
 		</dict>
 		<key>FakeID</key>
 		<dict>
