@@ -135,7 +135,7 @@ nHandoff=""
 #
 gResources_xml_zlib=("layout1" "Platforms")
 gExtensions_Repo=("/System/Library/Extensions" "/Library/Extensions")
-gInjector_Repo="/tmp/AppleHDA_ALC668.kext"
+gInjector_Repo="/tmp/AppleHDA_ALC256.kext"
 gAppleHDA_Config="${gInjector_Repo}/Contents/Info.plist"
 doCommands=("${REPO}/tools/iasl" "/usr/libexec/plistbuddy -c" "perl -p -e 's/(\d*\.\d*)/9\1/'")
 
@@ -323,11 +323,11 @@ function rebuild_kernel_cache()
 function install_audio()
 {
     #
-    # Remove previous AppleHDA_ALC668.kext & CodecCommander.kext.
+    # Remove previous AppleHDA_ALC256.kext & CodecCommander.kext.
     #
     for extensions in ${gExtensions_Repo[@]}
     do
-      _del $extensions/AppleHDA_ALC668.kext
+      _del $extensions/AppleHDA_ALC256.kext
       _del $extensions/CodecCommander.kext
     done
 
@@ -382,7 +382,7 @@ function _install_AppleHDA_Injector()
     ${doCommands[1]} "Add ':IOKitPersonalities:HDA Hardware Config Resource:IOProbeScore' integer" ${gAppleHDA_Config}
     ${doCommands[1]} "Set ':IOKitPersonalities:HDA Hardware Config Resource:IOProbeScore' 2000" ${gAppleHDA_Config}
     ${doCommands[1]} "Merge ${REPO}/Kexts/audio/Resources/ahhcd.plist ':IOKitPersonalities:HDA Hardware Config Resource'" ${gAppleHDA_Config}
-    _tidy_exec "sudo cp -RX "${gInjector_Repo}" "${gExtensions_Repo[1]}"" "Install AppleHDA_ALC668"
+    _tidy_exec "sudo cp -RX "${gInjector_Repo}" "${gExtensions_Repo[1]}"" "Install AppleHDA_ALC256"
 
 
     #
@@ -391,66 +391,59 @@ function _install_AppleHDA_Injector()
     gClover_kexts_to_patch_data=$(awk '/<key>KextsToPatch<\/key>.*/,/<\/array>/' ${config_plist})
 
     #
-    # Added Clover patch for ALC668 in Sierra
+    # Added Clover patch for ALC256 in Sierra
     #
-    # Stage 1 of 4
+    # Enable Realtek ALC256 1/5
     #
-    cALC668_Stage1="Enable Realtek ALC668 stage 1 of 4"
-    fALC668_Stage1="8408ec10"
-    rALC668_Stage1="00000000"
-    nALC668_Stage1="AppleHDA"
+    cALC256_Stage1="Enable Realtek ALC256 1/5"
+    fALC256_Stage1="6102EC10"
+    rALC256_Stage1="00000000"
+    nALC256_Stage1="AppleHDA"
     #
-    # Stage 2 of 4
+    # Enable Realtek ALC256 2/5
     #
-    cALC668_Stage2="Enable Realtek ALC668 stage 2 of 4"
-    fALC668_Stage2="8508ec10"
-    rALC668_Stage2="00000000"
-    nALC668_Stage2="AppleHDA"
+    cALC256_Stage2="Enable Realtek ALC256 2/5"
+    fALC256_Stage2="6202EC10"
+    rALC256_Stage2="00000000"
+    nALC256_Stage2="AppleHDA"
     #
-    # Stage 3 of 4
+    # Enable Realtek ALC256 3/5
     #
-    cALC668_Stage3="Enable Realtek ALC668 stage 3 of 4"
-    fALC668_Stage3="8B19D411"
-    rALC668_Stage3="6806ec10"
-    nALC668_Stage3="AppleHDA"
+    cALC256_Stage3="Enable Realtek ALC256 3/5"
+    fALC256_Stage3="8508EC10"
+    rALC256_Stage3="00000000"
+    nALC256_Stage3="AppleHDA"
     #
-    # Stage 4 of 4
+    # Enable Realtek ALC256 4/5
     #
-    cALC668_Stage5="Enable Realtek ALC668 stage 4 of 4"
-    fALC668_Stage5="8A19D411"
-    rALC668_Stage5="00000000"
-    nALC668_Stage5="AppleHDA"
+    cALC256_Stage5="Enable Realtek ALC256 stage 4/5"
+    fALC256_Stage5="8419D411"
+    rALC256_Stage5="5602EC10"
+    nALC256_Stage5="AppleHDA"
     #
-    # Chrome audio issues patch stage 1 of 2
+    # Enable Realtek ALC256 5/5
     #
-    cALC668_Stage6="Sleep loose sound issue patch 1 of 2"
-    fALC668_Stage6="41C60600 488BBB68"
-    rALC668_Stage6="41C60601 488BBB68"
-    nALC668_Stage6="AppleHDA"
-    #
-    # Chrome audio issues patch stage 2 of 2
-    #
-    cALC668_Stage7="Sleep loose sound issue patch 2 of 2"
-    fALC668_Stage7="41C68643 01000000"
-    rALC668_Stage7="41C68643 01000001"
-    nALC668_Stage7="AppleHDA"
+    cALC256_Stage5="Enable Realtek ALC256 stage 5/5"
+    fALC256_Stage5="8319D411"
+    rALC256_Stage5="00000000"
+    nALC256_Stage5="AppleHDA"
     #
     # Now let's inject it.
     #
-    cALC668Data=("$cALC668_Stage1" "$cALC668_Stage2" "$cALC668_Stage3" "$cALC668_Stage4" "$cALC668_Stage5" "$cALC668_Stage6" "$cALC668_Stage7")
-    fALC668Data=("$fALC668_Stage1" "$fALC668_Stage2" "$fALC668_Stage3" "$fALC668_Stage4" "$fALC668_Stage5" "$fALC668_Stage6" "$fALC668_Stage7")
-    rALC668Data=("$rALC668_Stage1" "$rALC668_Stage2" "$rALC668_Stage3" "$rALC668_Stage4" "$rALC668_Stage5" "$rALC668_Stage6" "$rALC668_Stage7")
-    nALC668Data=("$nALC668_Stage1" "$nALC668_Stage2" "$nALC668_Stage3" "$nALC668_Stage4" "$nALC668_Stage5" "$nALC668_Stage6" "$nALC668_Stage7")
-    for ((k=0; k<${#nALC668Data[@]}; ++k))
+    cALC256Data=("$cALC256_Stage1" "$cALC256_Stage2" "$cALC256_Stage3" "$cALC256_Stage4" "$cALC256_Stage5")
+    fALC256Data=("$fALC256_Stage1" "$fALC256_Stage2" "$fALC256_Stage3" "$fALC256_Stage4" "$fALC256_Stage5")
+    rALC256Data=("$rALC256_Stage1" "$rALC256_Stage2" "$rALC256_Stage3" "$rALC256_Stage4" "$rALC256_Stage5")
+    nALC256Data=("$nALC256_Stage1" "$nALC256_Stage2" "$nALC256_Stage3" "$nALC256_Stage4" "$nALC256_Stage5")
+    for ((k=0; k<${#nALC256Data[@]}; ++k))
     do
-      local gCmp_fString=$(_bin2base64 "$fALC668Data")
-      local gCmp_rString=$(_bin2base64 "$rALC668Data")
+      local gCmp_fString=$(_bin2base64 "$fALC256Data")
+      local gCmp_rString=$(_bin2base64 "$rALC256Data")
       if [[ $gClover_kexts_to_patch_data != *"$gCmp_fString"* || $gClover_kexts_to_patch_data != *"$gCmp_rString"* ]];
         then
           #
           # No patch existed in config.plist, add patch for it:
           #
-          _kext2patch "${cALC668Data[k]}" "${fALC668Data[k]}" "${rALC668Data[k]}" "${nALC668Data[k]}"
+          _kext2patch "${cALC256Data[k]}" "${fALC256Data[k]}" "${rALC256Data[k]}" "${nALC256Data[k]}"
       fi
     done
 

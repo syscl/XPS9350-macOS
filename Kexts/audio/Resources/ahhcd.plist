@@ -8,9 +8,9 @@
 			<key>AFGLowPowerState</key>
 			<data>AwAAAA==</data>
 			<key>CodecID</key>
-			<real>283902550</real>
+			<integer>283902550</integer>
 			<key>ConfigData</key>
-			<data>ASccEAEnHQABJx6mAScfkAFHHCABRx0AAUceFwFHH5ABlxwwAZcdEAGXHosBlx8AAhccUAIXHRACFx4rAhcfAgFHDAI=</data>
+			<data>ASccEAEnHQEBJx6mAScfkAFHHCABRx0BAUceFwFHH5ABlxwwAZcdEAGXHoEBlx8AAhccQAIXHRACFx4hAhcfAgFHDAICFwwC</data>
 			<key>FuncGroup</key>
 			<integer>1</integer>
 			<key>LayoutID</key>
