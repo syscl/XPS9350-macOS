@@ -51,7 +51,7 @@ tools="${REPO}/tools/"
 raw="${REPO}/DSDT/raw"
 prepare="${REPO}/DSDT/prepare"
 config_plist="/Volumes/EFI/EFI/CLOVER/config.plist"
-gConfigBuffer=$(cat ${config_plist})
+#gConfigBuffer=$(cat ${config_plist})
 EFI_INFO="${REPO}/DSDT/EFIINFO"
 gInstall_Repo="/usr/local/sbin/"
 gFrom="${REPO}/tools"
@@ -388,7 +388,6 @@ function _install_AppleHDA_Injector()
     ${doCommands[1]} "Merge ${REPO}/Kexts/audio/Resources/ahhcd.plist ':IOKitPersonalities:HDA Hardware Config Resource'" ${gAppleHDA_Config}
     _tidy_exec "sudo cp -RX "${gInjector_Repo}" "${gExtensions_Repo[0]}"" "Install AppleHDA_ALC256"
     _tidy_exec "sudo cp -RX "${REPO}/Kexts/audio/CodecCommander.kext" "${gExtensions_Repo[0]}"" "Fix headphone static issue"
-
 
     #
     # Gain all binary patches from config.
@@ -1619,7 +1618,7 @@ function main()
     _del /Volumes/EFI/EFI/CLOVER/config.plistg
 
     _PRINT_MSG "NOTE: Congratulations! All operation has been completed"
-    _PRINT_MSG "NOTE: Reboot now. Then enjoy your OS X! -${BOLD}syscl/lighting/Yating Zhou @PCBeta${OFF}"
+    _PRINT_MSG "NOTE: Reboot now. Then enjoy your macOS! -${BOLD}syscl/lighting/Yating Zhou @PCBeta${OFF}"
 }
 
 #==================================== START =====================================

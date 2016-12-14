@@ -54,32 +54,8 @@
 				<string>Disabled HDMI</string>
 				<key>10de</key>
 				<string>Disabled HDMI</string>
-				<key>10ec_0233</key>
-				<string>Realtek ALC283,etc</string>
-				<key>10ec_0235</key>
-				<string>Realtek ALC283,etc</string>
-				<key>10ec_0255</key>
-				<string>Realtek ALC283,etc</string>
-				<key>10ec_0269</key>
-				<string>Realtek ALC269</string>
-				<key>10ec_0269_HDA_1028_04d9</key>
-				<string>Realtek ALC269VB</string>
-				<key>10ec_0269_HDA_1458_fa50</key>
-				<string>Realtek ALC269 BRIX</string>
-				<key>10ec_0282</key>
-				<string>Realtek ALC283,etc</string>
-				<key>10ec_0283</key>
-				<string>Realtek ALC283,etc</string>
-				<key>10ec_0292</key>
-				<string>Realtek ALC292</string>
-				<key>10ec_0668</key>
-				<string>Realtek ALC668</string>
-				<key>10ec_0892_HDA_1458</key>
-				<string>Realtek ALC892 desktop</string>
-				<key>10ec_0892_HDA_8086</key>
-				<string>Realtek ALC892 desktop</string>
-				<key>10ec_0900</key>
-				<string>Realtek ALC1150</string>
+				<key>10ec_0256_HDA_1028_0704</key>
+				<string>Realtek ALC3246</string>
 				<key>8086</key>
 				<string>Disabled HDMI</string>
 				<key>Default</key>
@@ -114,121 +90,15 @@
 					<key>Update Nodes</key>
 					<false/>
 				</dict>
-				<key>Realtek ALC1150</key>
+				<key>Realtek ALC3246</key>
 				<dict>
 					<key>Custom Commands</key>
 					<array>
 						<dict>
 							<key>Command</key>
-							<data>
-							AgUABw==
-							</data>
+							<data>AZcHJQ==</data>
 							<key>Comment</key>
-							<string>0x20 SET_COEF_INDEX 0x07</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<true/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-						<dict>
-							<key>Command</key>
-							<data>
-							AgR8sA==
-							</data>
-							<key>Comment</key>
-							<string>0x20 SET_PROC_COEF 0x7CB0</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-					</array>
-					<key>Send Delay</key>
-					<integer>100</integer>
-					<key>Sleep Nodes</key>
-					<false/>
-					<key>Update Nodes</key>
-					<false/>
-				</dict>
-				<key>Realtek ALC269</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<data>
-							AVcIgw==
-							</data>
-							<key>Comment</key>
-							<string>0x15 SET_UNSOLICITED_ENABLE 0x83</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-					</array>
-				</dict>
-				<key>Realtek ALC269 BRIX</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<data>
-							AVcIgw==
-							</data>
-							<key>Comment</key>
-							<string>0x15 SET_UNSOLICITED_ENABLE 0x83</string>
-							<key>On Init</key>
-							<false/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<false/>
-						</dict>
-					</array>
-				</dict>
-				<key>Realtek ALC269VB</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<data>
-							AhcIgw==
-							</data>
-							<key>Comment</key>
-							<string>0x21 SET_UNSOLICITED_ENABLE 0x83</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-					</array>
-					<key>Send Delay</key>
-					<integer>20</integer>
-					<key>Sleep Nodes</key>
-					<false/>
-				</dict>
-				<key>Realtek ALC283,etc</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<data>
-							AZcHJQ==
-							</data>
-							<key>Comment</key>
-							<string>0x19 SET_PIN_WIDGET_CONTROL 0x25</string>
+							<string>Node 0x19 - Pin Control (In Enable / VRefEn)</string>
 							<key>On Init</key>
 							<true/>
 							<key>On Sleep</key>
@@ -238,11 +108,29 @@
 						</dict>
 						<dict>
 							<key>Command</key>
-							<data>
-							AhcIgw==
-							</data>
+							<data>AhcIgw==</data>
 							<key>Comment</key>
-							<string>0x21 SET_UNSOLICITED_ENABLE 0x83</string>
+							<string>0x27 SET_UNSOLICITED_ENABLE 0x83</string>
+							<key>On Init</key>
+							<true/>
+							<key>On Sleep</key>
+							<false/>
+							<key>On Wake</key>
+							<true/>
+						</dict>
+						<dict>
+							<key>Command</key>
+							<string>0x02050036</string>
+							<key>On Init</key>
+							<true/>
+							<key>On Sleep</key>
+							<false/>
+							<key>On Wake</key>
+							<true/>
+						</dict>
+						<dict>
+							<key>Command</key>
+							<string>0x02041737</string>
 							<key>On Init</key>
 							<true/>
 							<key>On Sleep</key>
@@ -256,83 +144,6 @@
 					<key>Send Delay</key>
 					<integer>10</integer>
 					<key>Sleep Nodes</key>
-					<false/>
-				</dict>
-				<key>Realtek ALC292</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<string>0x01a70724</string>
-							<key>Comment</key>
-							<string>Node 0x1a - Pin Control (In Enable / VRefEn)</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-						<dict>
-							<key>Command</key>
-							<data>
-							AVcIgw==
-							</data>
-							<key>Comment</key>
-							<string>0x15 SET_UNSOLICITED_ENABLE 0x83</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-					</array>
-					<key>Perform Reset</key>
-					<false/>
-				</dict>
-				<key>Realtek ALC668</key>
-				<dict>
-					<key>Custom Commands</key>
-					<array>
-						<dict>
-							<key>Command</key>
-							<data>
-							AVcIgw==
-							</data>
-							<key>Comment</key>
-							<string>0x15 SET_UNSOLICITED_ENABLE 0x83</string>
-							<key>On Init</key>
-							<true/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-						<dict>
-							<key>Command</key>
-							<data>
-							AbcHIA==
-							</data>
-							<key>Comment</key>
-							<string>Node 0x1b - Pin Control (In Enable)</string>
-							<key>On Init</key>
-							<false/>
-							<key>On Sleep</key>
-							<false/>
-							<key>On Wake</key>
-							<true/>
-						</dict>
-					</array>
-					<key>Perform Reset</key>
-					<false/>
-				</dict>
-				<key>Realtek ALC892 desktop</key>
-				<dict>
-					<key>Sleep Nodes</key>
-					<false/>
-					<key>Update Nodes</key>
 					<false/>
 				</dict>
 			</dict>
