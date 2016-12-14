@@ -362,7 +362,43 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 4 of 5</string>
+				<string>Enable Realtek ALC256 1/5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>YQLsEA==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>AAAAAA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 2/5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>YgLsEA==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>AAAAAA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 3/5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>hQjsEA==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>AAAAAA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 4/5</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
@@ -371,6 +407,18 @@
 				<string>AppleHDA</string>
 				<key>Replace</key>
 				<data>VgLsEA==</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable Realtek ALC256 5/5</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>gxnUEQ==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -419,18 +467,6 @@
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
 				<data>SYnGTYX2dGFBwecJSWP/vg==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 1 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>gxnUEQ==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -532,18 +568,6 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 3 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>YQLsEA==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
 				<string>IONVMeFamily Pike R. Alpha Patch 03</string>
 				<key>Disabled</key>
 				<false/>
@@ -553,42 +577,6 @@
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
 				<data>AMeDpAAAAAACAABIi0gISA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 3 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>YgLsEA==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 2 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>hQjsEA==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string>Enable Realtek ALC256 stage 5 of 5</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>ihnUEQ==</data>
-				<key>Name</key>
-				<string>AppleHDA</string>
-				<key>Replace</key>
-				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>

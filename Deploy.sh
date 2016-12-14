@@ -416,14 +416,14 @@ function _install_AppleHDA_Injector()
     #
     # Enable Realtek ALC256 4/5
     #
-    cALC256_Stage5="Enable Realtek ALC256 stage 4/5"
+    cALC256_Stage5="Enable Realtek ALC256 4/5"
     fALC256_Stage5="8419D411"
     rALC256_Stage5="5602EC10"
     nALC256_Stage5="AppleHDA"
     #
     # Enable Realtek ALC256 5/5
     #
-    cALC256_Stage5="Enable Realtek ALC256 stage 5/5"
+    cALC256_Stage5="Enable Realtek ALC256 5/5"
     fALC256_Stage5="8319D411"
     rALC256_Stage5="00000000"
     nALC256_Stage5="AppleHDA"
