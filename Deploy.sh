@@ -1501,7 +1501,7 @@ function main()
     #
     # Detect which SSDT for processor to be installed.
     #
-    gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/CPU.*/s///")
+    gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
     _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
 
     #
