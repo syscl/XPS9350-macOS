@@ -219,7 +219,7 @@ function _locate_rhd()
     #
     # disk0s3
     # ^^^^^
-    diskutil list | grep -i "${gDisk_INF:0:5}" | grep "Recovery HD" |sed 's/.*MB   //'
+    diskutil list |grep -i "${gDisk_INF:0:5}" |grep -i "Recovery HD" |grep -i -o "disk[0-9]s[0-9]"
 }
 
 #
@@ -889,38 +889,23 @@ function _update_clover()
     # Decide which BT kext to use.
     #
     gBluetooth_Brand_String=$(ioreg | grep -i 'BCM' | grep -i 'Apple' | sed -e 's/.*-o //' -e 's/@.*//')
-
     #
-    # Try to build injector instead of using BrcmPatchRAM.kext
+    # Install bluetooth drivers
     #
-    if [[ `ioreg` == *"BCM20702A3"* ]];
-      then
-        #
-        # BCM20702A3 found.
-        #
-        _tidy_exec "rm -R ${KEXT_DIR}/BrcmFirmwareRepo.kext" "BCM20702A3 found"
-      else
-        #
-        # BCM2045A0 found. We remove BrcmFirmwareData.kext to prevent this driver crashes the whole system during boot.
-        #
-        _tidy_exec "rm -R ${KEXT_DIR}/BrcmFirmwareData.kext" "BCM2045A0 found"
-    fi
-
+    # Decide which bluetooth driver to install
     #
-    # Decide which kext to be installed for BT.
+    # I hate this way to deal with driver, but I will refine it later
     #
-    if [[ $gMINOR_VER -ge 11 ]];
-      then
-        #
-        # OS X is 10.11+.
-        #
-        _tidy_exec "rm -R ${KEXT_DIR}/BrcmPatchRAM.kext" "Remove redundant BT driver::BrcmPatchRAM.kext"
-      else
-        #
-        # OS X is 10.10-.
-        #
-        _tidy_exec "rm -R ${KEXT_DIR}/BrcmPatchRAM2.kext" "Remove redundant BT driver::BrcmPatchRAM2.kext"
-    fi
+    _tidy_exec "rm -R ${KEXT_DIR}/BrcmPatchRAM2.kext" "Remove BrcmPatchRAM2.kext in Clover"
+    _tidy_exec "rm -R ${KEXT_DIR}/BrcmFirmwareData.kext" "Remove $BrcmFirmwareData.kext in Clover"
+    for extensions in ${gExtensions_Repo[@]}
+    do
+      _del $extensions/BrcmFirmwareData.kext
+      _del $extensions/BrcmFirmwareRepo.kext
+      _del $extensions/BrcmPatchRAM2.kext
+    done
+    _tidy_exec "sudo cp -RX ./Kexts/BrcmPatchRAM2.kext ${gExtensions_Repo[0]}" "Install BrcmPatchRAM2"
+    _tidy_exec "sudo cp -RX ./Kexts/BrcmFirmwareRepo.kext ${gExtensions_Repo[0]}" "Install BrcmFirmwareRepo"
 
     #
     # gEFI.
