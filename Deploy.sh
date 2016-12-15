@@ -896,8 +896,8 @@ function _update_clover()
     #
     # I hate this way to deal with driver, but I will refine it later
     #
-    _tidy_exec "rm -rf ${KEXT_DIR}/BrcmPatchRAM2.kext" "Remove BrcmPatchRAM2.kext in Clover"
-    _tidy_exec "rm -rf ${KEXT_DIR}/BrcmFirmwareData.kext" "Remove $BrcmFirmwareData.kext in Clover"
+    _tidy_exec "rm -R ${KEXT_DIR}/BrcmPatchRAM2.kext" "Remove BrcmPatchRAM2.kext in Clover"
+    _tidy_exec "rm -R ${KEXT_DIR}/BrcmFirmwareData.kext" "Remove $BrcmFirmwareData.kext in Clover"
     for extensions in ${gExtensions_Repo[@]}
     do
       _del $extensions/BrcmFirmwareData.kext
