@@ -523,23 +523,31 @@ function _getEDID()
     fi
 
     #
-    # Patch IOKit?
+    # Patch IOKit/CoreDisplay?
     #
-    if [[ $gHorizontalRez -gt 1920 || $gSystemHorizontalRez -gt 1920 ]];
+    local gIntelGraphicsCardInfo=$(ioreg -lw0 |grep -i "Intel Iris Graphics" |sed -e "/[^<]*<\"/s///" -e "s/\"\>//")
+    if [[ "${gIntelGraphicsCardInfo}" == *"Iris"* ]];
       then
         #
-        # Yes, We indeed require a patch to unlock the limitation of flash rate of IOKit to power up the QHD+/4K display.
-        #
-        # Note: the argument of gPatchIOKit is set to 0 as default if the examination of resolution fail, this argument can ensure all models being powered up.
-        #
-        gPatchIOKit=${kBASHReturnSuccess}
-      else
-        #
-        # No, patch IOKit is not required, we won't touch IOKit(for a more intergration/clean system since less is more).
+        # Iris version, no IOKit/CoreDisplay patch require
         #
         gPatchIOKit=${kBASHReturnFailure}
+      else
+        if [[ $gHorizontalRez -gt 1920 || $gSystemHorizontalRez -gt 1920 ]];
+          then
+            #
+            # Yes, We indeed require a patch to unlock the limitation of flash rate of IOKit to power up the QHD+/4K display.
+            #
+            # Note: the argument of gPatchIOKit is set to 0 as default if the examination of resolution fail, this argument can ensure all models being powered up.
+            #
+            gPatchIOKit=${kBASHReturnSuccess}
+          else
+            #
+            # No, patch IOKit is not required, we won't touch IOKit(for a more intergration/clean system since less is more).
+            #
+            gPatchIOKit=${kBASHReturnFailure}
+        fi
     fi
-
     #
     # Passing gPatchIOKit to gPatchRecoveryHD.
     #
@@ -602,6 +610,27 @@ function _upd_EFI()
         # Yes, ne, update Clover.
         #
         _tidy_exec "cp "$1" "$2"" "Update $2"
+    fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _hwpArgvChk()
+{
+    gRm_SSDT_pr=${kBASHReturnFailure}
+    gCp_SSDT_pr=${kBASHReturnFailure}
+    #
+    # hwp enable is ready
+    #
+    local ghwpArgvChk=$(grep -i -A 1 "HWPEnable" ${config_plist})
+    if [[ "${ghwpArgvChk}" == *"true"* ]]; then
+        #
+        # hwp is enable, disable old style power management
+        #
+        gRm_SSDT_pr=${kBASHReturnSuccess}
+        gCp_SSDT_pr=${kBASHReturnSuccess}
     fi
 }
 
@@ -793,8 +822,7 @@ function _find_acpi()
     do
       grep -i "DptfTa" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
 
-      if [ "${RETURN_VAL}" == 0 ];
-        then
+      if [ "${RETURN_VAL}" == 0 ]; then
           DptfTa=SSDT-${index}
       fi
     done
@@ -806,8 +834,7 @@ function _find_acpi()
     do
       grep -i "SaSsdt" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
 
-      if [ "${RETURN_VAL}" == 0 ];
-        then
+      if [ "${RETURN_VAL}" == 0 ]; then
           SaSsdt=SSDT-${index}
       fi
     done
@@ -819,8 +846,7 @@ function _find_acpi()
     do
       grep -i "sensrhub" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
 
-      if [ "${RETURN_VAL}" == 0 ];
-        then
+      if [ "${RETURN_VAL}" == 0 ]; then
           sensrhub=SSDT-${index}
       fi
     done
@@ -829,6 +855,43 @@ function _find_acpi()
     # Search FACP
     #
     FACP=FACP
+
+    #
+    # Tables to be eliminated: Ther_Rvp, xh_rvp0, CpuSsdt, Cpu0Cst, ApCst, Cpu0Hwp, ApHwp, HwpLvt
+    #
+    # Search sensrhub
+    #
+    for ((index = 1; index <= ${number}; index++))
+    do
+      grep -i "Ther_Rvp" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
+
+      if [ "${RETURN_VAL}" == 0 ]; then
+          rmSSDT_0=SSDT-${index}
+      fi
+    done
+    #
+    # Search xh_rvp0
+    #
+    for ((index = 1; index <= ${number}; index++))
+    do
+      grep -i "xh_rvp0" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
+
+      if [ "${RETURN_VAL}" == 0 ]; then
+          rmSSDT_1=SSDT-${index}
+      fi
+    done
+    #
+    # Search CpuSsdt
+    #
+    for ((index = 1; index <= ${number}; index++))
+    do
+      grep -i "CpuSsdt" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
+
+      if [ "${RETURN_VAL}" == 0 ]; then
+          rmSSDT_2=SSDT-${index}
+      fi
+    done
+    gRm_SSDT_Tabl=("$rmSSDT_0" "$rmSSDT_1" "$rmSSDT_2")
 }
 
 #
@@ -896,8 +959,8 @@ function _update_clover()
     #
     # I hate this way to deal with driver, but I will refine it later
     #
-    _tidy_exec "rm -R ${KEXT_DIR}/BrcmPatchRAM2.kext" "Remove BrcmPatchRAM2.kext in Clover"
-    _tidy_exec "rm -R ${KEXT_DIR}/BrcmFirmwareData.kext" "Remove $BrcmFirmwareData.kext in Clover"
+    _del ${KEXT_DIR}/BrcmPatchRAM2.kext
+    _del ${KEXT_DIR}/BrcmFirmwareData.kext
     for extensions in ${gExtensions_Repo[@]}
     do
       _del $extensions/BrcmFirmwareData.kext
@@ -1363,6 +1426,10 @@ function main()
       then
         _update
     fi
+    #
+    # prestage cleanup
+    #
+    _tidy_exec "${REPO}/tools/cleanup" "Pre stage cleanup"
 
     #
     # Generate dir.
@@ -1499,10 +1566,16 @@ function main()
     _tidy_exec "cp "${prepare}"/SSDT-rmne.aml "${compile}"" "Copy SSDT-rmne.aml to ./DSDT/compile"
 
     #
-    # Detect which SSDT for processor to be installed.
+    # Decide which mode: hwp?
     #
-    gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
-    _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
+    _hwpArgvChk
+    if [[ ${gCp_SSDT_pr} != ${kBASHReturnSuccess} ]]; then
+        #
+        # Detect which SSDT for processor to be installed.
+        #
+        gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
+        _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
+    fi
 
     #
     # Install SSDT-m for ALS0.
@@ -1511,9 +1584,13 @@ function main()
 #    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
 
     #
-    # Clean up dynamic SSDTs.
+    # Clean up dynamic tables and CPU related tables
     #
     _tidy_exec "rm "${compile}"SSDT-*x.aml" "Clean dynamic SSDTs"
+    for rmssdt in "${gRm_SSDT_Tabl[@]}"
+    do
+      _tidy_exec "rm "${compile}"$rmssdt.aml" "Drop ${rmssdt}"
+    done
 
     #
     # Copy AML to destination place.
@@ -1603,7 +1680,7 @@ function main()
     _del /Volumes/EFI/EFI/CLOVER/config.plistg
 
     _PRINT_MSG "NOTE: Congratulations! All operation has been completed"
-    _PRINT_MSG "NOTE: Reboot now. Then enjoy your macOS! -${BOLD}syscl/lighting/Yating Zhou @PCBeta${OFF}"
+    _PRINT_MSG "NOTE: Reboot now. -${BOLD}syscl/lighting/Yating Zhou @PCBeta${OFF}"
 }
 
 #==================================== START =====================================
