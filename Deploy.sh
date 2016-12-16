@@ -1504,6 +1504,10 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_SLPB"" "SBTN->SLPB with correct _STA 0x0B"
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
+    # PXSX -> ARPT
+    sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
+    _del "${REPO}"/DSDT/raw/DSDT.dslg
 
     #
     # DptfTa Patches.

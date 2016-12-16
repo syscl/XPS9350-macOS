@@ -1,0 +1,16 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#RP05->ARPT@0->AirPort_Brcm4360
+
+#rename RP05 to ARPT due to MaciASL’s bug, we have to use sed to replace
+# MaciASL’s bug, we have to rename the following:
+# If (CondRefOf (\_SB.PCI0.RP05.PXSX))
+# Scope (_SB.PCI0.RP05.PXSX)
+
+into method label _PRW parent_adr 0x001C0004 remove_entry;
+into device name_adr 0x001C0004 insert
+begin
+Method (_PRW, 0, NotSerialized)\n
+{\n
+	Return (GPRW (0x09, 0x04))\n
+}\n
+end;
