@@ -857,7 +857,7 @@ function _find_acpi()
     FACP=FACP
 
     #
-    # Tables to be eliminated: Ther_Rvp, xh_rvp0, CpuSsdt, Cpu0Cst, ApCst, Cpu0Hwp, ApHwp, HwpLvt
+    # Tables to be eliminated: Ther_Rvp, CpuSsdt, Cpu0Cst, ApCst, Cpu0Hwp, ApHwp, HwpLvt
     #
     # Search sensrhub
     #
@@ -870,16 +870,7 @@ function _find_acpi()
       fi
     done
     #
-    # Search xh_rvp0
-    #
-    for ((index = 1; index <= ${number}; index++))
-    do
-      grep -i "xh_rvp0" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
-
-      if [ "${RETURN_VAL}" == 0 ]; then
-          rmSSDT_1=SSDT-${index}
-      fi
-    done
+    # Search xh_rvp0, note: we cannot drop xh_rvp0 table which will cause USB disapper!
     #
     # Search CpuSsdt
     #
@@ -888,10 +879,10 @@ function _find_acpi()
       grep -i "CpuSsdt" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
 
       if [ "${RETURN_VAL}" == 0 ]; then
-          rmSSDT_2=SSDT-${index}
+          rmSSDT_1=SSDT-${index}
       fi
     done
-    gRm_SSDT_Tabl=("$rmSSDT_0" "$rmSSDT_1" "$rmSSDT_2")
+    gRm_SSDT_Tabl=("$rmSSDT_0" "$rmSSDT_1")
 }
 
 #

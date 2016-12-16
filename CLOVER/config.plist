@@ -79,15 +79,13 @@
 		<array>
 			<dict>
 				<key>Signature</key>
-				<string>SSDT</string>
-				<key>TableId</key>
-				<string>Ther_Rvp</string>
+				<string>DMAR</string>
 			</dict>
 			<dict>
 				<key>Signature</key>
 				<string>SSDT</string>
 				<key>TableId</key>
-				<string>xh_rvp07</string>
+				<string>Ther_Rvp</string>
 			</dict>
 			<dict>
 				<key>Signature</key>
