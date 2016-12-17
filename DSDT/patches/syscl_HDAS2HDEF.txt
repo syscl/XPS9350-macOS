@@ -1,0 +1,6 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#HDAS->HDEF
+
+#rename HDAS to HDEF
+into device label HDAS set_label begin HDEF end;
+into_all all code_regex HDAS replaceall_matched begin HDEF end;

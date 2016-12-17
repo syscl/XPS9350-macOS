@@ -1483,6 +1483,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys F11, F12 function"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
     _tidy_exec "patch_acpi DSDT graphics "graphics_PNLF"" "Brightness fix"
