@@ -287,7 +287,6 @@ function _tidy_exec()
 
 function compile_table()
 {
-#"${REPO}"/tools/iasl -vr -w1 -ve -p "${compile}"$1.aml "${precompile}"$1.dsl
     "${REPO}"/tools/iasl -vr -p "${compile}"$1.aml "${precompile}"$1.dsl
 }
 
@@ -575,42 +574,6 @@ function _unlock_pixel_clock()
 
     sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_rhd_Framework}
     _tidy_exec "sudo codesign -f -s - ${gTarget_rhd_Framework}" "Patch and sign framework for Recovery HD"
-}
-
-#
-#--------------------------------------------------------------------------------
-#
-
-function _upd_EFI()
-{
-    local gUPD=${kBASHReturnSuccess}
-    #
-    # Update EFI drivers/Clover.
-    #
-    if [ -f "$1" ];
-      then
-        local gMD_nd=$(md5 -q "$1")
-      else
-        local gUPD=${kBASHReturnFailure}
-    fi
-
-    #
-    # Target EFI/Clover files.
-    #
-    if [ -f "$2" ];
-      then
-        local gMD_nd=$(md5 -q "$2")
-      else
-        local gUPD=${kBASHReturnFailure}
-    fi
-
-    if [[ $gMD_st != $gMD_nd && $gUPD == ${kBASHReturnSuccess} ]];
-      then
-        #
-        # Yes, ne, update Clover.
-        #
-        _tidy_exec "cp "$1" "$2"" "Update $2"
-    fi
 }
 
 #
@@ -932,7 +895,7 @@ function _update_clover()
     KEXT_DIR=/Volumes/EFI/EFI/CLOVER/kexts/${gOSVer}
 
     #
-    # Updating kexts. NOTE: This progress will remove any previous kexts.
+    # Updating kexts. NOTE: This progress will remove any previous kexts
     #
     _PRINT_MSG "--->: ${BLUE}Updating kexts...${OFF}"
     _tidy_exec "rm -rf ${KEXT_DIR}" "Remove pervious kexts in ${KEXT_DIR}"
@@ -972,18 +935,45 @@ function _update_clover()
     #
     for filename in "${drvEFI[@]}"
     do
-      _upd_EFI "${drivers64UEFI}/${filename}" "${t_drivers64UEFI}/${filename}"
+      _updfl "${t_drivers64UEFI}/${filename}" "${drivers64UEFI}/${filename}"
     done
 
     for filename in "${efiTOOL[@]}"
     do
-      _upd_EFI "${clover_tools}/${filename}" "${t_clover_tools}/${filename}"
+      _updfl "${t_clover_tools}/${filename}" "${clover_tools}/${filename}"
     done
 
     #
     # Update CLOVERX64.efi
     #
-    _upd_EFI "${REPO}/CLOVER/CLOVERX64.efi" "/Volumes/EFI/EFI/CLOVER/CLOVERX64.efi"
+    _updfl "/Volumes/EFI/EFI/CLOVER/CLOVERX64.efi" "${REPO}/CLOVER/CLOVERX64.efi"
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _updfl()
+{
+    local gTargetf=$1
+    local gSourcef=$2
+    local gTargetHash=""
+    local gSourceHash=""
+
+    if [ -f ${gTargetf} ]; then
+        gTargetHash=$(md5 -q $gTargetf)
+    fi
+
+    if [ -f ${gSourcef} ]; then
+        gSourceHash=$(md5 -q $gSourcef)
+    fi
+
+    if [[ "${gTargetHash}" != "${gSourceHash}" ]]; then
+        #
+        # Update target file
+        #
+        _tidy_exec "cp ${gSourcef} ${gTargetf}" "Update ${gTargetf}"
+    fi
 }
 
 #
