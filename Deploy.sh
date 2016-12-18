@@ -1508,6 +1508,8 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
     # PXSX -> ARPT
     sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
+    # PBTN -> PWRB
+    sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
     _del "${REPO}"/DSDT/raw/DSDT.dslg
 
     #
