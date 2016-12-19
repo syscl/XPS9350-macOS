@@ -1397,16 +1397,25 @@ function main()
         #
         gDebug=1
     fi
-
+    #
+    # rlse: no update, no install audio, no rebuild
+    #
+    if [[ "$gArgv" == *"-RLSE"* ]];
+      then
+        gDisableRebuildnAudioInst=${kBASHReturnSuccess}
+      else
+        gDisableRebuildnAudioInst=${kBASHReturnFailure}
+    fi
     #
     # Sync all files from https://github.com/syscl/XPS9350-macOS
     #
     # Check if github is available
     #
-    if [[ "$gArgv" != *"-NO-UPDATE"* ]];
+    if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]];
       then
         _update
     fi
+
     #
     # prestage cleanup
     #
@@ -1466,6 +1475,9 @@ function main()
     #
     # DSDT Patches.
     #
+    # Rename definition block first
+    #
+    sed -ig 's/DefinitionBlock ("", "DSDT", 2, "DELL  ", "CBX3   ", 0x01072009)/DefinitionBlock ("", "DSDT", 3, "APPLE ", "MacBook", 0x00080001)/' "${REPO}"/DSDT/raw/DSDT.dsl
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixSDSM"" "Fix SDSM Error credit syscl"
@@ -1507,7 +1519,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
     # ECDV -> EC
 #sed -ig 's/ECDV/EC/' /DSDT/raw/DSDT.dsl
-    _del "${REPO}"/DSDT/raw/DSDT.dslg
+    _tidy_exec "rm "${REPO}"/DSDT/raw/DSDT.dslg" "Remove DSDT backup"
 
     #
     # DptfTa Patches.
@@ -1606,8 +1618,10 @@ function main()
     #
     # Install audio.
     #
-    _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
-    _tidy_exec "install_audio" "Install audio"
+    if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
+        _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
+        _tidy_exec "install_audio" "Install audio"
+    fi
 
     #
     # Patch IOKit/CoreDisplay.
@@ -1666,8 +1680,10 @@ function main()
     #
     # Rebuild kernel extensions cache.
     #
-    _PRINT_MSG "--->: ${BLUE}Rebuilding kernel extensions cache...${OFF}"
-    _tidy_exec "rebuild_kernel_cache" "Rebuild kernel extensions cache"
+    if [[ ${gDisableRebuildnAudioInst} == ${${kBASHReturnFailure}} ]]; then
+        _PRINT_MSG "--->: ${BLUE}Rebuilding kernel extensions cache...${OFF}"
+        _tidy_exec "rebuild_kernel_cache" "Rebuild kernel extensions cache"
+    fi
 
     #
     # Clean up backup
