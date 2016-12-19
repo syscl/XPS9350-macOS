@@ -1,0 +1,6 @@
+#Maintained by: syscl/lighting/Yating Zhou for: PCBeta
+#Note: Eliminate/refine code inside PNP0C0C as real MacBook
+
+#Remove _PWR and _PSW method for PNP0C0C
+into method label _PWR parent_hid PNP0C0C remove_entry;
+into method label _PSW parent_hid PNP0C0C remove_entry;

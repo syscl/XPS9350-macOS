@@ -1500,6 +1500,7 @@ function main()
     sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
     # PBTN -> PWRB
     sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
+    _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
     _del "${REPO}"/DSDT/raw/DSDT.dslg
 
     #
