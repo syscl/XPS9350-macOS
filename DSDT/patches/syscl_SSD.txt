@@ -1,0 +1,83 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#RP09::ARPT -> RP09::SSD0
+#NOTE: must apply after renaming PXSX to ARPT
+
+into device label PXSX parent_adr 0x001D0000 remove_entry;
+into device label ARPT parent_adr 0x001D0000 remove_entry;
+into device label SSD0 parent_adr 0x001D0000 remove_entry;
+into device name_adr 0x001D0000 insert
+begin
+Device (SSD0)\n
+{\n
+    Name (_ADR, Zero)\n
+    Method (_PRW, 0, NotSerialized)\n
+    {\n
+        Return (GPRW (0x69, 0x04))\n
+    }\n
+
+    Method (_RMV, 0, NotSerialized)\n
+    {\n
+        If (LAnd (LEqual (TBTS, One), LEqual (SBNR, TBUS)))\n
+        {\n
+            Return (TARS)\n
+        }\n
+        Else\n
+        {\n
+            Return (HPCE)\n
+        }\n
+    }\n
+
+    Method (_PS0, 0, NotSerialized)\n
+    {\n
+    }\n
+
+    Method (_PS3, 0, NotSerialized)\n
+    {\n
+        Add (MMTB (), 0x0548, Local0)\n
+        OperationRegion (PXVD, SystemMemory, Local0, 0x08)\n
+        Field (PXVD, DWordAcc, NoLock, Preserve)\n
+        {\n
+            TB2P,   32,\n
+            P2TB,   32\n
+        }\n
+
+        If (LAnd (LEqual (TBTS, One), LEqual (SBNR, TBUS)))\n
+        {\n
+            ADBG ("sending SX_START")\n
+            Store (0x1D, P2TB)\n
+        }\n
+    }\n
+}\n
+end;
+
+into method label HPME parent_adr 0x001D0000 remove_entry;
+into device name_adr 0x001D0000 insert
+begin
+Method (HPME, 0, Serialized)\n
+{\n
+    If (LAnd (LNotEqual (VDID, 0xFFFFFFFF), LEqual (PMSX, One)))\n
+    {\n
+        Notify (SSD0, 0x02)\n
+        Store (One, PMSX)\n
+        Store (One, PSPX)\n
+    }\n
+}\n
+end;
+
+# If (CondRefOf (\_SB.PCI0.RP09.ARPT))
+into_all all code_regex If\s\(CondRefOf\s\(\\_SB.PCI0.RP09.ARPT\)\) replace_matched
+begin
+If (CondRefOf (\\_SB.PCI0.RP09.SSD0))
+end;
+
+# If (LOr (^^PCI0.RP09.ARPT.PAHC (), ^^PCI0.RP09.ARPT.PNVM ()))
+into_all all code_regex If\s\(LOr\s+\(\^\^PCI0.RP09.ARPT.PAHC\s\(\),\s\^\^PCI0.RP09.ARPT.PNVM\s\(\)\)\) replace_matched
+begin
+If (LOr (^^PCI0.RP09.SSD0.PAHC (), ^^PCI0.RP09.SSD0.PNVM ()))
+end;
+
+# If (^^PCI0.RP09.ARPT.WIST ())
+into_all all code_regex If\s\(\^\^PCI0.RP09.ARPT.WIST\s\(\)\) replace_matched
+begin
+If (^^PCI0.RP09.SSD0.WIST ())
+end;

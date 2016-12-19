@@ -1,0 +1,3 @@
+#Maintained by: PHPdev32 for: Sourceforge
+into device name_hid PNP0C14 remove_entry;
+into device name_hid pnp0c14 remove_entry

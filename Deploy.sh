@@ -1363,7 +1363,7 @@ function _recoveryhd_fix()
     #
     _PRINT_MSG "--->: Convert ${gTarget_FS}(r/w) to ${gBaseSystem_FS}(r/o) ..."
     _tidy_exec "hdiutil convert "${gBaseSystem_RW}" -format ${gBaseSystem_FS} -o ${gBaseSystem_PATCH} -quiet" "Convert ${gTarget_FS}(r/w) to ${gBaseSystem_FS}(r/o)"
-    _PRINT_MSG "--->: Updating Recovery HD for DELL M3800/XPS9530..."
+    _PRINT_MSG "--->: Updating Recovery HD for DELL XPS 13 9350..."
     cp ${gBaseSystem_PATCH} "${gRecoveryHD_DMG}"
     chflags hidden "${gRecoveryHD_DMG}"
 
@@ -1496,11 +1496,17 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
+    _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # PXSX -> ARPT
     sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
+    # RP09::ARPT  -> RP09::SSD0
+    _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
+    sed -ig 's/Scope (_SB.PCI0.RP09.ARPT)/Scope (_SB.PCI0.RP09.SSD0)/' "${REPO}"/DSDT/raw/DSDT.dsl
     # PBTN -> PWRB
     sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
+    # ECDV -> EC
+#sed -ig 's/ECDV/EC/' /DSDT/raw/DSDT.dsl
     _del "${REPO}"/DSDT/raw/DSDT.dslg
 
     #
