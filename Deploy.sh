@@ -1680,7 +1680,7 @@ function main()
     #
     # Rebuild kernel extensions cache.
     #
-    if [[ ${gDisableRebuildnAudioInst} == ${${kBASHReturnFailure}} ]]; then
+    if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
         _PRINT_MSG "--->: ${BLUE}Rebuilding kernel extensions cache...${OFF}"
         _tidy_exec "rebuild_kernel_cache" "Rebuild kernel extensions cache"
     fi
