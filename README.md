@@ -50,9 +50,9 @@ TODO List
 
 <s>Next week I have 3 ```final exams```, so I will be back in next Wednesday!</s> What I will do next week are listed below
 
-- Remove patched ACPI tables directories(precomiple, raw, comiple) every time before acpi compile
+<s>- Remove patched ACPI tables directories(precomiple, raw, comiple) every time before acpi compile</s>
 <s>- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table</s>
-- Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)
+<s>- Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)</s>
 - Refine AppleHDA 
 - New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS
 - Import IOPowerManagement
@@ -62,6 +62,52 @@ TODO List
 
 Change Log
 ----------------
+2016-12-19
+
+- Remove _PRW, _PSW in PWRB(PNP0C0C)
+- RP09::ARPT->RP09::SSD0 (c) syscl
+- Remove pnp0c14
+- _T_2 ->T_2 
+- Rename definition block
+
+2016-12-18
+
+- Fixed update/sync file issue
+
+2016-12-17
+
+- Rename HDAS->HDEF for layout to inject successfully
+- PBTN->PWRB
+
+2016-12-16
+
+- Updated FaceTimeHD keys from MacBookPro13,2
+- Cleanup redundant kexts
+- Sort kexts and sync 10.11's kexts
+- _PWR val fixed
+- PXSX to ARPT
+
+2016-12-15
+
+- HWP is ready
+- Boot issue should go away; xh_rvp07 must be included
+
+2016-12-14
+
+- Fixed audio injection bug causes by Clover
+- Updated 3 cpu models i5-6200, i7-6500, i7-6560 SSDT-pr
+- Resolve hp distortion and static noise
+- Optimization CC credit syscl
+- Updated BT driver for DW1830
+- Fixed stuck of some function in deploy
+- Fixed SSDT-pr installation issue
+
+2016-12-13
+
+- Auto correct reset val and address from FACP
+- Added HDMI property
+- Updated DisplayLink Driver to 2.6.0
+
 2016-12-12
 
 - Fixed/refined DSDT patch
