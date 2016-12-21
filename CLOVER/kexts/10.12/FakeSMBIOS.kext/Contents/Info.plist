@@ -40,19 +40,11 @@
 	<string>8C1002</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key>Generic</key>
+		<key>Platform SMBIOS Match</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>org.syscl.FakeSMBIOS</string>
-			<key>IOClass</key>
-			<string>FakeSMBIOS</string>
-			<key>IOMatchCategory</key>
-			<string>FakeSMBIOS</string>
-			<key>IOProviderClass</key>
-			<string>IOPlatformExpertDevice</string>
-			<key>IOResourceMatch</key>
-			<string>SMBIOS</string>
-			<key>Override</key>
+			<key>FakeProperties</key>
 			<dict>
 				<key>compatible</key>
 				<string>MacBookPro13,1</string>
@@ -61,6 +53,14 @@
 				<key>product-name</key>
 				<string>MacBookPro13,1</string>
 			</dict>
+			<key>IOClass</key>
+			<string>FakeSMBIOS</string>
+			<key>IOMatchCategory</key>
+			<string>FakeSMBIOS</string>
+			<key>IOProviderClass</key>
+			<string>IOPlatformExpertDevice</string>
+			<key>IOResourceMatch</key>
+			<string>SMBIOS</string>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>
