@@ -141,12 +141,7 @@
 			<key>DropOem</key>
 			<false/>
 			<key>Generate</key>
-			<dict>
-				<key>CStates</key>
-				<true/>
-				<key>PStates</key>
-				<true/>
-			</dict>
+			<false/>
 		</dict>
 		<key>SortedOrder</key>
 		<array>
@@ -195,6 +190,8 @@
 	</dict>
 	<key>CPU</key>
 	<dict>
+		<key>HWPEnable</key>
+		<true/>
 		<key>UseARTFrequency</key>
 		<false/>
 	</dict>
@@ -711,35 +708,31 @@
 	<key>SMBIOS</key>
 	<dict>
 		<key>BiosReleaseDate</key>
-		<string>04/19/16</string>
+		<string>10/12/2016</string>
 		<key>BiosVendor</key>
 		<string>Apple Inc.</string>
 		<key>BiosVersion</key>
-		<string>MB91.88Z.0154.B04.1604191425</string>
+		<string>MBP131.88Z.0205.B02.1610121536</string>
 		<key>Board-ID</key>
 		<string>Mac-473D31EABEB93F9B</string>
 		<key>BoardManufacturer</key>
 		<string>Apple Inc.</string>
 		<key>BoardType</key>
 		<integer>10</integer>
-		<key>ChassisAssetTag</key>
-		<string>MacBook-Aluminum</string>
+		<key>BoardVersion</key>
+		<string>MacBookPro13,1</string>
 		<key>ChassisManufacturer</key>
 		<string>Apple Inc.</string>
 		<key>ChassisType</key>
-		<string>10</string>
+		<string>0x08</string>
 		<key>Family</key>
-		<string>MacBook</string>
+		<string>MacBook Pro</string>
 		<key>Manufacturer</key>
 		<string>Apple Inc.</string>
-		<key>Mobile</key>
-		<true/>
 		<key>ProductName</key>
-		<string>MacBook8,2</string>
+		<string>MacBookPro13,1</string>
 		<key>SerialNumber</key>
-		<string>C02RRANSHDNK</string>
-		<key>Trust</key>
-		<false/>
+		<string>C02S5I0XGVC8</string>
 		<key>Version</key>
 		<string>1.0</string>
 	</dict>
