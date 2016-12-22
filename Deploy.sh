@@ -105,6 +105,7 @@ gRecoveryHD_DMG="/Volumes/Recovery HD/com.apple.recovery.boot/BaseSystem.dmg"
 gTarget_rhd_Framework=""
 gTarget_Framework_Repo=""
 gBluetooth_Brand_String=""
+gModelType=1    # 0 stands for non-Iris model, 1 stands for Iris model
 #
 # Add: Comment(string), Disabled(bool), Find(data), Name(string), Replace(data)
 # Set: $comment       , false         , syscl     , $binary_name, syscl
@@ -551,6 +552,10 @@ function _getEDID()
     # Passing gPatchIOKit to gPatchRecoveryHD.
     #
     gPatchRecoveryHD=${gPatchIOKit}
+    #
+    # Indicate gModelType
+    #
+    gModelType=${gPatchIOKit}
 }
 
 #
@@ -606,7 +611,19 @@ function _check_and_fix_config()
     #
     # Check if the ig-platform-id is correct(i.e. ig-platform-id = 0x19260004).
     #
-    target_ig_platform_id="0x19260004"
+    if [ gModelType == 1 ];
+      then
+        #
+        # Iris version(i7-6560U)
+        #
+        target_ig_platform_id="0x19260004"
+      else
+        #
+        # Non-Iris version(i5-6200U, i7-6500U)
+        #
+        target_ig_platform_id="0x19160000"
+    fi
+
     gClover_ig_platform_id=$(awk '/<key>ig-platform-id<\/key>.*/,/<\/string>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
 
     #
@@ -1525,21 +1542,20 @@ function main()
     # DptfTa Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${DptfTa}.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
+    _tidy_exec "patch_acpi ${DptfTa} syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # SaSsdt Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # sensrhub patches
     #
     _PRINT_MSG "${BLUE}Fixing ${sensrhub}.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
+    _tidy_exec "patch_acpi ${sensrhub} syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
 
     #
@@ -1651,11 +1667,13 @@ function main()
         _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
     fi
 
-    #
-    # Lead to lid wake on 0x19260004 by syscl/lighting/Yating Zhou.
-    #
-    _PRINT_MSG "--->: ${BLUE}Leading to lid wake on 0x19260004 (c) syscl/lighting/Yating Zhou...${OFF}"
-    _tidy_exec "_check_and_fix_config" "Lead to lid wake on 0x19260004"
+    if [ gModelType == 1 ]; then
+        #
+        # Lead to lid wake on 0x19260004 by syscl/lighting/Yating Zhou.
+        #
+        _PRINT_MSG "--->: ${BLUE}Leading to lid wake on 0x19260004 (c) syscl/lighting/Yating Zhou...${OFF}"
+        _tidy_exec "_check_and_fix_config" "Lead to lid wake on 0x19260004"
+    fi
 
     #
     # Fix issue that external devices ejected improperly upon sleep (c) syscl/lighting/Yating Zhou.
