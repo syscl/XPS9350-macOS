@@ -1525,18 +1525,21 @@ function main()
     # DptfTa Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${DptfTa}.dsl${OFF}"
+    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # SaSsdt Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
+    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # sensrhub patches
     #
     _PRINT_MSG "${BLUE}Fixing ${sensrhub}.dsl${OFF}"
+    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
 
     #
