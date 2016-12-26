@@ -696,6 +696,20 @@
 				<key>Replace</key>
 				<data>Qb4PAAAA60Q=</data>
 			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Bypass ThunderBolt3 SkipEnumeration credit kid2010 implemented by syscl</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>VUiJ5UFXQVZBVUFUU0iB7DgB</data>
+				<key>MatchOS</key>
+				<string>10.12.x</string>
+				<key>Name</key>
+				<string>IOThunderboltFamily</string>
+				<key>Replace</key>
+				<data>VUiJ5THAXcNBVUFUU0iB7DgB</data>
+			</dict>
 		</array>
 	</dict>
 	<key>RtVariables</key>
