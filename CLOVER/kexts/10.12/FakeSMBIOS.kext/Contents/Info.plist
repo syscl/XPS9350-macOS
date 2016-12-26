@@ -47,11 +47,11 @@
 			<key>FakeProperties</key>
 			<dict>
 				<key>compatible</key>
-				<string>MacBookPro13,1</string>
+				<string>MacBook9,1</string>
 				<key>model</key>
-				<string>MacBookPro13,1</string>
+				<string>MacBook9,1</string>
 				<key>product-name</key>
-				<string>MacBookPro13,1</string>
+				<string>MacBook9,1</string>
 			</dict>
 			<key>IOClass</key>
 			<string>FakeSMBIOS</string>
