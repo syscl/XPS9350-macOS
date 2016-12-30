@@ -907,6 +907,25 @@ function _gRstValnAdr()
 #--------------------------------------------------------------------------------
 #
 
+function _twhibernatemod()
+{
+    #
+    # tweak hibernatemode for skylake platforms
+    #
+    # note: hibernatemode on skylake platform behave unstable, and very likely to break all the data(nvme issue?)
+    # thus, we better switch to a faster and better hibernatemode = 0
+    #
+    local gTarHibernateMode=0
+    local gOrgHibernateMode=$(pmset -g |grep -i "hibernatemode" |sed 's|hibernatemode||')
+    if [[ ${OrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then
+        _tidy_exec "sudo pmset hibernatemode ${gTarHibernateMode}" "Change hibernatemode from ${OrgHibernateMode} to ${gTarHibernateMode}"
+    fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
 function _update_clover()
 {
     KEXT_DIR=/Volumes/EFI/EFI/CLOVER/kexts/${gOSVer}
@@ -1679,6 +1698,11 @@ function main()
     # Fix issue that external devices ejected improperly upon sleep (c) syscl/lighting/Yating Zhou.
     #
     _fix_usb_ejected_improperly
+
+    #
+    # Fix hibernatemode
+    #
+    _twhibernatemod
 
     #
     # Fixed Recovery HD entering issues (c) syscl.
