@@ -917,8 +917,8 @@ function _twhibernatemod()
     #
     local gTarHibernateMode=0
     local gOrgHibernateMode=$(pmset -g |grep -i "hibernatemode" |sed 's|hibernatemode||')
-    if [[ ${OrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then
-        _tidy_exec "sudo pmset hibernatemode ${gTarHibernateMode}" "Change hibernatemode from ${OrgHibernateMode} to ${gTarHibernateMode}"
+    if [[ ${gOrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then
+        _tidy_exec "sudo pmset hibernatemode ${gTarHibernateMode}" "Change hibernatemode from ${gOrgHibernateMode} to ${gTarHibernateMode}"
     fi
 }
 
