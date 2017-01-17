@@ -300,20 +300,21 @@ function rebuild_kernel_cache()
     #
     # Repair the permission & refresh kernelcache.
     #
-    if [ $gTriggerLE -eq 0 ];
-      then
+#    if [ $gTriggerLE -eq 0 ];
+#      then
         #
         # Yes, we do touch /L*/E*.
         #
-        sudo touch /Library/Extensions
-    fi
+#        sudo touch /Library/Extensions
+#    fi
 
     #
     # /S*/L*/E* must be touched to prevent some potential issues.
     #
-    sudo touch /System/Library/Extensions
-    sudo /bin/kill -1 `ps -ax | awk '{print $1" "$5}' | grep kextd | awk '{print $1}'`
-    sudo kextcache -u /
+#    sudo touch /System/Library/Extensions
+#    sudo /bin/kill -1 `ps -ax | awk '{print $1" "$5}' | grep kextd | awk '{print $1}'`
+#    sudo kextcache -u /
+    sudo kextcache -i /
 }
 
 #
