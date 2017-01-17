@@ -1496,11 +1496,11 @@ function main()
     fi
 
     #
-    # Decompile dsdt.
+    # Decompile acpi tables
     #
     cd "${REPO}"
     _PRINT_MSG "--->: ${BLUE}Disassembling tables...${OFF}"
-    _tidy_exec ""${REPO}"/tools/iasl -w1 -da -dl "${REPO}"/DSDT/raw/DSDT.aml "${REPO}"/DSDT/raw/SSDT-*.aml" "Disassemble tables"
+    _tidy_exec ""${REPO}"/tools/iasl -da -dl -fe "${REPO}"/DSDT/patches/refs.txt "${REPO}"/DSDT/raw/DSDT.aml "${REPO}"/DSDT/raw/SSDT-*.aml" "Disassemble DSDT"
     _tidy_exec ""${REPO}"/tools/iasl "${REPO}"/DSDT/raw/FACP.aml" "Disassemble FACP"
 
     #
@@ -1515,8 +1515,8 @@ function main()
     #
     sed -ig 's/DefinitionBlock ("", "DSDT", 2, "DELL  ", "CBX3   ", 0x01072009)/DefinitionBlock ("", "DSDT", 3, "APPLE ", "MacBook", 0x00080001)/' "${REPO}"/DSDT/raw/DSDT.dsl
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_fixSDSM"" "Fix SDSM Error credit syscl"
+#    _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
+#    _tidy_exec "patch_acpi DSDT syscl "syscl_fixSDSM"" "Fix SDSM Error credit syscl"
     _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
@@ -1533,6 +1533,7 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_WAK2"" "Fix _WAK Arg0 v2"
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixRefs"" "Fix MDBG Error credit x4080, syscl"
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
     #
     # Modificate ACPI for macOS to load devices correctly

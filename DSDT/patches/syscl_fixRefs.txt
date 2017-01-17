@@ -1,0 +1,21 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#fix_Refs.txt
+#Error
+#credit also x4080 who remind me to use refs.txt
+
+#If (LIDS (^IGPU.GLID (0x03), Else
+#                    {
+#                        ^IGPU.GLID (Zero)
+#                    })) {}
+
+into_all all code_regex If\s\(LIDS\s+\(\^IGPU.GLID\s+\(0x03\),\s+Else\n.*\{\n.*\^IGPU.GLID\s+\(Zero\)\n.*\} replace_matched
+begin
+If (LIDS)\n
+{\n
+	^IGPU.GLID (0x03)\n
+}\n
+Else\n
+{\n
+	^IGPU.GLID (Zero)\n
+}\n
+end;
