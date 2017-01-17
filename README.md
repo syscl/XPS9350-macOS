@@ -62,6 +62,11 @@ TODO List
 
 Change Log
 ----------------
+2017-01-17
+
+- Use refs.txt to try to fix issue #18 credit @x4080 who reminded to use refs.txt
+- Updated rebuild kernel cache command
+
 2016-12-19
 
 - Remove _PRW, _PSW in PWRB(PNP0C0C)
