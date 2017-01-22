@@ -1,0 +1,77 @@
+#Created by syscl for Dell XPS 13 9350 patches
+#Note: SSD0 must present under RP09
+#NVMe _DSM stripped down credit Pike R. Alpha
+#NVMe "deep-idle" property stripped down credit syscl
+#NVMe Eliminate "sata-express-power-off" and "ssd-off-in-S4" credit syscl
+
+into device label SSD0 parent_adr 0x001D0000 remove_entry;
+into device name_adr 0x001D0000 insert
+begin
+Device (SSD0)\n
+{\n
+	Name (_ADR, Zero)\n
+	Name (NVME, One)\n
+	Method (_DSM, 4, NotSerialized)\n
+	{\n
+		If (LEqual (Arg2, Zero))\n
+               {
+			Return (Buffer (One)\n
+			{\n
+				0x03\n                                        
+			})\n
+		}\n
+
+		If (LEqual (NVME, One))\n
+		{\n
+			Return (Package (0x06)\n
+			{\n
+				// "deep-idle" property stripped down credit syscl\n
+				"deep-idle", \n
+				One,\n
+				"use-msi", \n
+				One, \n
+				"nvme-LPSR-during-S3-S4", \n
+				One\n
+			})\n
+		}\n
+		Else\n
+		{\n
+			Return (Package (0x02)\n
+			{\n
+				// refined else-if case credit syscl\n
+				// eliminate "sata-express-power-off" and "ssd-off-in-S4" credit syscl\n
+				"use-msi", \n
+				One, \n
+			})\n
+		}\n
+	}\n
+}\n
+end;
+
+#PRT0 information property credit Pike R. Alpha
+into device label PRT0 remove_entry;
+into device label SAT0 insert begin
+Device (PRT0)\n
+{\n
+	Name (_ADR, 0xFFFF)\n
+	Method (_DSM, 4, NotSerialized)\n
+	{\n
+		If (LEqual (Arg2, Zero))\n
+		{\n
+			Return (Buffer (One)\n
+			{\n
+				0x03\n                                           
+			})\n
+		}\n
+
+		Return (Package (0x02)\n
+		{\n
+			"io-device-location", \n
+			Buffer (0x04)\n
+			{\n
+				"SSD"\n
+			}\n
+		})\n
+	}\n
+}\n
+end;

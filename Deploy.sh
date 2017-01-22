@@ -1535,6 +1535,13 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixRefs"" "Fix MDBG Error credit x4080, syscl"
+    local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
+    if [[ ${gNVMeKextIsLoad} != "" ]]; then
+        #
+        # NVMe drivers are loaded, inject properties for better power management
+        #
+        _tidy_exec "patch_acpi DSDT syscl "syscl_NVMe"" "Inject NVMe power management properties credit Pike R. Alpha, syscl"
+    fi
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
     #
     # Modificate ACPI for macOS to load devices correctly
