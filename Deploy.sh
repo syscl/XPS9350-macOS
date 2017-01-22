@@ -1535,13 +1535,6 @@ function main()
     _tidy_exec "patch_acpi DSDT system "system_IMEI"" "Add IMEI"
     _tidy_exec "patch_acpi DSDT system "system_Mutex"" "Fix Non-zero Mutex"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixRefs"" "Fix MDBG Error credit x4080, syscl"
-    local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
-    if [[ ${gNVMeKextIsLoad} != "" ]]; then
-        #
-        # NVMe drivers are loaded, inject properties for better power management
-        #
-        _tidy_exec "patch_acpi DSDT syscl "syscl_NVMe"" "Inject NVMe power management properties credit Pike R. Alpha, syscl"
-    fi
 #   _tidy_exec "patch_acpi DSDT syscl "syscl_ALSD2ALS0"" "ALSD->ALS0"
     #
     # Modificate ACPI for macOS to load devices correctly
@@ -1559,6 +1552,13 @@ function main()
     # RP09::ARPT  -> RP09::SSD0
     _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
     sed -ig 's/Scope (_SB.PCI0.RP09.ARPT)/Scope (_SB.PCI0.RP09.SSD0)/' "${REPO}"/DSDT/raw/DSDT.dsl
+    local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
+    if [[ ${gNVMeKextIsLoad} != "" ]]; then
+        #
+        # NVMe drivers are loaded, inject properties for better power management
+        #
+        _tidy_exec "patch_acpi DSDT syscl "syscl_NVMe"" "Inject NVMe power management properties credit Pike R. Alpha, syscl"
+    fi
     # PBTN -> PWRB
     sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
