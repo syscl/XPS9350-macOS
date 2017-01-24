@@ -1632,10 +1632,10 @@ function main()
     fi
 
     #
-    # Install SSDT-m for ALS0.
+    # Install SSDT-m
     #
-#    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
-#    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
+    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
 
     #
     # Clean up dynamic tables and CPU related tables
