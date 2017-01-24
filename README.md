@@ -62,6 +62,11 @@ TODO List
 
 Change Log
 ----------------
+2017-01-24
+
+- Inject SsdtS3 from MacBook credit syscl's stripple down
+- Added port injector for XHC/EHC credit syscl
+
 2017-01-22
 
 - Inject NVMe power management properties credit Pike R. Alpha("use-msi", "nvme-LPSR-during-S3-S4") syscl("deep-idle")
