@@ -1603,7 +1603,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
-    _tidy_exec "patch_acpi DSDT syscl "syscl_rmB0D4"" "Remove Device(B0D4)"
+#    _tidy_exec "patch_acpi DSDT syscl "syscl_rmB0D4"" "Remove Device(B0D4)"
     _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # RP09.PXSX -> RP09.SSD0
 #sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
