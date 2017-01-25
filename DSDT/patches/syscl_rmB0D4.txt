@@ -1,0 +1,15 @@
+#Created by syscl for Dell XPS Skylake/Kabylake Series
+#syscl_rmB0D4
+#Remove Device(B0D4) credit syscl
+
+#If (And (Local0, One, Local1))
+#                    {
+#                        Notify (B0D4, 0x90)
+#                    }
+into_all all code_regex If\s+\(And\s\(Local0,\sOne,\sLocal1\)\)\n.*\{.*\n.*\n.*\} replace_matched
+begin
+\n
+end;
+
+#Here we remove B0D4
+into device label B0D4 remove_entry;
