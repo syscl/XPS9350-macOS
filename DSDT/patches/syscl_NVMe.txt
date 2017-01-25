@@ -14,7 +14,7 @@ Device (SSD0)\n
 	Method (_DSM, 4, NotSerialized)\n
 	{\n
 		If (LEqual (Arg2, Zero))\n
-               {
+                {\n
 			Return (Buffer (One)\n
 			{\n
 				0x03\n                                        

@@ -1537,7 +1537,7 @@ function main()
                   #
                   # Use VoodooPS2Controller
                   #
-                  gSelect_TouchPad_Drv=1
+                  gSelect_TouchPad_Drv=2
               fi
               ;;
     esac
