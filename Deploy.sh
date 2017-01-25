@@ -938,6 +938,18 @@ function _update_clover()
     _tidy_exec "rm -rf ${KEXT_DIR}" "Remove pervious kexts in ${KEXT_DIR}"
     _tidy_exec "cp -R ./CLOVER/kexts/${gOSVer} /Volumes/EFI/EFI/CLOVER/kexts/" "Update kexts from ./CLOVER/kexts/${gOSVer}"
     _tidy_exec "cp -R ./Kexts/*.kext ${KEXT_DIR}/" "Update kexts from ./Kexts"
+    if [[ ${gSelect_TouchPad_Drv} == 1 ]];
+      then
+        #
+        # Use ApplePS2SmartTouchPad, remove VoodooPS2
+        #
+        _tidy_exec "rm -rf ${KEXT_DIR}/VoodooPS2Controller.kext" "Install ApplePS2SmartTouchPad"
+      else
+        #
+        # Use VoodooPS2Controller, remove ApplePS2SmartTouchPad
+        #
+        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext" "Install ApplePS2SmartTouchPad"
+    fi
 
     #
     # Decide which BT kext to use.
@@ -1497,6 +1509,40 @@ function main()
     fi
 
     #
+    # Choose touchpad kext you prefer
+    #
+    printf "Available touchpad kext:\n"
+    printf "\n"
+    printf "[  1  ] ApplePS2SmartTouchPad\n"
+    printf "[  2  ] VoodooPS2Controller.kext\n"
+    printf "\n"
+    printf "Please choose the desired touchpad kext (1 or 2)"
+    read -p ": " gSelect_TouchPad_Drv
+    case "${gSelect_TouchPad_Drv}" in
+      1     ) _PRINT_MSG "NOTE: Use ${BLUE}ApplePS2SmartTouchPad${OFF}"
+              ;;
+
+      2     ) _PRINT_MSG "NOTE: Use ${BLUE}VoodooPS2Controller${OFF}"
+              ;;
+
+      *     ) _PRINT_MSG "NOTE: Invalid number, use default setting"
+              local gApplePS2SmartTouchPadIsPresent=$(kextstat |grep -i "ApplePS2SmartTouchPad")
+              if [[ ${gApplePS2SmartTouchPadIsPresent} != "" ]];
+                then
+                  #
+                  # Use ApplePS2SmartTouchPad
+                  #
+                 gSelect_TouchPad_Drv=1
+                else
+                  #
+                  # Use VoodooPS2Controller
+                  #
+                  gSelect_TouchPad_Drv=1
+              fi
+              ;;
+    esac
+
+    #
     # Decompile acpi tables
     #
     cd "${REPO}"
@@ -1521,18 +1567,17 @@ function main()
     _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
-    local gApplePS2SmartTouchPadIsPresent=$(kextstat |grep -i "ApplePS2SmartTouchPad")
-    if [[ ${gApplePS2SmartTouchPadIsPresent} == "" ]];
+    if [[ ${gSelect_TouchPad_Drv} == 1 ]];
       then
         #
-        # VoodooPS2 presents
-        #
-        _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey_VoodooPS2"" "Fix brightness keys(F11/F12)"
-      else
-        #
-        # ApplePS2SmartTouchPad presents
+        # Fix ApplePS2SmartTouchPad
         #
         _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys(F11/F12)"
+      else
+        #
+        # Fix VoodooPS2Controller
+        #
+        _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey_VoodooPS2"" "Fix brightness keys(F11/F12)"
     fi
     _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
