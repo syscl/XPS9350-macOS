@@ -1,0 +1,18 @@
+#Created by syscl
+#syscl_fixBrightnesskey_VoodooPS2
+#Patch fix the brightness keys F11 and F12 for XPS 13 9350/9360 and XPS 15 9550/9560
+#Credit azlvda, tdmsn
+
+into method label BRT6 replace_content
+begin
+If (LEqual (Arg0, One))\n
+{\n
+    Notify (LCD, 0x86)\n
+    Notify (^^LPCB.PS2K, 0x0406)\n
+}\n
+If (And (Arg0, 0x02))\n
+{\n
+    Notify (LCD, 0x87)\n
+    Notify (^^LPCB.PS2K, 0x0405)\n
+}\n
+end;
