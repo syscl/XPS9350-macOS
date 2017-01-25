@@ -1547,11 +1547,10 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
     _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
-    # PXSX -> ARPT
-    sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
-    # RP09::ARPT  -> RP09::SSD0
+    # RP09.PXSX -> RP09.SSD0
+#sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
-    sed -ig 's/Scope (_SB.PCI0.RP09.ARPT)/Scope (_SB.PCI0.RP09.SSD0)/' "${REPO}"/DSDT/raw/DSDT.dsl
+    sed -ig 's/\.RP09\.PXSX/\.RP09\.SSD0/' "${REPO}"/DSDT/raw/DSDT.dsl
     local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
     if [[ ${gNVMeKextIsLoad} != "" ]]; then
         #

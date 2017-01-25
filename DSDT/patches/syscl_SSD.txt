@@ -1,9 +1,7 @@
 #Created by syscl for Dell XPS 13 9350 patches
-#RP09::ARPT -> RP09::SSD0
-#NOTE: must apply after renaming PXSX to ARPT
+#RP09::PXSX -> RP09::SSD0
 
 into device label PXSX parent_adr 0x001D0000 remove_entry;
-into device label ARPT parent_adr 0x001D0000 remove_entry;
 into device label SSD0 parent_adr 0x001D0000 remove_entry;
 into device name_adr 0x001D0000 insert
 begin
@@ -64,20 +62,20 @@ Method (HPME, 0, Serialized)\n
 }\n
 end;
 
-# If (CondRefOf (\_SB.PCI0.RP09.ARPT))
-into_all all code_regex If\s\(CondRefOf\s\(\\_SB.PCI0.RP09.ARPT\)\) replace_matched
+# If (CondRefOf (\_SB.PCI0.RP09.PXSX))
+into_all all code_regex If\s\(CondRefOf\s\(\\_SB.PCI0.RP09.PXSX\)\) replace_matched
 begin
 If (CondRefOf (\\_SB.PCI0.RP09.SSD0))
 end;
 
-# If (LOr (^^PCI0.RP09.ARPT.PAHC (), ^^PCI0.RP09.ARPT.PNVM ()))
-into_all all code_regex If\s\(LOr\s+\(\^\^PCI0.RP09.ARPT.PAHC\s\(\),\s\^\^PCI0.RP09.ARPT.PNVM\s\(\)\)\) replace_matched
+# If (LOr (^^PCI0.RP09.PXSX.PAHC (), ^^PCI0.RP09.PXSX.PNVM ()))
+into_all all code_regex If\s\(LOr\s+\(\^\^PCI0.RP09.PXSX.PAHC\s\(\),\s\^\^PCI0.RP09.PXSX.PNVM\s\(\)\)\) replace_matched
 begin
 If (LOr (^^PCI0.RP09.SSD0.PAHC (), ^^PCI0.RP09.SSD0.PNVM ()))
 end;
 
-# If (^^PCI0.RP09.ARPT.WIST ())
-into_all all code_regex If\s\(\^\^PCI0.RP09.ARPT.WIST\s\(\)\) replace_matched
+# If (^^PCI0.RP09.PXSX.WIST ())
+into_all all code_regex If\s\(\^\^PCI0.RP09.PXSX.WIST\s\(\)\) replace_matched
 begin
 If (^^PCI0.RP09.SSD0.WIST ())
 end;
