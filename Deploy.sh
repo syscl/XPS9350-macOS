@@ -948,7 +948,7 @@ function _update_clover()
         #
         # Use VoodooPS2Controller, remove ApplePS2SmartTouchPad
         #
-        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext" "Install ApplePS2SmartTouchPad"
+        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext" "Install VoodooPS2Controller"
     fi
 
     #
