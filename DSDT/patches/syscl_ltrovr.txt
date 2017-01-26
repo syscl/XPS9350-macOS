@@ -1,0 +1,86 @@
+#Created by syscl 
+#syscl_ltrovr
+#Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl
+#Tune it if you need
+#RP01
+#Remove _DSM just in case
+into method label _DSM parent_adr 0x001C0000 remove_entry;
+into method label XDSM parent_adr 0x001C0000 remove_entry;
+
+#Now inject property: setLantencyTolerance credit syscl
+into device name_adr 0x001C0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP05
+into method label _DSM parent_adr 0x001C0004 remove_entry;
+into method label XDSM parent_adr 0x001C0004 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP05 credit syscl
+into device name_adr 0x001C0004 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP09
+into method label _DSM parent_adr 0x001D0000 remove_entry;
+into method label XDSM parent_adr 0x001D0000 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP09 credit syscl
+into device name_adr 0x001D0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+

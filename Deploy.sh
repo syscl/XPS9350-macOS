@@ -1619,6 +1619,8 @@ function main()
     # PBTN -> PWRB
     sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
+    # Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl
+    _tidy_exec "patch_acpi DSDT syscl "syscl_ltrovr"" "Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl"
     # ECDV -> EC
 #sed -ig 's/ECDV/EC/' /DSDT/raw/DSDT.dsl
     _tidy_exec "rm "${REPO}"/DSDT/raw/DSDT.dslg" "Remove DSDT backup"
