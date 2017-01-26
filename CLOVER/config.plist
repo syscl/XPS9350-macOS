@@ -578,18 +578,6 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>eDP, port 0000, 0x191e0000, 0x19160000, 0x19260000, 0x19270000, 0x191b0000, 0x19160002, 0x19260002, 0x191e0003, 0x19260004, 0x19270004, 0x193b0005 credit syscl</string>
-				<key>Disabled</key>
-				<false/>
-				<key>Find</key>
-				<data>AAAIAAIAAACYAAAAAQUJAAAEAAA=</data>
-				<key>Name</key>
-				<string>AppleIntelSKLGraphicsFramebuffer</string>
-				<key>Replace</key>
-				<data>AAAIAAAEAACYAAAAAQUJAAAEAAA=</data>
-			</dict>
-			<dict>
-				<key>Comment</key>
 				<string>Enable 0x19260004 4ports(0000, 0105, 0204, 0306) credit syscl</string>
 				<key>Disabled</key>
 				<false/>
@@ -602,7 +590,19 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>Enable 0x19260004 ports(0000-DP, 0105-HDMI, 0204-HDMI, 0306-DP) credit syscl</string>
+				<string>eDP, port 0000, 0x19260004 credit syscl</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>AAAAAAAAAAAAAAgAAgAAAJgEAAA=</data>
+				<key>Name</key>
+				<string>AppleIntelSKLGraphicsFramebuffer</string>
+				<key>Replace</key>
+				<data>AAAAAAAAAAAAAAgAAAQAAJgEAAA=</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Enable 0x19260004 ports(0105-HDMI, 0204-HDMI, 0306-DP) credit syscl</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
