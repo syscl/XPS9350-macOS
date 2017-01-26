@@ -48,30 +48,47 @@ Device (SSD0)\n
 }\n
 end;
 
-#PRT0 information property credit Pike R. Alpha
+#PRT0 information properties credit syscl
 into device label PRT0 remove_entry;
 into device label SAT0 insert begin
 Device (PRT0)\n
 {\n
 	Name (_ADR, 0xFFFF)\n
-	Method (_DSM, 4, NotSerialized)\n
+	Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data\n
 	{\n
-		If (LEqual (Arg2, Zero))\n
-		{\n
-			Return (Buffer (One)\n
-			{\n
-				0x03\n                                           
-			})\n
-		}\n
+		Name (GBU0, Buffer (0x07)\n
+                {\n
+                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00\n       
+                })\n
+                CreateByteField (GBU0, Zero, GB00)\n
+                CreateByteField (GBU0, One, GB01)\n
+                CreateByteField (GBU0, 0x02, GB02)\n
+                CreateByteField (GBU0, 0x03, GB03)\n
+                CreateByteField (GBU0, 0x04, GB04)\n
+                CreateByteField (GBU0, 0x05, GB05)\n
+                CreateByteField (GBU0, 0x06, GB06)\n
+                If (LEqual (SizeOf (Arg0), 0x0200))\n
+                {\n
+                    CreateWordField (Arg0, 0x9C, W780)\n
+                    If (And (W780, 0x08))\n
+                    {\n
+                        Store (0x10, GB00)\n
+                        Store (0x03, GB01)\n
+                        Store (0xEF, GB06)\n
+                    }\n
+                    Else\n
+                    {\n
+                        Store (0x90, GB00)\n
+                        Store (0x03, GB01)\n
+                        Store (0xEF, GB06)\n
+                    }\n
+                }\n
 
-		Return (Package (0x02)\n
-		{\n
-			"io-device-location", \n
-			Buffer (0x04)\n
-			{\n
-				"SSD"\n
-			}\n
-		})\n
+                Store (GBU0, GTF0)\n
+	}\n
+	Method (_GTF, 0, NotSerialized)\n
+	{\n
+		Return (GTF0)\n
 	}\n
 }\n
 end;

@@ -1,0 +1,9 @@
+#Created by syscl 
+#syscl_GTF0
+#Declare GTF0 method object credit syscl
+
+into_all all code_regex External\s\(_GPE.HLVT,\sMethodObj\) replace_matched
+begin
+External (_GPE.HLVT, MethodObj)\n
+External (GTF0, IntObj)\n
+end;
