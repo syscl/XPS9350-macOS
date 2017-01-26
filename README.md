@@ -26,14 +26,14 @@ This will download the whole installation directory to your current directory(./
 
 
 ```sh
-chmod +x ./XPS9350-macOS/deploy.sh
+cd XPS9350-macOS
+chmod +x ./deploy.sh
 ```
 
 
 Run the script in a terminal windows by(Note: You should dump the ACPI tables by pressing F4/Fn+F4 under Clover first and then execute the following command lines):
 
 ```sh
-cd XPS9350-macOS
 ./deploy.sh
 ```
 
@@ -62,6 +62,12 @@ TODO List
 
 Change Log
 ----------------
+2017-01-25
+
+- Enable IOPCIFamily to set tolerance latency for PCI devices (c) syscl
+- Prepare for @icedman 's VoodooPS2Controller(tuned by syscl)
+- Fixed RP0X rename issue
+
 2017-01-24
 
 - Inject SsdtS3 from MacBook credit syscl's stripple down
