@@ -7,8 +7,89 @@
 into method label _DSM parent_adr 0x001C0000 remove_entry;
 into method label XDSM parent_adr 0x001C0000 remove_entry;
 
-#Now inject property: setLantencyTolerance credit syscl
+#Now inject property: setLantencyTolerance for RP01 credit syscl
 into device name_adr 0x001C0000 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP02
+into method label _DSM parent_adr 0x001C0001 remove_entry;
+into method label XDSM parent_adr 0x001C0001 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP02 credit syscl
+into device name_adr 0x001C0001 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP03
+into method label _DSM parent_adr 0x001C0002 remove_entry;
+into method label XDSM parent_adr 0x001C0002 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP03 credit syscl
+into device name_adr 0x001C0002 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP04
+into method label _DSM parent_adr 0x001C0003 remove_entry;
+into method label XDSM parent_adr 0x001C0003 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP04 credit syscl
+into device name_adr 0x001C0003 insert
 begin
 Method (_DSM, 4, NotSerialized)\n
 {\n
@@ -57,6 +138,87 @@ Method (_DSM, 4, NotSerialized)\n
 }\n
 end;
 
+#RP06
+into method label _DSM parent_adr 0x001C0005 remove_entry;
+into method label XDSM parent_adr 0x001C0005 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP06 credit syscl
+into device name_adr 0x001C0005 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP07
+into method label _DSM parent_adr 0x001C0006 remove_entry;
+into method label XDSM parent_adr 0x001C0006 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP07 credit syscl
+into device name_adr 0x001C0006 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP08
+into method label _DSM parent_adr 0x001C0007 remove_entry;
+into method label XDSM parent_adr 0x001C0007 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP08 credit syscl
+into device name_adr 0x001C0007 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
 #RP09
 into method label _DSM parent_adr 0x001D0000 remove_entry;
 into method label XDSM parent_adr 0x001D0000 remove_entry;
@@ -84,3 +246,110 @@ Method (_DSM, 4, NotSerialized)\n
 }\n
 end;
 
+#RP10
+into method label _DSM parent_adr 0x001D0001 remove_entry;
+into method label XDSM parent_adr 0x001D0001 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP10 credit syscl
+into device name_adr 0x001D0001 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP11
+into method label _DSM parent_adr 0x001D0002 remove_entry;
+into method label XDSM parent_adr 0x001D0002 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP11 credit syscl
+into device name_adr 0x001D0002 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP12
+into method label _DSM parent_adr 0x001D0003 remove_entry;
+into method label XDSM parent_adr 0x001D0003 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP12 credit syscl
+into device name_adr 0x001D0003 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
+
+#RP13
+into method label _DSM parent_adr 0x001D0004 remove_entry;
+into method label XDSM parent_adr 0x001D0004 remove_entry;
+
+#Now inject property: setLantencyTolerance for RP13 credit syscl
+into device name_adr 0x001D0004 insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+	If (LEqual (Arg2, Zero))\n
+	{\n
+		Return (Buffer (One)\n
+		{\n
+			0x03\n                                           
+		})\n
+	}\n
+	Return (Package (0x02)\n
+	{\n
+		"reg-ltrovr", \n
+		Buffer (0x08)\n
+		{\n
+			0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00\n
+		}\n
+	})\n
+}\n
+end;
