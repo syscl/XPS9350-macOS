@@ -62,6 +62,14 @@ TODO List
 
 Change Log
 ----------------
+2017-01-27
+
+- Inject Device(USBX) with properties and _DSM method rewrite credit syscl
+- Fix shutdown become reboot issue #29
+- Added _SSD, GTF0 method credit syscl
+- Added IONVMeFamily Preferred Block Size 0x10 -> 0x01 credit Pike R. Alpha implement by syscl 
+- Updated port0000 setting for 0x19260004 credit syscl
+
 2017-01-25
 
 - Enable IOPCIFamily to set tolerance latency for PCI devices (c) syscl
