@@ -1582,7 +1582,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
-    _tidy_exec "patch_acpi DSDT graphics "graphics_PNLF"" "Brightness fix"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_USBX_n_PNLF"" "Inject USBX and PNLF credit syscl"
     _tidy_exec "patch_acpi DSDT usb "usb_prw_0x6d_xhc_skl"" "Fix USB _PRW"
     _tidy_exec "patch_acpi DSDT system "system_IRQ"" "IRQ Fix"
     _tidy_exec "patch_acpi DSDT system "system_SMBUS"" "SMBus Fix"

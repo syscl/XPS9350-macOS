@@ -1,0 +1,39 @@
+#Created by syscl
+#syscl_USBX_n_PNLF
+#Convert to _DSM method for USBX credit syscl
+
+into_all device label PNLF remove_entry;
+into definitionblock code_regex . insert
+begin
+Scope (_SB)\n
+{\n
+	Device (USBX)\n
+        {\n
+            Name (_ADR, Zero)\n
+            Method (_DSM, 4, NotSerialized)\n
+            {\n
+                Return (Package (0x08)\n
+                {\n
+                    "kUSBSleepPowerSupply", \n
+                        0x05DC,\n 
+                        "kUSBSleepPortCurrentLimit", \n
+                        0x05DC, \n
+                        "kUSBWakePowerSupply", \n
+                        0x05DC, \n
+                        "kUSBWakePortCurrentLimit", \n
+                        0x05DC\n
+                })\n
+            }\n
+        }\n
+
+	Device (PNLF)\n
+    	{\n
+	    Name (_ADR, Zero)\n
+            Name (_HID, EisaId ("APP0002"))\n
+            Name (_CID, "backlight")\n
+            Name (_UID, 10)\n
+            Name (_STA, 0x0B)\n
+        }\n
+}\n
+end;
+
