@@ -553,10 +553,6 @@ function _getEDID()
     # Passing gPatchIOKit to gPatchRecoveryHD.
     #
     gPatchRecoveryHD=${gPatchIOKit}
-    #
-    # Indicate gModelType
-    #
-    gModelType=${gPatchIOKit}
 }
 
 #
@@ -607,11 +603,34 @@ function _hwpArgvChk()
 #--------------------------------------------------------------------------------
 #
 
-function _check_and_fix_config()
+function _setModelType()
 {
     #
-    # Check if the ig-platform-id is correct(i.e. ig-platform-id = 0x19260004).
+    # set model type
     #
+    local gCPUInfo=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
+    if [[ ${gCPUInfo} == *"i7-6560U"* ]];
+      then
+        #
+        # Iris version(i7-6560U)
+        #
+        _PRINT_MSG "NOTE: Your laptop is Iris version(${BLUE}${gCPUInfo}${OFF})"
+        gModelType=1
+      else
+        #
+        # Non-Iris version(i5-6200U, i7-6500U)
+        #
+        _PRINT_MSG "NOTE: Your laptop is non-Iris version(${BLUE}${gCPUInfo}${OFF})"
+        gModelType=0
+    fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _check_and_fix_config()
+{
     if [ gModelType == 1 ];
       then
         #
@@ -1464,6 +1483,11 @@ function main()
       then
         _update
     fi
+
+    #
+    # set model type(Iris vs non-Irsi)
+    #
+    _setModelType
 
     #
     # prestage cleanup
