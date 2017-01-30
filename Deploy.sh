@@ -625,11 +625,12 @@ function _setModelType()
     fi
 }
 
+
 #
 #--------------------------------------------------------------------------------
 #
 
-function _check_and_fix_config()
+function _setPlatformId()
 {
     if [ gModelType == 1 ];
       then
@@ -665,6 +666,14 @@ function _check_and_fix_config()
             sed -ig "s/$gClover_ig_platform_id/$target_ig_platform_id/g" ${config_plist}
         fi
     fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _check_and_fix_config()
+{
     #
     # Check SSDT-XPS13SKL.aml
     #
@@ -1780,6 +1789,8 @@ function main()
         sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_Framework_Repo}
         _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
     fi
+
+    _setPlatformId
 
     if [ gModelType == 1 ]; then
         #
