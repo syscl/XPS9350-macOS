@@ -632,7 +632,7 @@ function _setModelType()
 
 function _setPlatformId()
 {
-    if [ gModelType == 1 ];
+    if [ ${gModelType} == 1 ];
       then
         #
         # Iris version(i7-6560U)
