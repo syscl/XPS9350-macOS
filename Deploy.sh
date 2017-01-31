@@ -1565,7 +1565,7 @@ function main()
                   #
                   # Use ApplePS2SmartTouchPad
                   #
-                 gSelect_TouchPad_Drv=1
+                  gSelect_TouchPad_Drv=1
                 else
                   #
                   # Use VoodooPS2Controller
@@ -1792,7 +1792,7 @@ function main()
 
     _setPlatformId
 
-    if [ gModelType == 1 ]; then
+    if [ ${gModelType} == 1 ]; then
         #
         # Lead to lid wake on 0x19260004 by syscl/lighting/Yating Zhou.
         #
