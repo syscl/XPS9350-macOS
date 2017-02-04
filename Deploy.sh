@@ -700,7 +700,6 @@ function _check_and_fix_config()
       gClover_kexts_to_patch_data=$(awk '/<key>KextsToPatch<\/key>.*/,/<\/array>/' ${config_plist})
     fi
 
-
     #
     # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
     #
@@ -708,20 +707,15 @@ function _check_and_fix_config()
     fLidWake="0a0b0300 00070600 03000000 04000000"
     rLidWake="0f0b0300 00070600 03000000 04000000"
     nLidWake="AppleIntelSKLGraphicsFramebuffer"
+
     #
-    # eDP, port 0000, 0x191e0000, 0x19160000, 0x19260000, 0x19270000, 0x191b0000, 0x19160002, 0x19260002, 0x191e0003, 0x19260004, 0x19270004, 0x193b0005 credit syscl
+    # eDP, port 0000, 0x19160000 credit syscl
     #
-    cIntelGraphicsFrameBuffer="eDP, port 0000, 0x191e0000, 0x19160000, 0x19260000, 0x19270000, 0x191b0000, 0x19160002, 0x19260002, 0x191e0003, 0x19260004, 0x19270004, 0x193b0005 credit syscl"
-    fIntelGraphicsFrameBuffer="00000800 02000000 98000000 01050900 00040000"
-    rIntelGraphicsFrameBuffer="00000800 00040000 98000000 01050900 00040000"
+    cIntelGraphicsFrameBuffer="eDP, port 0000, 0x19160000 credit syscl"
+    fIntelGraphicsFrameBuffer="00000000 00000000 00000800 02000000 98040000"
+    rIntelGraphicsFrameBuffer="00000000 00000000 00000800 00040000 98040000"
     nIntelGraphicsFrameBuffer="AppleIntelSKLGraphicsFramebuffer"
-    #
-    # Check if "Enable HD4600 HDMI Audio" is located in config.plist.
-    #
-    cHDMI="Enable HD4600 HDMI Audio"
-    fHDMI="3D0C0A00 00"
-    rHDMI="3D0C0C00 00"
-    nHDMI="AppleHDAController"
+
     #
     # Check if "BT4LE-Handoff-Hotspot" is in place of kextstopatch.
     #
@@ -733,10 +727,10 @@ function _check_and_fix_config()
     #
     # Now let's inject it.
     #
-    cBinData=("$cLidWake" "$cIntelGraphicsFrameBuffer" "$cHDMI" "$cHandoff")
-    fBinData=("$fLidWake" "$fIntelGraphicsFrameBuffer" "$fHDMI" "$fHandoff")
-    rBinData=("$rLidWake" "$rIntelGraphicsFrameBuffer" "$rHDMI" "$rHandoff")
-    nBinData=("$nLidWake" "$nIntelGraphicsFrameBuffer" "$nHDMI" "$nHandoff")
+    cBinData=("$cLidWake" "$cIntelGraphicsFrameBuffer" "$cHandoff")
+    fBinData=("$fLidWake" "$fIntelGraphicsFrameBuffer" "$fHandoff")
+    rBinData=("$rLidWake" "$rIntelGraphicsFrameBuffer" "$rHandoff")
+    nBinData=("$nLidWake" "$nIntelGraphicsFrameBuffer" "$nHandoff")
 
     for ((j=0; j<${#nBinData[@]}; ++j))
     do
@@ -1595,9 +1589,7 @@ function main()
     #
     sed -ig 's/DefinitionBlock ("", "DSDT", 2, "DELL  ", "CBX3   ", 0x01072009)/DefinitionBlock ("", "DSDT", 3, "APPLE ", "MacBook", 0x00080001)/' "${REPO}"/DSDT/raw/DSDT.dsl
     _PRINT_MSG "--->: ${BLUE}Patching DSDT.dsl${OFF}"
-#    _tidy_exec "patch_acpi DSDT syscl "syscl_fixMDBG"" "Fix MDBG Error credit syscl"
-#    _tidy_exec "patch_acpi DSDT syscl "syscl_fixSDSM"" "Fix SDSM Error credit syscl"
-    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "Rename DSM"
+    _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "_DSM->XDSM"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
     if [[ ${gSelect_TouchPad_Drv} == 1 ]];
@@ -1613,7 +1605,7 @@ function main()
         _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey_VoodooPS2"" "Fix brightness keys(F11/F12)"
     fi
     _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
-    _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Add audio Layout 1"
+    _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Inject Audio Info"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
     _tidy_exec "patch_acpi DSDT syscl "syscl_USBX_n_PNLF"" "Inject USBX and PNLF credit syscl"
     _tidy_exec "patch_acpi DSDT usb "usb_prw_0x6d_xhc_skl"" "Fix USB _PRW"
@@ -1639,7 +1631,6 @@ function main()
 #    _tidy_exec "patch_acpi DSDT syscl "syscl_rmB0D4"" "Remove Device(B0D4)"
     _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # RP09.PXSX -> RP09.SSD0
-#sed -ig -e 's/PXSX/ARPT/' -e 's/\.PXSX\./\.ARPT\./' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
     sed -ig 's/\.RP09\.PXSX/\.RP09\.SSD0/' "${REPO}"/DSDT/raw/DSDT.dsl
     local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
@@ -1665,20 +1656,20 @@ function main()
     # DptfTa Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${DptfTa}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${DptfTa} syntax "rename_DSM"" "Rename DSM"
     _tidy_exec "patch_acpi ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # SaSsdt Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
+    _tidy_exec "patch_acpi ${SaSsdt} syntax "rename_DSM"" "_DSM->XDSM"
     _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # sensrhub patches
     #
     _PRINT_MSG "${BLUE}Fixing ${sensrhub}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${sensrhub} syntax "rename_DSM"" "Rename DSM"
+    _tidy_exec "patch_acpi ${sensrhub} syntax "rename_DSM"" "_DSM->XDSM"
     _tidy_exec "patch_acpi ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
 
     #
