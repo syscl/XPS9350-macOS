@@ -8,8 +8,7 @@ This project targets at giving the relatively complete functional macOS for XPS1
 1. Create a vanilla installation disk(removable disk).
 2. Install Clover with UEFI only and UEFI64Drivers to the installation disk just created. 
 3. Replace the origin Clover folder with the one under my Git/XPS9350-macOS/CLOVER.
-4. BIOS settings:
-- AHCI instead of AHCI RAID
+4. BIOS settings: ```AHCI``` instead of ```AHCI RAID```
 5. Install macOS
 6. Once you finish installation of macOS, you can do the following steps to finish the post installation of macOS
 
@@ -53,15 +52,21 @@ TODO List
 <s>- Remove patched ACPI tables directories(precomiple, raw, comiple) every time before acpi compile</s>
 <s>- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table</s>
 <s>- Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)</s>
-- Refine AppleHDA 
-- New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS
-- Import IOPowerManagement
-- ACPI Keyboard
+- Refine AppleHDA: waiting for Mirone's external mic version, still in progress
+<s>- New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS</s>Issue fixed/gone
+<s>- Import IOPowerManagement</s>
+<s>- ACPI Keyboard</s>Brightness(F11/F12) get fixed, no more needed
 
 
 
 Change Log
 ----------------
+2017-02-03
+
+- Inject more Audio properties(see ```System Report``` -> ```PCI```) for ALC3246 credit @Mirone
+- Inject ```ARPT``` and deprecate ```PXSX``` for RP05(Wi-Fi device on XPS 13 9350/9360)
+- Cleanup and minor bugs fixed in deploy
+
 2017-01-27
 
 - Inject Device(USBX) with properties and _DSM method rewrite credit syscl
@@ -199,7 +204,7 @@ Change Log
 
 2016-11-17
 
-- Fixed brightness save issue: EmuVariableUefi-64 + IntelBacklight + /nvram.plist
+- Fixed brightness save issue: ```EmuVariableUefi-64``` + ```IntelBacklight``` + RC.Script
 
 2016-11-15
 
