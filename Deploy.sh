@@ -675,30 +675,30 @@ function _setPlatformId()
 function _check_and_fix_config()
 {
     #
-    # Check SSDT-XPS13SKL.aml
+    # Check if tinySSDT items are existed
     #
-    local dCheck_SSDT="SSDT-XPS13SKL.aml"
+    local dCheck_SSDT=("SSDT-XPS13SKL" "SSDT-ARPT-RP05")
     local gSortedOrder=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
     local gSortedNumber=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g' | wc -l)
-    if [[ $gSortedOrder != *"$dCheck_SSDT"* ]];
-      then
-        #
-        # $dCheck_SSDT no found. Insert it.
-        #
-        ${doCommands[1]} "Add ':ACPI:SortedOrder:' string" ${config_plist}
-        ${doCommands[1]} "Set ':ACPI:SortedOrder:$gSortedNumber' $dCheck_SSDT" ${config_plist}
-    fi
+    for tinySSDT in "${dCheck_SSDT[@]}"
+    do
+      if [[ $gSortedOrder != *"${tinySSDT}"* ]]; then
+          #
+          # tinySSDT no found, insert it
+          #
+          ${doCommands[1]} "Add ':ACPI:SortedOrder:' string" ${config_plist}
+          ${doCommands[1]} "Set ':ACPI:SortedOrder:$gSortedNumber' ${tinySSDT}.aml" ${config_plist}
+      fi
+      #
+      # Index changed, increment by 1
+      #
+      ((gSortedNumber++))
+    done
 
     #
     # Gain all binary patches from config.
     #
-    if [ $gMINOR_VER -lt $gDelimitation_OSVer ];
-      then
-      #
-      # 10.12-, note: this detection will later remove due to optimization.
-      #
-      gClover_kexts_to_patch_data=$(awk '/<key>KextsToPatch<\/key>.*/,/<\/array>/' ${config_plist})
-    fi
+    gClover_kexts_to_patch_data=$(awk '/<key>KextsToPatch<\/key>.*/,/<\/array>/' ${config_plist})
 
     #
     # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
@@ -1718,10 +1718,16 @@ function main()
     fi
 
     #
-    # Install SSDT-m
+    # Install SsdtS3
     #
     _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
-    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Copy SSDT-XPS13SKL.aml to ./DSDT/compile"
+    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Install SsdtS3 table"
+
+    #
+    # Install ARPT
+    #
+    _PRINT_MSG "--->: ${BLUE}Installing SSDT-ARPT-RP05.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-ARPT-RP05.aml "${compile}"" "Install ARPT table"
 
     #
     # Clean up dynamic tables and CPU related tables
