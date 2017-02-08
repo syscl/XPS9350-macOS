@@ -380,6 +380,8 @@
 	<dict>
 		<key>AppleRTC</key>
 		<false/>
+		<key>DellSMBIOSPatch</key>
+		<true/>
 		<key>AsusAICPUPM</key>
 		<false/>
 		<key>Debug</key>
