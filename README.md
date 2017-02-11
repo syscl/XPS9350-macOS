@@ -41,26 +41,25 @@ Reboot your macOS to see the change. If you have any problem about the script, t
 ./deploy.sh -d
 ```
 
-Note: For two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences.
+Note: AppleSmartTouchPad users: for two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences.
 
 
 TODO List
 ----------------
 
-<s>Next week I have 3 ```final exams```, so I will be back in next Wednesday!</s> What I will do next week are listed below
-
-<s>- Remove patched ACPI tables directories(precomiple, raw, comiple) every time before acpi compile</s>
-<s>- Add reboot fix ```ResetAddress = 0xB2``` and ```ResetValue = 0x73``` to script using auto detection from FACP table</s>
-<s>- Refine ACPI patches such that all XPS 13 9350 users can enjoy(still in progress)</s>
-- Refine AppleHDA: waiting for Mirone's external mic version, still in progress
-<s>- New FixUSB.sh to fix a bug that external devices will disappear when cold boot into macOS</s>Issue fixed/gone
-<s>- Import IOPowerManagement</s>
-<s>- ACPI Keyboard</s>Brightness(F11/F12) get fixed, no more needed
-
-
+This months I have 2 dues and 1 ```midterm exam```, so I will be a bit slower. What I will do next week are listed below
+- Implement the method I made to tune X86PlatformPluginInjector.kext to achieve better power management(even lower the frequency than real MacBookPro13,x!)
+Vist [here](http://www.insanelymac.com/forum/topic/321021-guide-hwpintel-speed-shift-enable-with-full-power-management/) to see how to do it manually
+- Refine RC.script
 
 Change Log
 ----------------
+2017-02-11
+
+- HWP full power management(CPU + iGPU) is ready credit syscl, Pike
+- Tiny SSDT-pr for all XPS 13(Skylake/Kabylake) to active HWP is ready credit dpassmor, we don't need to use ssdtPRGen anymore
+- Dell SMBIOS truncate issue fixed credit David Passmore
+
 2017-02-03
 
 - Inject more Audio properties(see ```System Report``` -> ```PCI```) for ALC3246 credit @Mirone
