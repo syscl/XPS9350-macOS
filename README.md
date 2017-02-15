@@ -203,7 +203,7 @@ Change Log
 
 2016-11-17
 
-- Fixed brightness save issue: ```EmuVariableUefi-64``` + ```IntelBacklight``` + RC.Script
+- Fixed brightness save issue: ```EmuVariableUefi-64``` + ```RC.Script```
 
 2016-11-15
 
