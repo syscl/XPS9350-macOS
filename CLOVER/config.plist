@@ -721,6 +721,20 @@
 				<key>Replace</key>
 				<data>VUiJ5THAXcNBVUFUU0iB7DgB</data>
 			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>AirPortBrcm4360 5Ghz US-FCC</string>
+				<key>Disabled</key>
+				<false/>
+				<key>Find</key>
+				<data>QYP8/3QsSA==</data>
+				<key>MatchOS</key>
+				<string>10.11,10.12</string>
+				<key>Name</key>
+				<string>AirPortBrcm4360</string>
+				<key>Replace</key>
+				<data>ZscGVVPrKw==</data>
+			</dict>
 		</array>
 	</dict>
 	<key>RtVariables</key>
