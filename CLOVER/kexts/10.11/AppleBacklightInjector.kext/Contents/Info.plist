@@ -32,6 +32,8 @@
 			<dict>
 				<key>F10T144a</key>
 				<data>ABEAAAAYACcAOgBSAHEAlgDEAPwBQAGTAfYCbgL+A6oEeAVs</data>
+				<key>F10T1449</key>
+				<data>ABEAAAAYACcAOgBSAHEAlgDEAPwBQAGTAfYCbgL+A6oEeAVs</data>
 			</dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleBacklight</string>
