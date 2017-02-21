@@ -58,6 +58,7 @@ Change Log
 
 - X86PlatformPluginInjector method is ready for both ```Kabylake``` and ```Skylake``` XPS 13 model (c) syscl
 - Updated port injector to support ```MacBook8,1```, ```MacBookPro13,x``` (c) syscl
+- Updated sleep: add deep sleep & deep idle properties as per Pike R. Alpha
 
 2017-02-11
 
