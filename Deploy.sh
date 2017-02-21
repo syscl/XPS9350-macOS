@@ -42,15 +42,16 @@ kBASHReturnFailure=1
 REPO=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 #
-# Path and filename setup.
+# Path and filename setup
 #
+gESPMountPoint=""
 decompile="${REPO}/DSDT/raw/"
 precompile="${REPO}/DSDT/precompile/"
 compile="${REPO}/DSDT/compile/"
 tools="${REPO}/tools/"
 raw="${REPO}/DSDT/raw"
 prepare="${REPO}/DSDT/prepare"
-config_plist="/Volumes/EFI/EFI/CLOVER/config.plist"
+config_plist=""
 #gConfigBuffer=$(cat ${config_plist})
 EFI_INFO="${REPO}/DSDT/EFIINFO"
 gInstall_Repo="/usr/local/sbin/"
@@ -65,9 +66,9 @@ to_shell_sleep="/etc/sysclusbfix.sleep"
 to_shell_wake="/etc/sysclusbfix.wake"
 gRT_Config="/Applications/Wireless Network Utility.app"/${gMAC_adr}rfoff.rtl
 drivers64UEFI="${REPO}/CLOVER/drivers64UEFI"
-t_drivers64UEFI="/Volumes/EFI/EFI/CLOVER/drivers64UEFI"
+t_drivers64UEFI=""
 clover_tools="${REPO}/CLOVER/tools"
-t_clover_tools="/Volumes/EFI/EFI/CLOVER/tools"
+t_clover_tools=""
 
 #
 # Define variables.
@@ -221,6 +222,27 @@ function _locate_rhd()
     # disk0s3
     # ^^^^^
     diskutil list |grep -i "${gDisk_INF:0:5}" |grep -i "Recovery HD" |grep -i -o "disk[0-9]s[0-9]"
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _getESPMntPoint()
+{
+    local gESPIndentifier="$1"
+    gESPMountPoint=$(diskutil info ${gESPIndentifier} |grep -i 'Mount Point' |grep -i -o "/.*")
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _setESPVariable()
+{
+    config_plist="${gESPMountPoint}/EFI/CLOVER/config.plist"
+    t_drivers64UEFI="${gESPMountPoint}/EFI/CLOVER/drivers64UEFI"
+    t_clover_tools="${gESPMountPoint}/EFI/CLOVER/tools"
 }
 
 #
@@ -951,14 +973,14 @@ function _twhibernatemod()
 
 function _update_clover()
 {
-    KEXT_DIR=/Volumes/EFI/EFI/CLOVER/kexts/${gOSVer}
+    KEXT_DIR="${gESPMountPoint}/EFI/CLOVER/kexts/${gOSVer}"
 
     #
     # Updating kexts. NOTE: This progress will remove any previous kexts
     #
     _PRINT_MSG "--->: ${BLUE}Updating kexts...${OFF}"
     _tidy_exec "rm -rf ${KEXT_DIR}" "Remove pervious kexts in ${KEXT_DIR}"
-    _tidy_exec "cp -R ./CLOVER/kexts/${gOSVer} /Volumes/EFI/EFI/CLOVER/kexts/" "Update kexts from ./CLOVER/kexts/${gOSVer}"
+    _tidy_exec "cp -R ./CLOVER/kexts/${gOSVer} ${gESPMountPoint}/EFI/CLOVER/kexts/" "Update kexts from ./CLOVER/kexts/${gOSVer}"
     _tidy_exec "cp -R ./Kexts/*.kext ${KEXT_DIR}/" "Update kexts from ./Kexts"
     if [[ ${gSelect_TouchPad_Drv} == 1 ]];
       then
@@ -1017,7 +1039,7 @@ function _update_clover()
     #
     # Update CLOVERX64.efi
     #
-    _updfl "/Volumes/EFI/EFI/CLOVER/CLOVERX64.efi" "${REPO}/CLOVER/CLOVERX64.efi"
+    _updfl "${gESPMountPoint}/EFI/CLOVER/CLOVERX64.efi" "${REPO}/CLOVER/CLOVERX64.efi"
 }
 
 #
@@ -1053,15 +1075,15 @@ function _updfl()
 
 function _update_thm()
 {
-    if [ -d /Volumes/EFI/EFI/CLOVER/themes/bootcamp ];
+    if [ -d "${gESPMountPoint}/EFI/CLOVER/themes/bootcamp" ];
       then
-        if [[ `cat /Volumes/EFI/EFI/CLOVER/themes/bootcamp/theme.plist` != *"syscl"* ]];
+        if [[ `cat "${gESPMountPoint}/EFI/CLOVER/themes/bootcamp/theme.plist"` != *"syscl"* ]];
           then
             #
             # Yes we need to update themes.
             #
-            _del /Volumes/EFI/EFI/CLOVER/themes/bootcamp
-            cp -R ${REPO}/CLOVER/themes/BootCamp /Volumes/EFI/EFI/CLOVER/themes
+            _del "${gESPMountPoint}/EFI/CLOVER/themes/bootcamp"
+            cp -R "${REPO}/CLOVER/themes/BootCamp" "${gESPMountPoint}/EFI/CLOVER/themes"
         fi
     fi
 }
@@ -1512,6 +1534,8 @@ function main()
     printf "Enter ${RED}EFI's${OFF} IDENTIFIER, e.g. ${BOLD}disk0s1${OFF}"
     read -p ": " targetEFI
     _tidy_exec "diskutil mount ${targetEFI}" "Mount ${targetEFI}"
+    _getESPMntPoint ${targetEFI}
+    _setESPVariable
 
     #
     # Ensure / Force Graphics card to power.
@@ -1522,9 +1546,11 @@ function main()
     #
     # Copy origin aml to raw.
     #
-    if [ -f /Volumes/EFI/EFI/CLOVER/ACPI/origin/DSDT.aml ];
+    if [ -f "${gESPMountPoint}/EFI/CLOVER/ACPI/origin/DSDT.aml" ];
       then
-        _tidy_exec "cp /Volumes/EFI/EFI/CLOVER/ACPI/origin/DSDT.aml /Volumes/EFI/EFI/CLOVER/ACPI/origin/FACP.aml /Volumes/EFI/EFI/CLOVER/ACPI/origin/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
+        local gOrgAcpiRepo="${gESPMountPoint}/EFI/CLOVER/ACPI/origin"
+
+        _tidy_exec "cp ${gOrgAcpiRepo}/DSDT.aml ${gOrgAcpiRepo}/FACP.aml ${gOrgAcpiRepo}/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
       else
         _PRINT_MSG "NOTE: Warning!! DSDT and SSDTs doesn't exist! Press Fn+F4 under Clover to dump ACPI tables"
         # ERROR.
@@ -1741,8 +1767,8 @@ function main()
     #
     # Copy AML to destination place.
     #
-    _tidy_exec "_touch "/Volumes/EFI/EFI/CLOVER/ACPI/patched"" "Create /Volumes/EFI/EFI/CLOVER/ACPI/patched"
-    _tidy_exec "cp "${compile}"*.aml /Volumes/EFI/EFI/CLOVER/ACPI/patched" "Copy tables to /Volumes/EFI/EFI/CLOVER/ACPI/patched"
+    _tidy_exec "_touch "${gESPMountPoint}/EFI/CLOVER/ACPI/patched"" "Create ${gESPMountPoint}/EFI/CLOVER/ACPI/patched"
+    _tidy_exec "cp "${compile}"*.aml ${gESPMountPoint}/EFI/CLOVER/ACPI/patched" "Copy tables to ${gESPMountPoint}/EFI/CLOVER/ACPI/patched"
 
     #
     # Refresh kext in Clover.
@@ -1836,7 +1862,7 @@ function main()
     #
     # Clean up backup
     #
-    _del /Volumes/EFI/EFI/CLOVER/config.plistg
+    _del "${gESPMountPoint}/EFI/CLOVER/config.plistg"
 
     _PRINT_MSG "NOTE: Congratulations! All operation has been completed"
     _PRINT_MSG "NOTE: Reboot now. -${BOLD}syscl/lighting/Yating Zhou @PCBeta${OFF}"
