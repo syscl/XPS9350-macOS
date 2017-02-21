@@ -1674,6 +1674,8 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_ltrovr"" "Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl"
     # Fix shutdown
     _tidy_exec "patch_acpi DSDT system "system_Shutdown2"" "Fix shutdown become reboot issue"
+    # Added deep sleep & deep idle as per Pike R. Alpha
+    _tidy_exec "patch_acpi DSDT syscl "system_deep_idle"" "Added deep sleep and deep idle properties"
     # ECDV -> EC
 #sed -ig 's/ECDV/EC/' /DSDT/raw/DSDT.dsl
     _tidy_exec "rm "${REPO}"/DSDT/raw/DSDT.dslg" "Remove DSDT backup"

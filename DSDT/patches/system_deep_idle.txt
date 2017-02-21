@@ -1,0 +1,19 @@
+#Created by syscl
+#Deep sleep properties
+#Credit: Pike R. Alpha, rewritten by the-darkvoid
+
+into scope label _SB insert
+begin
+Method (LPS0, 0, NotSerialized)\n
+{\n
+    Return (One)\n
+}\n
+end;
+
+into scope label _GPE insert
+begin
+Method (LXEN, 0, NotSerialized)\n
+{\n
+    Return (One)\n
+}\n
+end;
