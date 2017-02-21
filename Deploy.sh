@@ -1565,10 +1565,8 @@ function main()
     # Choose touchpad kext you prefer
     #
     printf "Available touchpad kext:\n"
-    printf "\n"
-    printf "[  1  ] ApplePS2SmartTouchPad\n"
-    printf "[  2  ] VoodooPS2Controller.kext\n"
-    printf "\n"
+    printf "[   ${BLUE}1${OFF}  ] ApplePS2SmartTouchPad\n"
+    printf "[   ${BLUE}2${OFF}  ] VoodooPS2Controller\n"
     printf "Please choose the desired touchpad kext (1 or 2)"
     read -p ": " gSelect_TouchPad_Drv
     case "${gSelect_TouchPad_Drv}" in
