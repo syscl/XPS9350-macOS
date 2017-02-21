@@ -54,6 +54,11 @@ Vist [here](http://www.insanelymac.com/forum/topic/321021-guide-hwpintel-speed-s
 
 Change Log
 ----------------
+2017-02-21
+
+- X86PlatformPluginInjector method is ready for both ```Kabylake``` and ```Skylake``` XPS 13 model (c) syscl
+- Updated port injector to support ```MacBook8,1```, ```MacBookPro13,x``` (c) syscl
+
 2017-02-11
 
 - HWP full power management(CPU + iGPU) is ready credit syscl, Pike
