@@ -41,7 +41,9 @@ Reboot your macOS to see the change. If you have any problem about the script, t
 ./deploy.sh -d
 ```
 
-Note: AppleSmartTouchPad users: for two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences.
+Note:
+- ```VoodooPS2Controller``` is recommended on macOS ```Sierra```(10.```12+```)
+- ```AppleSmartTouchPad``` users(recommend on 10.```11-```): for two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences. 
 
 
 TODO List
