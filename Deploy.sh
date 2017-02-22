@@ -1460,10 +1460,6 @@ function _recoveryhd_fix()
     cp "${gRecoveryHD_DMG}" "${gBak_Dir}"
     gBak_BaseSystem="${gBak_Dir}/BaseSystem.dmg"
     chflags nohidden "${gBak_BaseSystem}"
-    #
-    # Backup and patch finish, print out RecoveryHD dmg info
-    #
-    _printBackupLOG
 
     #
     # Start to override.
@@ -1481,6 +1477,10 @@ function _recoveryhd_fix()
     _PRINT_MSG "--->: Updating Recovery HD for DELL XPS 13 9350..."
     cp ${gBaseSystem_PATCH} "${gRecoveryHD_DMG}"
     chflags hidden "${gRecoveryHD_DMG}"
+    #
+    # Backup and patch finish, print out RecoveryHD dmg info
+    #
+    _printBackupLOG
 
     #
     # Clean redundant dmg files.
