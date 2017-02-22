@@ -1342,7 +1342,7 @@ function _printBackupLOG()
 #--------------------------------------------------------------------------------
 #
 
-function _bakBaseSystem()
+function _bakRecHDIsRequire()
 {
     gLastOpenedFileMD5=$(md5 -q "${gRecoveryHD_DMG}")
 
@@ -1359,7 +1359,7 @@ function _bakBaseSystem()
         gBakFileMD5=($(cat ${gBakFileNames[@]} | grep 'Patched Recovery HD MD5:' | sed -e 's/.*: //' -e 's/ //'))
         for checksum in "${gBakFileMD5[@]}"
         do
-          if [[ $checksum == $gLastOpenedFileMD5 && gStop_Bak != ${kBASHReturnSuccess} ]];
+          if [[ $checksum == $gLastOpenedFileMD5 && ${gStop_Bak} != ${kBASHReturnSuccess} ]];
             then
               _PRINT_MSG "OK: Backup found. No more patch operations need"
               gStop_Bak=${kBASHReturnSuccess}
@@ -1426,6 +1426,21 @@ function _recoveryhd_fix()
     # Locate Recovery HD
     #
     _tidy_exec "diskutil mount ${gRecoveryHD}" "Mount ${gRecoveryHD}"
+
+    #
+    # Check if backup RecoveryHD is required
+    #
+    _bakRecHDIsRequire
+    if [[ ${gStop_Bak} == ${kBASHReturnSuccess} ]]; then
+        #
+        # Already patched Recovery HD, return
+        #
+        return;
+    fi
+
+    #
+    # let's get started to backup and patch RecoveryHD
+    #
     _touch "${gMountPoint}"
 
     #
@@ -1437,11 +1452,14 @@ function _recoveryhd_fix()
     #
     # Backup origin BaseSystem.dmg to ${REPO}/Backups
     #
-    _bakBaseSystem
     _touch "${gBak_Dir}"
     cp "${gRecoveryHD_DMG}" "${gBak_Dir}"
     gBak_BaseSystem="${gBak_Dir}/BaseSystem.dmg"
     chflags nohidden "${gBak_BaseSystem}"
+    #
+    # Backup and patch finish, print out RecoveryHD dmg info
+    #
+    _printBackupLOG
 
     #
     # Start to override.
