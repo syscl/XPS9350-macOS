@@ -49,15 +49,14 @@ Note:
 TODO List
 ----------------
 
-This months I have 2 dues and 1 ```midterm exam```, so I will be a bit slower. What I will do next week are listed below
-- Implement the method I made to tune X86PlatformPluginInjector.kext to achieve better power management(even lower the frequency than real MacBookPro13,x!)
-Vist [here](http://www.insanelymac.com/forum/topic/321021-guide-hwpintel-speed-shift-enable-with-full-power-management/) to see how to do it manually
-- Refine RC.script
+This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two weeks left for us to struggling two exams in just one subject???), so I will be a bit slower. What I will do next week are listed below
+- Try to merge @squash- 's autogen ```serial```, ```uuid``` pull request
 
 Change Log
 ----------------
 2017-02-22
 
+- ```X86PlatformPluginInjector``` ready (c) syscl
 - Prevent patching RecoveryHD per call (c) syscl
 - Sync fixUSB to latest version: 2016-12-08 with speed optimization 
 
