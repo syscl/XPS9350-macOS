@@ -1757,12 +1757,22 @@ function main()
     # Decide which mode: hwp?
     #
     _hwpArgvChk
-    if [[ ${gCp_SSDT_pr} != ${kBASHReturnSuccess} ]]; then
+    if [[ ${gCp_SSDT_pr} != ${kBASHReturnSuccess} ]];
+      then
         #
         # Detect which SSDT for processor to be installed.
         #
         gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
         _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
+      else
+        #
+        # Full HWP power management credit syscl, dpassmor, Pike R. Alpha
+        #
+        _tidy_exec "cp "${prepare}"/SSDT-pr.aml "${compile}"/SSDT-pr.aml" "Install SSDT-pr for writing plugin-type to registry"
+        #
+        # X86PlatformPluginInjector method credit syscl
+        #
+        _tidy_exec "sudo cp -RX "${REPO}/Kexts/X86PlatformPluginInjector/X86PlatformPluginInjector.kext" "${gExtensions_Repo[0]}"" "Install X86PlatformPluginInjector (c) syscl"
     fi
 
     #
