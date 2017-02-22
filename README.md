@@ -59,6 +59,7 @@ Change Log
 2017-02-22
 
 - Prevent patching RecoveryHD per call (c) syscl
+- Sync fixUSB to latest version: 2016-12-08 with speed optimization 
 
 2017-02-21
 
