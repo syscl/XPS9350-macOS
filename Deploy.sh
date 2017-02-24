@@ -1499,10 +1499,21 @@ function _serialMLBGen()
     local gGenerateSerial=`"${REPO}"/tools/macgen/simpleMacSerial.sh ${gGetModelFromConfig}`
     local gGenerateMLB=`"${REPO}"/tools/macgen/simpleMLBSerial.sh ${gGetModelFromConfig} ${gGenerateSerial}`
     local gGenerateUUID=$(uuidgen)
-    ${doCommands[1]} "Set :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
-    ${doCommands[1]} "Set :RtVariables:ROM UseMacAddr0" ${config_plist}
-    ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
-    ${doCommands[1]} "Set :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+
+    if [[ $gScriptFirstRun == "true" ]]; then
+        ${doCommands[1]} "Add :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
+        ${doCommands[1]} "Add :RtVariables:ROM UseMacAddr0" ${config_plist}
+        ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
+        ${doCommands[1]} "Add :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+    fi
+
+
+    if [[ $gRegenerateSerial == "true" ]]; then
+        ${doCommands[1]} "Set :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
+        ${doCommands[1]} "Set :RtVariables:ROM UseMacAddr0" ${config_plist}
+        ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
+        ${doCommands[1]} "Set :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+    fi
 }
 
 function main()
@@ -1626,6 +1637,24 @@ function main()
               fi
               ;;
     esac
+
+    #
+    # Choose whether or not to regenerate serial
+    #
+    gRegenerateSerial="false"
+    gScriptFirstRun="true"
+
+    if [ `${doCommands[1]} "Print :SMBIOS:SerialNumber" ${config_plist}` != 'FAKESERIAL' ]; then
+        printf "Generate new Serial, MLB, UUID? [Y/N]: "
+        read -p ": " local gRegenerateSerialChoice
+        if [ "$gRegenerateSerialChoice" == 'Y' ] || [ "$gRegenerateSerialChoice" == 'y' ]; then
+            gRegenerateSerial="true"
+            gScriptFirstRun="false"
+        else
+            gRegenerateSerial="false"
+            gScriptFirstRun="false"
+        fi
+    fi
 
     #
     # Decompile acpi tables
@@ -1822,9 +1851,14 @@ function main()
     #
     # Generate and set Mac Serial, MLB, and UUID
     #
-    _PRINT_MSG "--->: ${BLUE}Generating and setting Mac Serial, MLB and UUID${OFF}"
-    _serialMLBGen
-
+    if [[ $gRegenerateSerial == "true" ]] && [[ $gScriptFirstRun == "false" ]]; then
+        _PRINT_MSG "--->: ${BLUE}Regenerating and setting Mac Serial, MLB and UUID${OFF}"
+        _serialMLBGen
+    elif [[ $gScriptFirstRun == "true" ]] && [[ $gRegenerateSerial == "false" ]]; then
+        _PRINT_MSG "--->: ${BLUE}Generating and setting Mac Serial, MLB and UUID${OFF}"
+        _serialMLBGen
+    fi
+    
     #
     # Refresh BootCamp theme.
     #
