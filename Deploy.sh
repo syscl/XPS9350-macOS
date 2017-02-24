@@ -1493,6 +1493,18 @@ function _recoveryhd_fix()
 #--------------------------------------------------------------------------------
 #
 
+function _serialMLBGen()
+{
+    local gGetModelFromConfig=`${doCommands[1]} "Print :SMBIOS:ProductName" ${config_plist}`
+    local gGenerateSerial=`"${REPO}"/tools/macgen/simpleMacSerial.sh ${gGetModelFromConfig}`
+    local gGenerateMLB=`"${REPO}"/tools/macgen/simpleMLBSerial.sh ${gGetModelFromConfig} ${gGenerateSerial}`
+    local gGenerateUUID=$(uuidgen)
+    ${doCommands[1]} "Set :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
+    ${doCommands[1]} "Set :RtVariables:ROM UseMacAddr0" ${config_plist}
+    ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
+    ${doCommands[1]} "Set :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+}
+
 function main()
 {
     #
@@ -1806,6 +1818,12 @@ function main()
     # Refresh kext in Clover.
     #
     _update_clover
+
+    #
+    # Generate and set Mac Serial, MLB, and UUID
+    #
+    _PRINT_MSG "--->: ${BLUE}Generating and setting Mac Serial, MLB and UUID${OFF}"
+    _serialMLBGen
 
     #
     # Refresh BootCamp theme.
