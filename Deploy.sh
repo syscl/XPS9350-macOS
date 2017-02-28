@@ -1193,6 +1193,7 @@ function _createUSB_Sleep_Script()
     echo '# Reset hibernate mode to 0 if hibernate mode has been changed by macOS'                                                                          >> "$gUSBSleepScript"
     echo '#'                                                                                                                                                >> "$gUSBSleepScript"
     echo 'gTarHibernateMode=0'                                                                                                                              >> "$gUSBSleepScript"
+    echo 'gOrgHibernateMode=$(pmset -g |grep -i "hibernatemode" |sed "s|hibernatemode||")'                                                                  >> "$gUSBSleepScript"
     echo 'if [[ ${gOrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then'                                                                                  >> "$gUSBSleepScript"
     echo '    pmset hibernatemode ${gTarHibernateMode}'                                                                                                     >> "$gUSBSleepScript"
     echo '    gSleepImageSz=0'                                                                                                                              >> "$gUSBSleepScript"
