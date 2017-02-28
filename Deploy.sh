@@ -1186,6 +1186,23 @@ function _createUSB_Sleep_Script()
     echo '    echo "1" > "$gRT_Config"'                                                                                                                     >> "$gUSBSleepScript"
     echo '    open "/Applications/Wireless Network Utility.app"'                                                                                            >> "$gUSBSleepScript"
     echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
+    #
+    # Added detect hibernate mode == 0 for XPS 13 93x0(Skylake/Kabylake)
+    #
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo '# Reset hibernate mode to 0 if hibernate mode has been changed by macOS'                                                                          >> "$gUSBSleepScript"
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo 'gTarHibernateMode=0'                                                                                                                              >> "$gUSBSleepScript"
+    echo 'if [[ ${gOrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then'                                                                                  >> "$gUSBSleepScript"
+    echo '    pmset hibernatemode ${gTarHibernateMode}'                                                                                                     >> "$gUSBSleepScript"
+    echo '    gSleepImageSz=0'                                                                                                                              >> "$gUSBSleepScript"
+    echo '    if [ -f /var/vm/sleepimage ]; then'                                                                                                           >> "$gUSBSleepScript"
+    echo '        gSleepImageSz=$(stat -f'%z' /var/vm/sleepimage)'                                                                                          >> "$gUSBSleepScript"
+    echo '    fi'                                                                                                                                           >> "$gUSBSleepScript"
+    echo '    if [[ ${gSleepImageSz} != "0" ]]; then'                                                                                                       >> "$gUSBSleepScript"
+    echo '        rm /var/vm/sleepimage'                                                                                                                    >> "$gUSBSleepScript"
+    echo '    fi'                                                                                                                                           >> "$gUSBSleepScript"
+    echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
 }
 
 #
