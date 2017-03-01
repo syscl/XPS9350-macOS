@@ -723,7 +723,7 @@
 			</dict>
 			<dict>
 				<key>Comment</key>
-				<string>AirPortBrcm4360 5Ghz US-FCC</string>
+				<string>AirPortBrcm4360 5Ghz</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
@@ -733,7 +733,7 @@
 				<key>Name</key>
 				<string>AirPortBrcm4360</string>
 				<key>Replace</key>
-				<data>ZscGVVPrKw==</data>
+				<data>ZscGI2HrKw==</data>
 			</dict>
 		</array>
 	</dict>
