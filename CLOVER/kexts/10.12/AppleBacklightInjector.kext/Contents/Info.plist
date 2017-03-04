@@ -36,6 +36,8 @@
 				<data>ABEAAAAYACcAOgBSAHEAlgDEAPwBQAGTAfYCbgL+A6oEeAVs</data>
 				<key>F10T1421</key>
 				<data>ABEAAAAYACcAOgBSAHEAlgDEAPwBQAGTAfYCbgL+A6oEeAVs</data>
+				<key>F5152T0000</key>
+				<data>ABEAAAAYACcAOgBSAHEAlgDEAPwBQAGTAfYCbgL+A6oEeAVs</data>
 			</dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleBacklight</string>
