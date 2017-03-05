@@ -955,7 +955,7 @@ function _gRstValnAdr()
 function _twhibernatemod()
 {
     #
-    # tweak hibernatemode for skylake platforms
+    # tweak hibernatemode for skylake/kabylake platforms
     #
     # note: hibernatemode on skylake platform behave unstable, and very likely to break all the data(nvme issue?)
     # thus, we better switch to a faster and better hibernatemode = 0
@@ -964,6 +964,25 @@ function _twhibernatemod()
     local gOrgHibernateMode=$(pmset -g |grep -i "hibernatemode" |sed 's|hibernatemode||')
     if [[ ${gOrgHibernateMode} != *"${gTarHibernateMode}"* ]]; then
         _tidy_exec "sudo pmset hibernatemode ${gTarHibernateMode}" "Change hibernatemode from ${gOrgHibernateMode} to ${gTarHibernateMode}"
+    fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _tw_autopoweroff()
+{
+    #
+    # disable autopoweroff on skylake/kabylake plaforms
+    #
+    # setting hibernatemode = 0 isn't enough for us to prevent data corrupt
+    # autopoweroff will still write data to disk (c) bozma88, ZombieTheBest
+    #
+    local gTarAutopoweroff=0
+    local gOrigAutopoweroff=$(pmset -g |grep -v "autopoweroffdelay" | grep -i "autopoweroff" |sed 's|autopoweroff||')
+    if [[ ${gOrigAutopoweroff} != *"${gTarAutopoweroff}"* ]]; then
+        _tidy_exec "sudo pmset autopoweroff ${gTarAutopoweroff}" "Change autopoweroff from ${gOrigAutopoweroff} to ${gTarAutopoweroff}"
     fi
 }
 
@@ -1203,6 +1222,17 @@ function _createUSB_Sleep_Script()
     echo '    if [[ ${gSleepImageSz} != "0" ]]; then'                                                                                                       >> "$gUSBSleepScript"
     echo '        rm /var/vm/sleepimage'                                                                                                                    >> "$gUSBSleepScript"
     echo '    fi'                                                                                                                                           >> "$gUSBSleepScript"
+    echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
+    #
+    # Added detect for autopoweroff == 0 for XPS 13 93x0(Skylake/Kabylake)
+    #
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo '# Reset autopoweroff to 0 if autopoweroff has been changed by macOS'                                                                              >> "$gUSBSleepScript"
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo 'gTarAutopoweroff=0'                                                                                                                               >> "$gUSBSleepScript"
+    echo 'gOrigAutopoweroff=$(pmset -g |grep -v "autopoweroffdelay" | grep -i "autopoweroff" |sed "s|autopoweroff||")'                                      >> "$gUSBSleepScript"
+    echo 'if [[ ${gOrigAutopoweroff} != *"${gTarAutopoweroff}"* ]]; then'                                                                                   >> "$gUSBSleepScript"
+    echo '    pmset autopoweroff ${gTarAutopoweroff}'                                                                                                       >> "$gUSBSleepScript"
     echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
 }
 
@@ -1882,6 +1912,11 @@ function main()
     # Fix hibernatemode
     #
     _twhibernatemod
+
+    #
+    # Disable autopoweroff
+    #
+    _tw_autopoweroff
 
     #
     # Fixed Recovery HD entering issues (c) syscl.
