@@ -41,15 +41,15 @@
 			<key>2400</key>
 			<integer>0</integer>
 			<key>2900</key>
-			<integer>0</integer>
+			<integer>1</integer>
 			<key>3100</key>
-			<integer>0</integer>
+			<integer>2</integer>
 			<key>3200</key>
-			<integer>0</integer>
+			<integer>3</integer>
 			<key>3400</key>
-			<integer>0</integer>
+			<integer>4</integer>
 			<key>3500</key>
-			<integer>0</integer>
+			<integer>5</integer>
 		</dict>
 		<key>FrequencyVectors</key>
 		<array>
