@@ -699,7 +699,7 @@ function _check_and_fix_config()
     #
     # Check if tinySSDT items are existed
     #
-    local dCheck_SSDT=("SSDT-XPS13SKL" "SSDT-ARPT-RP05")
+    local dCheck_SSDT=("SSDT-XPS13SKL" "SSDT-ARPT-RP05" "SSDT-XHC")
     local gSortedOrder=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
     local gSortedNumber=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g' | wc -l)
     for tinySSDT in "${dCheck_SSDT[@]}"
