@@ -85,6 +85,12 @@
 				<key>Signature</key>
 				<string>SSDT</string>
 				<key>TableId</key>
+				<string>xh_rvp07</string>
+			</dict>
+			<dict>
+				<key>Signature</key>
+				<string>SSDT</string>
+				<key>TableId</key>
 				<string>Ther_Rvp</string>
 			</dict>
 			<dict>
@@ -143,6 +149,7 @@
 			<string>SSDT-pr.aml</string>
 			<string>SSDT-rmne.aml</string>
 			<string>SSDT-XPS13SKL.aml</string>
+			<string>SSDT-XHC.aml</string>
 		</array>
 		<key>HaltEnabler</key>
 		<false/>
