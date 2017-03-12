@@ -162,6 +162,8 @@
 	</dict>
 	<key>Boot</key>
 	<dict>
+		<key>Arguments</key>
+		<string>darkwake=0</string>
 		<key>Debug</key>
 		<false/>
 		<key>DefaultVolume</key>
