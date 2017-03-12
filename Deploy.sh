@@ -895,8 +895,6 @@ function _find_acpi()
       fi
     done
     #
-    # Search xh_rvp0, note: we cannot drop xh_rvp0 table which will cause USB disapper!
-    #
     # Search CpuSsdt
     #
     for ((index = 1; index <= ${number}; index++))
@@ -907,7 +905,18 @@ function _find_acpi()
           rmSSDT_1=SSDT-${index}
       fi
     done
-    gRm_SSDT_Tabl=("$rmSSDT_0" "$rmSSDT_1")
+    #
+    # Search xh_rvp07
+    #
+    for ((index = 1; index <= ${number}; index++))
+    do
+      grep -i "xh_rvp07" "${REPO}"/DSDT/raw/SSDT-${index}.dsl &> /dev/null && RETURN_VAL=0 || RETURN_VAL=1
+
+      if [ "${RETURN_VAL}" == 0 ]; then
+          rmSSDT_2=SSDT-${index}
+      fi
+    done
+    gRm_SSDT_Tabl=("$rmSSDT_0" "$rmSSDT_1" "$rmSSDT_2")
 }
 
 #
@@ -1597,40 +1606,15 @@ function main()
     _tidy_exec "_touch "${precompile}"" "Create ./DSDT/precompile"
     _tidy_exec "_touch "${compile}"" "Create ./DSDT/compile"
 
+
     #
-    # Mount esp.
+    # Get user information
+    #
+    # get ESP
     #
     diskutil list
     printf "Enter ${RED}EFI's${OFF} IDENTIFIER, e.g. ${BOLD}disk0s1${OFF}"
     read -p ": " targetEFI
-    _tidy_exec "diskutil mount ${targetEFI}" "Mount ${targetEFI}"
-    _getESPMntPoint ${targetEFI}
-    _setESPVariable
-
-    #
-    # Ensure / Force Graphics card to power.
-    #
-    _initIntel
-    _getEDID
-
-    #
-    # Copy origin aml to raw.
-    #
-    if [ -f "${gESPMountPoint}/EFI/CLOVER/ACPI/origin/DSDT.aml" ];
-      then
-        local gOrgAcpiRepo="${gESPMountPoint}/EFI/CLOVER/ACPI/origin"
-
-        _tidy_exec "cp ${gOrgAcpiRepo}/DSDT.aml ${gOrgAcpiRepo}/FACP.aml ${gOrgAcpiRepo}/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
-      else
-        _PRINT_MSG "NOTE: Warning!! DSDT and SSDTs doesn't exist! Press Fn+F4 under Clover to dump ACPI tables"
-        # ERROR.
-        #
-        # Note: The exit value can be anything between 0 and 255 and thus -1 is actually 255
-        #       but we use -1 here to make it clear (obviously) that something went wrong.
-        #
-        exit -1
-    fi
-
     #
     # Choose touchpad kext you prefer
     #
@@ -1662,6 +1646,38 @@ function main()
               fi
               ;;
     esac
+
+
+    #
+    # Mount esp
+    #
+    _tidy_exec "diskutil mount ${targetEFI}" "Mount ${targetEFI}"
+    _getESPMntPoint ${targetEFI}
+    _setESPVariable
+
+    #
+    # Ensure / Force Graphics card to power.
+    #
+    _initIntel
+    _getEDID
+
+    #
+    # Copy origin aml to raw.
+    #
+    if [ -f "${gESPMountPoint}/EFI/CLOVER/ACPI/origin/DSDT.aml" ];
+      then
+        local gOrgAcpiRepo="${gESPMountPoint}/EFI/CLOVER/ACPI/origin"
+
+        _tidy_exec "cp ${gOrgAcpiRepo}/DSDT.aml ${gOrgAcpiRepo}/FACP.aml ${gOrgAcpiRepo}/SSDT-*.aml "${decompile}"" "Copy untouch ACPI tables"
+      else
+        _PRINT_MSG "NOTE: Warning!! DSDT and SSDTs doesn't exist! Press Fn+F4 under Clover to dump ACPI tables"
+        # ERROR.
+        #
+        # Note: The exit value can be anything between 0 and 255 and thus -1 is actually 255
+        #       but we use -1 here to make it clear (obviously) that something went wrong.
+        #
+        exit -1
+    fi
 
     #
     # Decompile acpi tables
@@ -1722,6 +1738,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_iGPU_MEM2"" "iGPU TPMX to MEM2"
     _tidy_exec "patch_acpi DSDT syscl "syscl_IMTR2TIMR"" "IMTR->TIMR, _T_x->T_x"
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_USB"" "Correct USB(XHC) information and injection credit syscl"
 #    _tidy_exec "patch_acpi DSDT syscl "syscl_rmB0D4"" "Remove Device(B0D4)"
     _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # RP09.PXSX -> RP09.SSD0
@@ -1836,7 +1853,13 @@ function main()
     _tidy_exec "cp "${prepare}"/SSDT-ARPT-RP05.aml "${compile}"" "Install ARPT table"
 
     #
-    # Clean up dynamic tables and CPU related tables
+    # Install SSDT-XHC
+    #
+    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XHC.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-XHC.aml "${compile}"" "Install Xhci table"
+
+    #
+    # Clean up dynamic tables USB related tables
     #
     _tidy_exec "rm "${compile}"SSDT-*x.aml" "Clean dynamic SSDTs"
     for rmssdt in "${gRm_SSDT_Tabl[@]}"
@@ -1849,6 +1872,12 @@ function main()
     #
     _tidy_exec "_touch "${gESPMountPoint}/EFI/CLOVER/ACPI/patched"" "Create ${gESPMountPoint}/EFI/CLOVER/ACPI/patched"
     _tidy_exec "cp "${compile}"*.aml ${gESPMountPoint}/EFI/CLOVER/ACPI/patched" "Copy tables to ${gESPMountPoint}/EFI/CLOVER/ACPI/patched"
+    for rmssdt in "${gRm_SSDT_Tabl[@]}"
+    do
+      if [ -f ${gESPMountPoint}/EFI/CLOVER/ACPI/patched/$rmssdt.aml ]; then
+          _tidy_exec "rm ${gESPMountPoint}/EFI/CLOVER/ACPI/patched/$rmssdt.aml" "Drop ${gESPMountPoint}/EFI/CLOVER/ACPI/patched/${rmssdt}"
+      fi
+    done
 
     #
     # Refresh kext in Clover.

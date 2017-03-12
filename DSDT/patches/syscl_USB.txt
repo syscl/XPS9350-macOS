@@ -1,0 +1,21 @@
+#Created by syscl for Dell XPS Skylake/Kabylake Series
+#syscl_USB
+
+#Here we remove HS06
+into device label HS06 remove_entry;
+
+#Here we remove HS07
+into device label HS07 remove_entry;
+
+#Here we remove HS08
+into device label HS08 remove_entry;
+
+#Here we remove HS10
+into device label HS10 remove_entry;
+
+into device label SS01 set_label begin SSP1 end;
+into device label SS02 set_label begin SSP2 end;
+into device label SS03 set_label begin SSP3 end;
+into device label SS04 set_label begin SSP4 end;
+into device label SS05 set_label begin SSP5 end;
+into device label SS06 set_label begin SSP6 end;
