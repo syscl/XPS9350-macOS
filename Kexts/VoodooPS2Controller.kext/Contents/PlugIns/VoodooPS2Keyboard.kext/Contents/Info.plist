@@ -276,7 +276,7 @@
 				<key>Default</key>
 				<dict>
 					<key>Action2FingersTap</key>
-					<string>3b d, 37 d, 1a d, 1a u, 37 u, 3b u</string>
+					<string>3b d, 37 d, 1c d, 1c u, 37 u, 3b u</string>
 					<key>Action3FingersPinch</key>
 					<string>3b d, 37 d, 1a d, 1a u, 37 u, 3b u</string>
 					<key>Action3FingersSpread</key>
@@ -310,9 +310,9 @@
 					<key>ActionSwipeUp</key>
 					<string>3b d, 7e d, 7e u, 3b u</string>
 					<key>ActionZoomIn</key>
-					<string></string>
+					<string>37 d, 18 d, 18 u, 37 u</string>
 					<key>ActionZoomOut</key>
-					<string></string>
+					<string>37 d, 1b d, 1b u, 37 u</string>
 					<key>Breakless PS2</key>
 					<array>
 						<string>;Items must be strings in the form of breaklessscan (in hex)</string>

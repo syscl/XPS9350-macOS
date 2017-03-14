@@ -362,7 +362,7 @@
 					<key>QuietTimeAfterTyping</key>
 					<integer>500000000</integer>
 					<key>Resolution</key>
-					<integer>400</integer>
+					<integer>305</integer>
 					<key>RightClickZoneBottom</key>
 					<integer>0</integer>
 					<key>RightClickZoneLeft</key>
@@ -376,7 +376,7 @@
 					<key>ScrollDeltaThreshY</key>
 					<integer>0</integer>
 					<key>ScrollResolution</key>
-					<integer>400</integer>
+					<integer>305</integer>
 					<key>SkipPassThrough</key>
 					<false/>
 					<key>SmoothInput</key>
