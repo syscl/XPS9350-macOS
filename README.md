@@ -54,6 +54,17 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2017-03-13
+
+- Correct 2finger tap value (c) syscl
+- Mute VoodooPS2 spam log (c) syscl
+- Correct tochpad resolution for ```XPS 13(Broadwell/Skylake/Kabylake)``` (c) syscl
+- Sync to @icedman latest VoodooPS2 source 
+- Use SSDT to power up USB, deprecate kernel extension injector (c) syscl
+- Added Apple ```Super Drive``` support for each USB port (c) syscl
+- ```darkwake``` to fix lid wake require extra key press issue 
+- Disable ```autopoweroff```
+
 2017-02-22
 
 - ```X86PlatformPluginInjector``` ready (c) syscl
