@@ -983,7 +983,7 @@ function _twhibernatemod()
 function _tw_autopoweroff()
 {
     #
-    # disable autopoweroff on skylake/kabylake plaforms
+    # disable autopoweroff on skylake/kabylake platforms
     #
     # setting hibernatemode = 0 isn't enough for us to prevent data corrupt
     # autopoweroff will still write data to disk (c) bozma88, ZombieTheBest
@@ -993,6 +993,23 @@ function _tw_autopoweroff()
     if [[ ${gOrigAutopoweroff} != *"${gTarAutopoweroff}"* ]]; then
         _tidy_exec "sudo pmset autopoweroff ${gTarAutopoweroff}" "Change autopoweroff from ${gOrigAutopoweroff} to ${gTarAutopoweroff}"
     fi
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
+function _tw_standby()
+{
+    #
+    # disable standby on skylake/kabylake platforms
+    #
+    local gTarStandby=0
+    local gOrgStandby=$(pmset -g |grep -v 'standbydelay' |grep -i 'standby' |sed 's|standby||')
+    if [[ ${gOrgStandby} != *"${gTarStandby}"* ]]; then
+        _tidy_exec "sudo pmset -a standby ${gTarStandby}" "Change standby from ${gOrgStandby} to ${gTarStandby}"
+    fi
+
 }
 
 #
@@ -1242,6 +1259,17 @@ function _createUSB_Sleep_Script()
     echo 'gOrigAutopoweroff=$(pmset -g |grep -v "autopoweroffdelay" | grep -i "autopoweroff" |sed "s|autopoweroff||")'                                      >> "$gUSBSleepScript"
     echo 'if [[ ${gOrigAutopoweroff} != *"${gTarAutopoweroff}"* ]]; then'                                                                                   >> "$gUSBSleepScript"
     echo '    pmset autopoweroff ${gTarAutopoweroff}'                                                                                                       >> "$gUSBSleepScript"
+    echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
+    #
+    # Added detect for standby == 0 for XPS 13 93x0(Skylake/Kabylake)
+    #
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo '# Reset standby to 0 if standby has been changed by macOS'                                                                                        >> "$gUSBSleepScript"
+    echo '#'                                                                                                                                                >> "$gUSBSleepScript"
+    echo 'gTarStandby=0'                                                                                                                                    >> "$gUSBSleepScript"
+    echo 'gOrgStandby=$(pmset -g |grep -v "standbydelay" | grep -i "standby" |sed "s|standby||")'                                                           >> "$gUSBSleepScript"
+    echo 'if [[ ${gOrgStandby} != *"${gTarStandby}"* ]]; then'                                                                                              >> "$gUSBSleepScript"
+    echo '    pmset standby ${gTarStandby}'                                                                                                                 >> "$gUSBSleepScript"
     echo 'fi'                                                                                                                                               >> "$gUSBSleepScript"
 }
 
@@ -1946,6 +1974,11 @@ function main()
     # Disable autopoweroff
     #
     _tw_autopoweroff
+
+    #
+    # Disable standby
+    #
+    _tw_standby
 
     #
     # Fixed Recovery HD entering issues (c) syscl.
