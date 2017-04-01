@@ -31,6 +31,16 @@
 				</dict>
 				<dict>
 					<key>Comment</key>
+					<string>rename _RMV to XRMV</string>
+					<key>Disabled</key>
+					<false/>
+					<key>Find</key>
+					<data>X1JNVg==</data>
+					<key>Replace</key>
+					<data>WFJNVg==</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
 					<string>HDAS -&gt; HDEF</string>
 					<key>Disabled</key>
 					<false/>
