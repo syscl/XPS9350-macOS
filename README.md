@@ -1,10 +1,15 @@
 
 macOS on DELL XPS13 (9350)
 ====================================
-
-
 This project targets at giving the relatively complete functional macOS for XPS13 9350. Before you start, there's a brief introduction of how to finish powering up macOS on your laptop:
 
+Before installing macOS
+----------------
+Since the original WiFi module is not compatible with macOS, you need to buy a DW1830 module.
+Then follow this [guide](https://www.ifixit.com/Teardown/Dell+XPS+13+Teardown/36157) to swap it.
+
+macOS installation
+----------------
 1. Create a vanilla installation disk (USB or other removable disk). (Google how to)
 2. Install Clover with UEFI only and UEFI64Drivers to the installation disk just created.
 3. Replace the original CLOVER folder with the one under my Git/XPS9350-macOS/CLOVER.
@@ -31,19 +36,19 @@ This will download the whole installation directory to your current directory(./
 
 ```sh
 cd XPS9350-macOS
-chmod +x ./deploy.sh
+chmod +x ./Deploy.sh
 ```
 
 
 Run the script in a terminal windows by(Note: You should dump the ACPI tables by pressing F4/Fn+F4 under Clover first and then execute the following command lines):
 
 ```sh
-./deploy.sh
+./Deploy.sh
 ```
 
 Reboot your macOS to see the change. If you have any problem about the script, try to run deploy in DEBUG mode by 
 ```sh
-./deploy.sh -d
+./Deploy.sh -d
 ```
 
 Note:
