@@ -718,7 +718,7 @@
 		<key>ProductName</key>
 		<string>MacBookPro13,2</string>
 		<key>SerialNumber</key>
-		<string>C02S4DHFGYFH</string>
+		<string>FAKESERIAL</string>
 		<key>Version</key>
 		<string>1.0</string>
 	</dict>

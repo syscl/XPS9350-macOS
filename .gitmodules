@@ -1,0 +1,3 @@
+[submodule "tools/macgen"]
+	path = tools/macgen
+	url = https://github.com/theracermaster/MacGen.git
