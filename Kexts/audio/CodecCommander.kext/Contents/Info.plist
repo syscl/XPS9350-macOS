@@ -140,7 +140,7 @@
 						</dict>
 					</array>
 					<key>Perform Reset</key>
-					<false/>
+					<true/>
 					<key>Send Delay</key>
 					<integer>10</integer>
 					<key>Sleep Nodes</key>
