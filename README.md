@@ -64,6 +64,13 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2017-09-04
+
+- Fixed Wi-Fi slow issue after sleep by correcting ```_UPC``` value from ```0x03``` to ```0xFF``` (c) @ZombieTheBest 
+- Added ```-disablegfxfirmware``` to avoid firmware load into endless loop
+- Added working combo jack for ALC256 on XPS9350/XPS9360 (c) @MuntashirAkon
+- Added drivers to fix keyboard with FileVault (c) @vaites
+
 2017-03-13
 
 - Correct 2finger tap value (c) syscl
