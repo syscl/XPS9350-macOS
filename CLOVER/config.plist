@@ -8,8 +8,6 @@
 		<dict>
 			<key>DropOEM_DSM</key>
 			<false/>
-			<key>Name</key>
-			<string>DSDT.aml</string>
 			<key>Patches</key>
 			<array>
 				<dict>
@@ -18,13 +16,9 @@
 					<key>Disabled</key>
 					<true/>
 					<key>Find</key>
-					<data>
-					X09TSQ==
-					</data>
+					<data>X09TSQ==</data>
 					<key>Replace</key>
-					<data>
-					WE9TSQ==
-					</data>
+					<data>WE9TSQ==</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -32,13 +26,9 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>
-					X1JNVg==
-					</data>
+					<data>X1JNVg==</data>
 					<key>Replace</key>
-					<data>
-					WFJNVg==
-					</data>
+					<data>WFJNVg==</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -46,13 +36,9 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>
-					SERBUw==
-					</data>
+					<data>SERBUw==</data>
 					<key>Replace</key>
-					<data>
-					SERFRg==
-					</data>
+					<data>SERFRg==</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -60,13 +46,9 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>
-					SEVDSQ==
-					</data>
+					<data>SEVDSQ==</data>
 					<key>Replace</key>
-					<data>
-					SU1FSQ==
-					</data>
+					<data>SU1FSQ==</data>
 				</dict>
 				<dict>
 					<key>Comment</key>
@@ -74,20 +56,16 @@
 					<key>Disabled</key>
 					<false/>
 					<key>Find</key>
-					<data>
-					R0ZYMA==
-					</data>
+					<data>R0ZYMA==</data>
 					<key>Replace</key>
-					<data>
-					SUdQVQ==
-					</data>
+					<data>SUdQVQ==</data>
 				</dict>
 			</array>
+			<key>Name</key>
+			<string>DSDT.aml</string>
 			<key>ReuseFFFF</key>
 			<false/>
 		</dict>
-		<key>DisableASPM</key>
-		<true/>
 		<key>DropTables</key>
 		<array>
 			<dict>
@@ -137,10 +115,6 @@
 				<string>ApCst</string>
 			</dict>
 		</array>
-		<key>ResetAddress</key>
-		<string>0xB2</string>
-		<key>ResetValue</key>
-		<string>0x73</string>
 		<key>SSDT</key>
 		<dict>
 			<key>DropOem</key>
@@ -166,6 +140,12 @@
 			<string>SSDT-XPS13SKL.aml</string>
 			<string>SSDT-XHC.aml</string>
 		</array>
+		<key>ResetAddress</key>
+		<string>0xB2</string>
+		<key>ResetValue</key>
+		<string>0x73</string>
+		<key>DisableASPM</key>
+		<true/>
 	</dict>
 	<key>Boot</key>
 	<dict>
@@ -186,7 +166,7 @@
 		<true/>
 	</dict>
 	<key>Devices</key>
-	<dict>
+	<dict>		
 		<key>Audio</key>
 		<dict>
 			<key>Inject</key>
@@ -276,15 +256,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				ILniAAAADzA=
-				</data>
+				<data>ILniAAAADzA=</data>
 				<key>MatchOS</key>
 				<string>10.12</string>
 				<key>Replace</key>
-				<data>
-				ILniAAAAkJA=
-				</data>
+				<data>ILniAAAAkJA=</data>
 			</dict>
 		</array>
 		<key>KextsToPatch</key>
@@ -295,15 +271,11 @@
 				<key>Disabled</key>
 				<true/>
 				<key>Find</key>
-				<data>
-				9sEQD4UcAQAA
-				</data>
+				<data>9sEQD4UcAQAA</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				9sEBD4UcAQAA
-				</data>
+				<data>9sEBD4UcAQAA</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -311,17 +283,13 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				ibP4AgAAweAMBQAQAACJgw==
-				</data>
+				<data>ibP4AgAAweAMBQAQAACJgw==</data>
 				<key>MatchOS</key>
 				<string>10.12.1</string>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				ibPwAgAAweAJBQAQAACJgw==
-				</data>
+				<data>ibPwAgAAweAJBQAQAACJgw==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -329,15 +297,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				D7aMiIIAAACD+QwPhTIBAA==
-				</data>
+				<data>D7aMiIIAAACD+QwPhTIBAA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				D7aMiIIAAACD+QkPhTIBAA==
-				</data>
+				<data>D7aMiIIAAACD+QkPhTIBAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -345,15 +309,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				AMeDpAAAAAAQAABIi0gISA==
-				</data>
+				<data>AMeDpAAAAAAQAABIi0gISA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				AMeDpAAAAAACAABIi0gISA==
-				</data>
+				<data>AMeDpAAAAAACAABIi0gISA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -361,15 +321,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				SYnGTYX2dGFBwecMSWP/vg==
-				</data>
+				<data>SYnGTYX2dGFBwecMSWP/vg==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				SYnGTYX2dGFBwecJSWP/vg==
-				</data>
+				<data>SYnGTYX2dGFBwecJSWP/vg==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -377,15 +333,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				hv8PAABIwegMD7cPgeH/Dw==
-				</data>
+				<data>hv8PAABIwegMD7cPgeH/Dw==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				hv8PAABIwegJD7cPgeH/Dw==
-				</data>
+				<data>hv8PAABIwegJD7cPgeH/Dw==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -393,15 +345,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				icGB4f8PAABIAdFIgfn/DwAAdzs=
-				</data>
+				<data>icGB4f8PAABIAdFIgfn/DwAAdzs=</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				icGB4f8BAABIAdFIgfn/AQAAdzs=
-				</data>
+				<data>icGB4f8BAABIAdFIgfn/AQAAdzs=</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -409,15 +357,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				SYHF/w8AAEnB7QxJiwQkSA==
-				</data>
+				<data>SYHF/w8AAEnB7QxJiwQkSA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				SYHF/w8AAEnB7QlJiwQkSA==
-				</data>
+				<data>SYHF/w8AAEnB7QlJiwQkSA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -425,17 +369,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				BgIAAEyNuAAQAABMiflIgeEA8P//SYmGGgEAAEmJjiIB
-				AABBvAAQAABJKfQ=
-				</data>
+				<data>BgIAAEyNuAAQAABMiflIgeEA8P//SYmGGgEAAEmJjiIBAABBvAAQAABJKfQ=</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				BgIAAEyNuAACAABMiflIgeEA8P//SYmGGgEAAEmJjiIB
-				AABBvAACAABJKfQ=
-				</data>
+				<data>BgIAAEyNuAACAABMiflIgeEA8P//SYmGGgEAAEmJjiIBAABBvAACAABJKfQ=</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -443,15 +381,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				AABJiY4iAQAAugAQAABIKQ==
-				</data>
+				<data>AABJiY4iAQAAugAQAABIKQ==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				AABJiY4iAQAAugACAABIKQ==
-				</data>
+				<data>AABJiY4iAQAAugACAABIKQ==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -459,15 +393,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				yAAAAEkp17gAEAAATYskJA==
-				</data>
+				<data>yAAAAEkp17gAEAAATYskJA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				yAAAAEkp17gAAgAATYskJA==
-				</data>
+				<data>yAAAAEkp17gAAgAATYskJA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -475,15 +405,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				4b+AQBUGTYnWugAQAABFMQ==
-				</data>
+				<data>4b+AQBUGTYnWugAQAABFMQ==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				4b+AQBUGTYnWugACAABFMQ==
-				</data>
+				<data>4b+AQBUGTYnWugACAABFMQ==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -491,15 +417,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				iWTY+EmBxAAQAABJgccA8A==
-				</data>
+				<data>iWTY+EmBxAAQAABJgccA8A==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				iWTY+EmBxAACAABJgccA8A==
-				</data>
+				<data>iWTY+EmBxAACAABJgccA8A==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -507,15 +429,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				Bf8PAABIwegMZvfB/w8PlQ==
-				</data>
+				<data>Bf8PAABIwegMZvfB/w8PlQ==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				Bf8PAABIwegJZvfB/w8PlQ==
-				</data>
+				<data>Bf8PAABIwegJZvfB/w8PlQ==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -523,15 +441,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				weIIQQ+2wcHgDEQJ0EQJwA==
-				</data>
+				<data>weIIQQ+2wcHgDEQJ0EQJwA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				weIIQQ+2wcHgCUQJ0EQJwA==
-				</data>
+				<data>weIIQQ+2wcHgCUQJ0EQJwA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -539,15 +453,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				RYTJD5XAD7bAweAMRAnYRA==
-				</data>
+				<data>RYTJD5XAD7bAweAMRAnYRA==</data>
 				<key>Name</key>
 				<string>IONVMeFamily</string>
 				<key>Replace</key>
-				<data>
-				RYTJD5XAD7bAweAJRAnYRA==
-				</data>
+				<data>RYTJD5XAD7bAweAJRAnYRA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -555,15 +465,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				AQMDAwAAIAIAAAAAAAAAYA==
-				</data>
+				<data>AQMDAwAAIAIAAAAAAAAAYA==</data>
 				<key>Name</key>
 				<string>AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
-				<data>
-				AQMEAwAAIAIAAAAAAAAAYA==
-				</data>
+				<data>AQMEAwAAIAIAAAAAAAAAYA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -571,15 +477,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				AAAAAAAAAAAAAAgAAgAAAJgEAAA=
-				</data>
+				<data>AAAAAAAAAAAAAAgAAgAAAJgEAAA=</data>
 				<key>Name</key>
 				<string>AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
-				<data>
-				AAAAAAAAAAAAAAgAAAQAAJgEAAA=
-				</data>
+				<data>AAAAAAAAAAAAAAgAAAQAAJgEAAA=</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -587,17 +489,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				AQUJAAAEAADHAQAAAgQKAAAEAADHAQAA/wAAAAEAAAAg
-				AAAA
-				</data>
+				<data>AQUJAAAEAADHAQAAAgQKAAAEAADHAQAA/wAAAAEAAAAgAAAA</data>
 				<key>Name</key>
 				<string>AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
-				<data>
-				AQUJAAAIAADHAQAAAgQKAAAIAADHAQAAAwYKAAAEAADH
-				AQAA
-				</data>
+				<data>AQUJAAAIAADHAQAAAgQKAAAIAADHAQAAAwYKAAAEAADHAQAA</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -605,15 +501,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				CgsDAAAHBgADAAAABAAAAA==
-				</data>
+				<data>CgsDAAAHBgADAAAABAAAAA==</data>
 				<key>Name</key>
 				<string>AppleIntelSKLGraphicsFramebuffer</string>
 				<key>Replace</key>
-				<data>
-				DwsDAAAHBgADAAAABAAAAA==
-				</data>
+				<data>DwsDAAAHBgADAAAABAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -621,15 +513,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				YQLsEA==
-				</data>
+				<data>YQLsEA==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>
-				AAAAAA==
-				</data>
+				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -637,15 +525,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				YgLsEA==
-				</data>
+				<data>YgLsEA==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>
-				AAAAAA==
-				</data>
+				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -653,15 +537,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				hQjsEA==
-				</data>
+				<data>hQjsEA==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>
-				AAAAAA==
-				</data>
+				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -669,15 +549,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				hBnUEQ==
-				</data>
+				<data>hBnUEQ==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>
-				VgLsEA==
-				</data>
+				<data>VgLsEA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -685,15 +561,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				gxnUEQ==
-				</data>
+				<data>gxnUEQ==</data>
 				<key>Name</key>
 				<string>AppleHDA</string>
 				<key>Replace</key>
-				<data>
-				AAAAAA==
-				</data>
+				<data>AAAAAA==</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -701,15 +573,11 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				SIX/dEdIiwc=
-				</data>
+				<data>SIX/dEdIiwc=</data>
 				<key>Name</key>
 				<string>IOBluetoothFamily</string>
 				<key>Replace</key>
-				<data>
-				Qb4PAAAA60Q=
-				</data>
+				<data>Qb4PAAAA60Q=</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -717,17 +585,13 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				VUiJ5UFXQVZBVUFUU0iB7DgB
-				</data>
+				<data>VUiJ5UFXQVZBVUFUU0iB7DgB</data>
 				<key>MatchOS</key>
 				<string>10.12.x</string>
 				<key>Name</key>
 				<string>IOThunderboltFamily</string>
 				<key>Replace</key>
-				<data>
-				VUiJ5THAXcNBVUFUU0iB7DgB
-				</data>
+				<data>VUiJ5THAXcNBVUFUU0iB7DgB</data>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -735,17 +599,13 @@
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
-				<data>
-				QYP8/3QsSA==
-				</data>
+				<data>QYP8/3QsSA==</data>
 				<key>MatchOS</key>
 				<string>10.11,10.12</string>
 				<key>Name</key>
 				<string>AirPortBrcm4360</string>
 				<key>Replace</key>
-				<data>
-				ZscGI2HrKw==
-				</data>
+				<data>ZscGI2HrKw==</data>
 			</dict>
 		</array>
 	</dict>
