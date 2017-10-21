@@ -12,6 +12,7 @@
 # LC_NUMERIC here (for the duration of the deploy.sh) to prevent errors.
 #
 export LC_NUMERIC="en_US.UTF-8"
+export MG_DEBUG=0
 
 #
 # Prevent non-printable/control characters.
@@ -1581,23 +1582,26 @@ function _recoveryhd_fix()
 function _serialMLBGen()
 {
     local gGetModelFromConfig=`${doCommands[1]} "Print :SMBIOS:ProductName" ${config_plist}`
-    local gGenerateSerial=`"${REPO}"/tools/macgen/simpleMacSerial.sh ${gGetModelFromConfig}`
-    local gGenerateMLB=`"${REPO}"/tools/macgen/simpleMLBSerial.sh ${gGetModelFromConfig} ${gGenerateSerial}`
+    local gGenerateSerial=`"${REPO}"/tools/macgen/mg-serial ${gGetModelFromConfig}`
+    local gGenerateMLB=`"${REPO}"/tools/macgen/mg-mlb-serial ${gGetModelFromConfig} ${gGenerateSerial}`
     local gGenerateUUID=$(uuidgen)
 
     if [[ $gScriptFirstRun == "true" ]]; then
-        ${doCommands[1]} "Add :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
-        ${doCommands[1]} "Add :RtVariables:ROM UseMacAddr0" ${config_plist}
-        ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
-        ${doCommands[1]} "Add :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+       ${doCommands[1]} "Add ':RtVariables:MLB' string" ${config_plist}
+       ${doCommands[1]} "Set ':RtVariables:MLB' ${gGenerateMLB}" ${config_plist}
+       ${doCommands[1]} "Add ':RtVariables:ROM' string" ${config_plist}
+       ${doCommands[1]} "Set ':RtVariables:ROM' UseMacAddr0" ${config_plist}
+       ${doCommands[1]} "Set ':SMBIOS:SerialNumber' ${gGenerateSerial}" ${config_plist}
+       ${doCommands[1]} "Add ':SMBIOS:SmUUID' string" ${config_plist}
+       ${doCommands[1]} "Set ':SMBIOS:SmUUID' ${gGenerateUUID}" ${config_plist}
     fi
 
 
     if [[ $gRegenerateSerial == "true" ]]; then
-        ${doCommands[1]} "Set :RtVariables:MLB ${gGenerateMLB}" ${config_plist}
-        ${doCommands[1]} "Set :RtVariables:ROM UseMacAddr0" ${config_plist}
-        ${doCommands[1]} "Set :SMBIOS:SerialNumber ${gGenerateSerial}" ${config_plist}
-        ${doCommands[1]} "Set :SMBIOS:SmUUID ${gGenerateUUID}" ${config_plist}
+        ${doCommands[1]} "Set ':RtVariables:MLB' ${gGenerateMLB}" ${config_plist}
+        ${doCommands[1]} "Set ':RtVariables:ROM' UseMacAddr0" ${config_plist}
+        ${doCommands[1]} "Set ':SMBIOS:SerialNumber' ${gGenerateSerial}" ${config_plist}
+        ${doCommands[1]} "Set ':SMBIOS:SmUUID' ${gGenerateUUID}" ${config_plist}
     fi
 }
 
@@ -1737,7 +1741,7 @@ function main()
     gScriptFirstRun="true"
 
     if [ `${doCommands[1]} "Print :SMBIOS:SerialNumber" ${config_plist}` != 'FAKESERIAL' ]; then
-        printf "Generate new Serial, MLB, UUID? [Y/N]: "
+        printf "Generate new Serial, MLB, UUID? [Y/N]"
         read -p ": " local gRegenerateSerialChoice
         if [ "$gRegenerateSerialChoice" == 'Y' ] || [ "$gRegenerateSerialChoice" == 'y' ]; then
             gRegenerateSerial="true"
