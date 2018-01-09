@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>16G29</string>
+	<string>17A405</string>
 	<key>CFBundleExecutable</key>
 	<string>VoodooPS2Trackpad</string>
 	<key>CFBundleGetInfoString</key>
@@ -29,17 +29,17 @@
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>8E3004b</string>
+	<string>9A1004</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>16E185</string>
+	<string>17A360</string>
 	<key>DTSDKName</key>
-	<string>macosx10.12</string>
+	<string>macosx10.13</string>
 	<key>DTXcode</key>
-	<string>0833</string>
+	<string>0901</string>
 	<key>DTXcodeBuild</key>
-	<string>8E3004b</string>
+	<string>9A1004</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>ALPS GlidePoint</key>
@@ -256,28 +256,7 @@
 					<integer>300000000</integer>
 					<key>ClickPadTrackBoth</key>
 					<true/>
-					<key>Darwin 16.x</key>
-					<dict>
-						<key>ApplePreferenceCapability</key>
-						<true/>
-						<key>ApplePreferenceIdentifier</key>
-						<string>com.apple.AppleMultitouchTrackpad</string>
-						<key>MT Built-in</key>
-						<true/>
-						<key>MTHIDDevice</key>
-						<true/>
-						<key>SupportsGestureScrolling</key>
-						<true/>
-						<key>TrackpadEmbedded</key>
-						<true/>
-						<key>TrackpadFourFingerGestures</key>
-						<false/>
-						<key>TrackpadSecondaryClickCorners</key>
-						<true/>
-						<key>TrackpadThreeFingerDrag</key>
-						<true/>
-					</dict>
-					<key>Darwin 17.x</key>
+					<key>Darwin 16+</key>
 					<dict>
 						<key>ApplePreferenceCapability</key>
 						<true/>
@@ -321,11 +300,9 @@
 					<key>DoubleTapThresholdY</key>
 					<integer>100</integer>
 					<key>DragExitDelayTime</key>
-					<integer>750000000</integer>
+					<integer>1000000000</integer>
 					<key>DragLockTempMask</key>
 					<integer>1048592</integer>
-					<key>Dragging</key>
-					<integer>1</integer>
 					<key>DynamicEWMode</key>
 					<false/>
 					<key>EdgeBottom</key>
@@ -383,7 +360,7 @@
 					<key>QuietTimeAfterTyping</key>
 					<integer>500000000</integer>
 					<key>Resolution</key>
-					<integer>305</integer>
+					<integer>400</integer>
 					<key>RightClickZoneBottom</key>
 					<integer>0</integer>
 					<key>RightClickZoneLeft</key>
@@ -397,7 +374,7 @@
 					<key>ScrollDeltaThreshY</key>
 					<integer>0</integer>
 					<key>ScrollResolution</key>
-					<integer>305</integer>
+					<integer>400</integer>
 					<key>SkipPassThrough</key>
 					<false/>
 					<key>SmoothInput</key>
