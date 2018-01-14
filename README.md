@@ -29,7 +29,7 @@ How to use deploy.sh?
 Download the latest version installation package/directory by entering the following command in a terminal window:
 
 ```sh
-git clone https://github.com/syscl/XPS9350-macOS
+git clone --recursive https://github.com/syscl/XPS9350-macOS
 ```
 This will download the whole installation directory to your current directory(./) and the next step is to change the permissions of the file (add +x) so that it can be run.
 
