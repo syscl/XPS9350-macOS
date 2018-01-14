@@ -1,3 +1,4 @@
 [submodule "tools/macgen"]
 	path = tools/macgen
 	url = https://github.com/al3xtjames/MacGen.git
+	branch = master
