@@ -6,6 +6,11 @@
 	<dict>
 		<key>DSDT</key>
 		<dict>
+			<key>Fixes</key>
+			<dict>
+				<key>FixHeaders</key>
+				<true/>
+			</dict>
 			<key>DropOEM_DSM</key>
 			<false/>
 			<key>Patches</key>
@@ -119,6 +124,11 @@
 		<dict>
 			<key>DropOem</key>
 			<false/>
+			<key>Generate</key>
+			<dict>
+				<key>PluginType</key>
+				<true/>
+			</dict>
 		</dict>
 		<key>SortedOrder</key>
 		<array>
@@ -166,7 +176,7 @@
 		<true/>
 	</dict>
 	<key>Devices</key>
-	<dict>		
+	<dict>
 		<key>Audio</key>
 		<dict>
 			<key>Inject</key>
