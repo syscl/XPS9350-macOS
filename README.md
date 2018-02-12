@@ -64,6 +64,12 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-02-12
+
+- Resolved HiDPI scale issue during boot
+- Added ```FixHeader``` fix for config
+- Updated Clover to r4411
+
 2017-09-04
 
 - Fixed Wi-Fi slow issue after sleep by correcting ```_UPC``` value from ```0x03``` to ```0xFF``` (c) @ZombieTheBest 

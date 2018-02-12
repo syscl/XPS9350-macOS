@@ -1982,6 +1982,19 @@ function main()
     fi
 
     #
+    # Fix HiDPI boot graphics issue
+    #
+    if [[ $gHorizontalRez -gt 1920 || $gSystemHorizontalRez -gt 1920 ]];
+    _PRINT_MSG "--->: ${BLUE}Setting EFILoginHiDPI & UIScale...${OFF}"
+    then
+      ${doCommands[1]} "Set :BootGraphics:EFILoginHiDPI 1" "${config_plist}"
+      ${doCommands[1]} "Set :BootGraphics:UIScale 2" "${config_plist}"
+    else
+      ${doCommands[1]} "Set :BootGraphics:EFILoginHiDPI 0" "${config_plist}"
+      ${doCommands[1]} "Set :BootGraphics:UIScale 1" "${config_plist}"
+    fi
+
+    #
     # Patch IOKit/CoreDisplay.
     #
     if [ $gPatchIOKit -eq 0 ];
