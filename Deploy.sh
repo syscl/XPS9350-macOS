@@ -1195,7 +1195,7 @@ function _createUSB_Sleep_Script()
     echo '  gProtocol=$(diskutil info ${gDisk[i]} |grep -i "Protocol" |sed -e "s|Protocol:||" -e "s| ||g")'                                                 >> "$gUSBSleepScript"
     echo '  if [[ ${gProtocol} == *"USB"* ]];'                                                                                                              >> "$gUSBSleepScript"
     echo '    then'                                                                                                                                         >> "$gUSBSleepScript"
-    echo '      gCurrent_Partitions=($(ls /dev/${gDisk[0]}s? |grep -o "disk[0-9]s[0-9]"))'                                                                  >> "$gUSBSleepScript"
+    echo '      gCurrent_Partitions=($(ls /dev/${gDisk[i]}s? |grep -o "disk[0-9]s[0-9]"))'                                                                  >> "$gUSBSleepScript"
     echo '      for ((k=0; k<${#gCurrent_Partitions[@]}; ++k))'                                                                                             >> "$gUSBSleepScript"
     echo '      do'                                                                                                                                         >> "$gUSBSleepScript"
     echo '        gConfirm_Mounted=$(diskutil info ${gCurrent_Partitions[k]} |grep -i 'Mounted' |sed -e "s| Mounted:||" -e "s| ||g")'                       >> "$gUSBSleepScript"
