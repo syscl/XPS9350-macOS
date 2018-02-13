@@ -344,6 +344,18 @@ function rebuild_kernel_cache()
 #--------------------------------------------------------------------------------
 #
 
+function rebuild_dyld_shared_cache()
+{
+    #
+    # rebuild dyld_shared_cache to resolve display framework issues
+    #
+    sudo update_dyld_shared_cache -force
+}
+
+#
+#--------------------------------------------------------------------------------
+#
+
 function install_audio()
 {
     #
@@ -2017,6 +2029,7 @@ function main()
         fi
         sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_Framework_Repo}
         _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
+        _tidy_exec "rebuild_dyld_shared_cache" "Rebuld dyld_shared_cache"
     fi
 
     _setPlatformId
