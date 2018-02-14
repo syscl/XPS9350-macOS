@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #
-# syscl/Yating Zhou/lighting from bbs.PCBeta.com
-# Merge for Dell XPS 13 9350(Skylake)
+# (c) 2017-2018 syscl @ https://github.com/syscl
+# Merge for Dell XPS 13 9350 (Skylake)
 #
 
 #================================= GLOBAL VARS ==================================
@@ -147,6 +147,32 @@ doCommands=("${REPO}/tools/iasl" "/usr/libexec/plistbuddy -c" "perl -p -e 's/(\d
 #
 let gDelimitation_OSVer=12
 
+# contains(string, substring)
+#
+# Returns 0 if the specified string contains the specified substring,
+# otherwise returns 1.
+function contains() {
+    string="$1"
+    substring="$2"
+    if test "${string#*$substring}" != "$string"
+    then
+        return 0    # $substring is in $string
+    else
+        return 1    # $substring is not in $string
+    fi
+}
+
+#
+# Get Current OS ver
+#
+current_OSVer=`sw_vers -productVersion`
+contains "${current_OSVer}" "10.12"
+if [ "$?" -eq "0" ]; then
+    isSierra=1 #true: MacOS Sierra
+  else
+    isSierra=0 #false: MacOS High Sierra
+fi
+
 #
 # Define target website
 #
@@ -266,6 +292,39 @@ function _touch()
 
 function patch_acpi()
 {
+    #
+    # create a backup of current error-free DSDT
+    #
+    cp "${REPO}"/DSDT/raw/$1.dsl "${REPO}"/DSDT/raw/$1_backup.dsl
+    #
+    # apply the patch
+    #
+    if [ "$2" == "syscl" ];
+      then
+        "${REPO}"/tools/patchmatic "${REPO}"/DSDT/raw/$1.dsl "${REPO}"/DSDT/patches/$3.txt "${REPO}"/DSDT/raw/$1.dsl
+      else
+        "${REPO}"/tools/patchmatic "${REPO}"/DSDT/raw/$1.dsl "${REPO}"/DSDT/patches/$2/$3.txt "${REPO}"/DSDT/raw/$1.dsl
+    fi
+    #
+    # check if patched DSDT has errors
+    #
+    "${REPO}"/tools/iasl -vr -p "${REPO}"/DSDT/raw/$1temp.aml "${REPO}"/DSDT/raw/$1.dsl
+    if [ -e "${REPO}"/DSDT/raw/$1temp.aml ]
+      then
+        rm "${REPO}"/DSDT/raw/$1temp.aml
+        rm "${REPO}"/DSDT/raw/$1_backup.dsl
+      else
+        _PRINT_MSG "NOTE: $3 was not applied as it was causing errors."
+        rm "${REPO}"/DSDT/raw/$1.dsl
+        mv "${REPO}"/DSDT/raw/$1_backup.dsl "${REPO}"/DSDT/raw/$1.dsl
+    fi
+}
+
+function patch_acpi_force()
+{
+    #
+    # apply the patch
+    #
     if [ "$2" == "syscl" ];
       then
         "${REPO}"/tools/patchmatic "${REPO}"/DSDT/raw/$1.dsl "${REPO}"/DSDT/patches/$3.txt "${REPO}"/DSDT/raw/$1.dsl
@@ -562,27 +621,19 @@ function _getEDID()
     # Patch IOKit/CoreDisplay?
     #
     local gIntelGraphicsCardInfo=$(ioreg -lw0 |grep -i "Intel Iris Graphics" |sed -e "/[^<]*<\"/s///" -e "s/\"\>//")
-    if [[ "${gIntelGraphicsCardInfo}" == *"Iris"* ]];
+    if [[ "${gIntelGraphicsCardInfo}" != *"Iris"* ]] && [[ $gHorizontalRez -gt 1920 || $gSystemHorizontalRez -gt 1920 ]];
       then
         #
-        # Iris version, no IOKit/CoreDisplay patch require
+        # Yes, we indeed require a patch to unlock the limitation of flash rate of IOKit to power up the QHD+/4K display under non-Iris version
+        #
+        # Note: the argument of gPatchIOKit is set to 0 as default if the examination of resolution fail, this argument can ensure all models being powered up.
+        #
+        gPatchIOKit=${kBASHReturnSuccess}
+       else
+        #
+        # No, patch IOKit is not required, we won't touch IOKit/CoreDisplay (for a more clean system).
         #
         gPatchIOKit=${kBASHReturnFailure}
-      else
-        if [[ $gHorizontalRez -gt 1920 || $gSystemHorizontalRez -gt 1920 ]];
-          then
-            #
-            # Yes, We indeed require a patch to unlock the limitation of flash rate of IOKit to power up the QHD+/4K display.
-            #
-            # Note: the argument of gPatchIOKit is set to 0 as default if the examination of resolution fail, this argument can ensure all models being powered up.
-            #
-            gPatchIOKit=${kBASHReturnSuccess}
-          else
-            #
-            # No, patch IOKit is not required, we won't touch IOKit(for a more intergration/clean system since less is more).
-            #
-            gPatchIOKit=${kBASHReturnFailure}
-        fi
     fi
     #
     # Passing gPatchIOKit to gPatchRecoveryHD.
@@ -712,7 +763,7 @@ function _check_and_fix_config()
     #
     # Check if tinySSDT items are existed
     #
-    local dCheck_SSDT=("SSDT-XPS13SKL" "SSDT-ARPT-RP05" "SSDT-XHC")
+    local dCheck_SSDT=("SSDT-XPS13SKL" "SSDT-ARPT-RP05" "SSDT-XHC" "SSDT-PNLF" "SSDT-ALC256")
     local gSortedOrder=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g')
     local gSortedNumber=$(awk '/<key>SortedOrder<\/key>.*/,/<\/array>/' ${config_plist} | egrep -o '(<string>.*</string>)' | sed -e 's/<\/*string>//g' | wc -l)
     for tinySSDT in "${dCheck_SSDT[@]}"
@@ -735,51 +786,74 @@ function _check_and_fix_config()
     #
     gClover_kexts_to_patch_data=$(awk '/<key>KextsToPatch<\/key>.*/,/<\/array>/' ${config_plist})
 
-    #
-    # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
-    #
-    cLidWake="Enable lid wake for 0x19260004 credit syscl/lighting/Yating Zhou"
-    fLidWake="0a0b0300 00070600 03000000 04000000"
-    rLidWake="0f0b0300 00070600 03000000 04000000"
-    nLidWake="AppleIntelSKLGraphicsFramebuffer"
-
-    #
-    # eDP, port 0000, 0x19160000 credit syscl
-    #
-    cIntelGraphicsFrameBuffer="eDP, port 0000, 0x19160000 credit syscl"
-    fIntelGraphicsFrameBuffer="00000000 00000000 00000800 02000000 98040000"
-    rIntelGraphicsFrameBuffer="00000000 00000000 00000800 00040000 98040000"
-    nIntelGraphicsFrameBuffer="AppleIntelSKLGraphicsFramebuffer"
-
-    #
-    # Check if "BT4LE-Handoff-Hotspot" is in place of kextstopatch.
-    #
-    cHandoff="Enable BT4LE-Handoff-Hotspot"
-    fHandoff="4885ff74 47488b07"
-    rHandoff="41be0f00 0000eb44"
-    nHandoff="IOBluetoothFamily"
-
-    #
-    # Now let's inject it.
-    #
-    cBinData=("$cLidWake" "$cIntelGraphicsFrameBuffer" "$cHandoff")
-    fBinData=("$fLidWake" "$fIntelGraphicsFrameBuffer" "$fHandoff")
-    rBinData=("$rLidWake" "$rIntelGraphicsFrameBuffer" "$rHandoff")
-    nBinData=("$nLidWake" "$nIntelGraphicsFrameBuffer" "$nHandoff")
-
-    for ((j=0; j<${#nBinData[@]}; ++j))
-    do
-      local gCmp_fString=$(_bin2base64 "$fBinData")
-      local gCmp_rString=$(_bin2base64 "$rBinData")
-      if [[ $gClover_kexts_to_patch_data != *"$gCmp_fString"* || $gClover_kexts_to_patch_data != *"$gCmp_rString"* ]];
-        then
+    if [ $gMINOR_VER -ge $gDelimitation_OSVer ];
+      then
+        if [ $isSierra -eq 1 ];
+          then
           #
-          # No patch existed in config.plist, add patch for it:
+          # Repair the lid wake problem for 0x19260004 by syscl/lighting/Yating Zhou.
           #
-          _kext2patch "${cBinData[j]}" "${fBinData[j]}" "${rBinData[j]}" "${nBinData[j]}"
-      fi
-    done
+          cLidWake="Enable lid wake for 0x19260004 credit syscl/lighting/Yating Zhou"
+          fLidWake="0a0b0300 00070600 03000000 04000000"
+          rLidWake="0f0b0300 00070600 03000000 04000000"
+          nLidWake="AppleIntelSKLGraphicsFramebuffer"
 
+          #
+          # eDP, port 0000, 0x19160000 credit syscl
+          #
+          cIntelGraphicsFrameBuffer="eDP, port 0000, 0x19160000 credit syscl"
+          fIntelGraphicsFrameBuffer="00000000 00000000 00000800 02000000 98040000"
+          rIntelGraphicsFrameBuffer="00000000 00000000 00000800 00040000 98040000"
+          nIntelGraphicsFrameBuffer="AppleIntelSKLGraphicsFramebuffer"
+
+          #
+          # Check if "BT4LE-Handoff-Hotspot" is in place of kextstopatch.
+          #
+          cHandoff="Enable BT4LE-Handoff-Hotspot"
+          fHandoff="4885ff74 47488b07"
+          rHandoff="41be0f00 0000eb44"
+          nHandoff="IOBluetoothFamily"
+
+          #
+          # Now let's inject it.
+          #
+          cBinData=("$cLidWake" "$cIntelGraphicsFrameBuffer" "$cHandoff")
+          fBinData=("$fLidWake" "$fIntelGraphicsFrameBuffer" "$fHandoff")
+          rBinData=("$rLidWake" "$rIntelGraphicsFrameBuffer" "$rHandoff")
+          nBinData=("$nLidWake" "$nIntelGraphicsFrameBuffer" "$nHandoff")
+
+          for ((j=0; j<${#nBinData[@]}; ++j))
+          do
+            local gCmp_fString=$(_bin2base64 "$fBinData")
+            local gCmp_rString=$(_bin2base64 "$rBinData")
+            if [[ $gClover_kexts_to_patch_data != *"$gCmp_fString"* || $gClover_kexts_to_patch_data != *"$gCmp_rString"* ]];
+              then
+                #
+                # No patch existed in config.plist, add patch for it:
+                #
+                _kext2patch "${cBinData[j]}" "${fBinData[j]}" "${rBinData[j]}" "${nBinData[j]}"
+            fi
+          done
+        else
+          #
+          # 10.13 config.plist patches
+          #
+          local gHeaderFix=$(awk '/<key>FixHeaders<\/key>.*/,/<*\/>/' ${config_plist})
+          if [[ $gHeaderFix != *"FixHeaders"* ]];
+            then
+              #
+              # Add FixHeaders_20000000 to Clover (Needed to boot High Sierra)
+              #
+              ${doCommands[1]} "Add ':ACPI:DSDT:Fixes:FixHeaders' bool" "${config_plist}"
+              ${doCommands[1]} "Set ':ACPI:DSDT:Fixes:FixHeaders' true" "${config_plist}"
+          else
+            if [[ $gHeaderFix == *"false"* ]];
+              then
+                ${doCommands[1]} "Set ':ACPI:DSDT:Fixes:FixHeaders' true" "${config_plist}"
+            fi
+          fi
+        fi
+    fi
     #
     # Gain boot argv.
     #
@@ -1685,9 +1759,10 @@ function main()
     #
     # Choose touchpad kext you prefer
     #
+    printf "Current System Version: MacOS ${current_OSVer}\n"
     printf "Available touchpad kext:\n"
-    printf "[   ${BLUE}1${OFF}  ] ApplePS2SmartTouchPad\n"
-    printf "[   ${BLUE}2${OFF}  ] VoodooPS2Controller\n"
+    printf "[   ${BLUE}1${OFF}  ] ApplePS2SmartTouchPad (10.11)\n"
+    printf "[   ${BLUE}2${OFF}  ] VoodooPS2Controller\n (10.12+)"
     printf "Please choose the desired touchpad kext (1 or 2)"
     read -p ": " gSelect_TouchPad_Drv
     case "${gSelect_TouchPad_Drv}" in
@@ -1765,6 +1840,29 @@ function main()
     fi
 
     #
+    # Rename SSDT-x-* to SSDT-x to prevent compile error caused by newer version of Clover
+    # credits @squash- @zombiethebest
+    #
+    _PRINT_MSG "--->: ${BLUE}Renaming SSDTs...${OFF}"
+    if [ -e "${REPO}"/DSDT/raw/SSDT-0.dsl ]; then
+      # Extracted Files are Good - nothing to do
+      _PRINT_MSG "OK: No need to rename."
+    else
+      # We have to rename the Files
+      mv "${REPO}"/DSDT/raw/SSDT-1-sensrhub.aml "${REPO}"/DSDT/raw/SSDT-1.aml
+      for i in {0..6}
+      do
+        mv "${REPO}"/DSDT/raw/SSDT-${i}* "${REPO}"/DSDT/raw/SSDT-${i}.aml
+      done
+      for i in {7..13}
+      do
+        mv "${REPO}"/DSDT/raw/SSDT-${i}x* "${REPO}"/DSDT/raw/SSDT-${i}x.aml
+      done
+      mv "${REPO}"/DSDT/raw/SSDT-14* "${REPO}"/DSDT/raw/SSDT-14.aml
+      _PRINT_MSG "OK: SSDTs successfully renamed."
+    fi
+
+    #
     # Decompile acpi tables
     #
     cd "${REPO}"
@@ -1828,7 +1926,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # RP09.PXSX -> RP09.SSD0
     _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
-    sed -ig 's/\.RP09\.PXSX/\.RP09\.SSD0/' "${REPO}"/DSDT/raw/DSDT.dsl
+    #sed -ig 's/\.RP09\.PXSX/\.RP09\.SSD0/' "${REPO}"/DSDT/raw/DSDT.dsl
     local gNVMeKextIsLoad=$(kextstat |grep -i "NVME")
     if [[ ${gNVMeKextIsLoad} != "" ]]; then
         #
@@ -1838,7 +1936,7 @@ function main()
         _tidy_exec "patch_acpi DSDT syscl "syscl_NVMe"" "Inject NVMe power management properties credit Pike R. Alpha, syscl"
     fi
     # PBTN -> PWRB
-    sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
+    #sed -ig 's/PBTN/PWRB/' "${REPO}"/DSDT/raw/DSDT.dsl
     _tidy_exec "patch_acpi DSDT syscl "syscl_PWRB"" "Remove _PWR, _PSW in PWRB(PNP0C0C)"
     # Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl
     _tidy_exec "patch_acpi DSDT syscl "syscl_ltrovr"" "Inject reg-ltrovr for IOPCIFamily::setLatencyTolerance setting ltrOffset for PCI devices successfully (c) syscl"
@@ -1854,21 +1952,21 @@ function main()
     # DptfTa Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${DptfTa}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
+    _tidy_exec "patch_acpi_force ${DptfTa} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # SaSsdt Patches.
     #
     _PRINT_MSG "--->: ${BLUE}Patching ${SaSsdt}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${SaSsdt} syntax "rename_DSM"" "_DSM->XDSM"
-    _tidy_exec "patch_acpi ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
+    _tidy_exec "patch_acpi_force ${SaSsdt} syntax "rename_DSM"" "_DSM->XDSM"
+    _tidy_exec "patch_acpi_force ${SaSsdt} graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
 
     #
     # sensrhub patches
     #
-    _PRINT_MSG "${BLUE}Fixing ${sensrhub}.dsl${OFF}"
-    _tidy_exec "patch_acpi ${sensrhub} syntax "rename_DSM"" "_DSM->XDSM"
-    _tidy_exec "patch_acpi ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
+    _PRINT_MSG "--->: ${BLUE}Fixing ${sensrhub}.dsl${OFF}"
+    _tidy_exec "patch_acpi_force ${sensrhub} syntax "rename_DSM"" "_DSM->XDSM"
+    _tidy_exec "patch_acpi_force ${sensrhub} syscl "syscl_fix_PARSEOP_IF"" "Fix PARSEOP_IF error credit syscl"
 
     #
     # fix reboot issue credit syscl
@@ -1896,6 +1994,18 @@ function main()
     _tidy_exec "compile_table "${DptfTa}"" "Compile DptfTa"
     _tidy_exec "compile_table "${SaSsdt}"" "Compile SaSsdt"
     _tidy_exec "compile_table "${sensrhub}"" "Compile sensrhub"
+
+    #
+    # Copy SSDT-PNLF.aml.
+    #
+    _PRINT_MSG "--->: ${BLUE}Copying SSDT-PNLF.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-PNLF.aml "${compile}"" "Copy SSDT-PNLF.aml to ./DSDT/compile"
+
+    #
+    # Copy SSDT-ALC256.aml.
+    #
+    _PRINT_MSG "--->: ${BLUE}Copying SSDT-ALC256.aml to ./DSDT/compile...${OFF}"
+    _tidy_exec "cp "${prepare}"/SSDT-ALC256.aml "${compile}"" "Copy SSDT-ALC256.aml to ./DSDT/compile"
 
     #
     # Copy SSDT-rmne.aml.
@@ -1944,6 +2054,15 @@ function main()
     _tidy_exec "cp "${prepare}"/SSDT-XHC.aml "${compile}"" "Install Xhci table"
 
     #
+    # Rename a High Sierra Kext to prevent BT Issue
+    #
+    if [ "${isSierra}" -eq 0 ];
+      then
+        if [ -f "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" ]; then
+          _tidy_exec "sudo mv "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.bak"" "Rename AirPortBrcmNIC-MFG.kext..."
+        fi
+    fi
+    #
     # Clean up dynamic tables USB related tables
     #
     _tidy_exec "rm "${compile}"SSDT-*x.aml" "Clean dynamic SSDTs"
@@ -1979,7 +2098,7 @@ function main()
         _PRINT_MSG "--->: ${BLUE}Generating and setting Mac Serial, MLB and UUID${OFF}"
         _serialMLBGen
     fi
-    
+
     #
     # Refresh BootCamp theme.
     #
@@ -2017,19 +2136,31 @@ function main()
         _PRINT_MSG "--->: ${BLUE}Unlocking maximum pixel clock...${OFF}"
         if [ $gMINOR_VER -ge $gDelimitation_OSVer ];
           then
-            #
-            # 10.12+
-            #
-            gTarget_Framework_Repo="/System/Library/Frameworks/CoreDisplay.framework/Versions/Current/CoreDisplay"
+            if [ "${isSierra}" -eq 0 ];
+              then
+                #
+                # 10.13 - Using Lilu.kext + CoreDisplayFixUp.kext to prevent clipboard crash + BT PATCH
+                #
+                local KEXT_DIR="${gESPMountPoint}/EFI/CLOVER/kexts/${gOSVer}"
+                _tidy_exec "sudo cp -RX "${REPO}/Kexts/coredisplay_fixup/CoreDisplayFixUp.kext" "${KEXT_DIR}/CoreDisplayFixUp.kext"" "Patch and sign framework"
+              else
+                #
+                # 10.12
+                #
+                gTarget_Framework_Repo="/System/Library/Frameworks/CoreDisplay.framework/Versions/Current/CoreDisplay"
+                sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_Framework_Repo}
+                _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
+                _tidy_exec "rebuild_dyld_shared_cache" "Rebuld dyld_shared_cache"
+            fi
           else
             #
             # 10.12-
             #
             gTarget_Framework_Repo="/System/Library/Frameworks/IOKit.framework/Versions/Current/IOKit"
+            sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_Framework_Repo}
+            _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
+            _tidy_exec "rebuild_dyld_shared_cache" "Rebuld dyld_shared_cache"
         fi
-        sudo perl -i.bak -pe 's|\xB8\x01\x00\x00\x00\xF6\xC1\x01\x0F\x85|\x33\xC0\x90\x90\x90\x90\x90\x90\x90\xE9|sg' ${gTarget_Framework_Repo}
-        _tidy_exec "sudo codesign -f -s - ${gTarget_Framework_Repo}" "Patch and sign framework"
-        _tidy_exec "rebuild_dyld_shared_cache" "Rebuld dyld_shared_cache"
     fi
 
     _setPlatformId
