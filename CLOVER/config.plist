@@ -265,6 +265,8 @@
 		<true/>
 		<key>KernelPm</key>
 		<true/>
+		<key>AppleRTC</key>
+		<false/>
 		<key>KernelToPatch</key>
 		<array>
 			<dict>
