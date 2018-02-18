@@ -64,6 +64,12 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-02-17
+
+- Updated ```apfs.efi``` to 10.13.2 with log suppressed
+- Manually disable ```AppleRTC``` patch due to Clover will turn it on as default
+- Confirmed working flawslessly after updating from ```10.13.0``` to ```10.13.3```, note: for non-iris version working ```clipboard```, you need to re-run deploy to rebuild the ```dyld_shared_cache```. Patch remain the same.
+
 2018-02-12
 
 - Resolved HiDPI scale issue during boot
