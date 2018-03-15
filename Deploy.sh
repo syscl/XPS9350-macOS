@@ -1122,9 +1122,9 @@ function _update_clover()
         _tidy_exec "rm -rf ${KEXT_DIR}/VoodooPS2Controller.kext" "Install ApplePS2SmartTouchPad"
       else
         #
-        # Use VoodooPS2Controller, remove ApplePS2SmartTouchPad
+        # Use VoodooI2C, remove ApplePS2SmartTouchPad, VoodooPS2Controller.kext
         #
-        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext" "Install VoodooPS2Controller"
+        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext ${KEXT_DIR}/VoodooPS2Controller.kext" "Install VoodooI2C"
     fi
 
     #
@@ -1762,7 +1762,8 @@ function main()
     printf "Current System Version: MacOS ${current_OSVer}\n"
     printf "Available touchpad kext:\n"
     printf "[   ${BLUE}1${OFF}  ] ApplePS2SmartTouchPad (10.11)\n"
-    printf "[   ${BLUE}2${OFF}  ] VoodooPS2Controller\n (10.12+)"
+#printf "[   ${BLUE}2${OFF}  ] VoodooPS2Controller\n (10.12+)"
+    printf "[   ${BLUE}2${OFF}  ] VoodooI2C\n (10.12+)"
     printf "Please choose the desired touchpad kext (1 or 2)"
     read -p ": " gSelect_TouchPad_Drv
     case "${gSelect_TouchPad_Drv}" in
