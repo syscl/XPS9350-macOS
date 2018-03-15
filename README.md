@@ -64,6 +64,10 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-03-15
+
+- Butter smooth experience by for I2C precision touchpad by ```VoodooI2C``` credit @alexandred
+
 2018-02-17
 
 - Updated ```apfs.efi``` to 10.13.2 with log suppressed
