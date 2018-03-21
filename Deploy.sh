@@ -1898,6 +1898,16 @@ function main()
         #
         _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey_VoodooPS2"" "Fix brightness keys(F11/F12)"
     fi
+#
+# I2C patches
+#
+    _tidy_exec "patch_acpi DSDT syscl "syscl_win10patches"" "Windows 10 DSDT Patch for VoodooI2C"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_i2c"" "Skylake controller patches for VoodooI2C"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_i2ce"" "GPI0 Status patch"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_gpio_elan1200"" "GPIO Pinning for ELAN1200 by HackinDoge"
+#
+# 
+#
     _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout1"" "Inject Audio Info"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"

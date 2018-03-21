@@ -1,0 +1,247 @@
+# Skylake controller patches for VoodooI2C
+# Ensures that VoodooI2C can interface with I2C Controllers
+# Written and maintained by Alexandre Daoud
+
+into_all device label I2C0 remove_entry;
+into_all device label I2C1 remove_entry;
+into_all device label I2C2 remove_entry;
+into_all device label I2C3 remove_entry;
+into_all device label I2C4 remove_entry;
+into_all device label I2C5 remove_entry;
+
+into scope label _SB.PCI0 insert begin
+
+        Device (I2C0)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C0")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB10))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB10)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB10)\n
+            }\n
+        }\n
+\n\n
+        Device (I2C1)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C1")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB11))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB11)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB11)\n
+            }\n
+        }\n
+\n\n
+        Device (I2C2)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C2")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB12))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB12)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB12)\n
+            }\n
+        }\n
+\n\n
+        Device (I2C3)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C3")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB13))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB13)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB13)\n
+            }\n
+        }\n
+\n
+        Device (I2C4)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C4")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB14))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB14)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB14)\n
+            }\n
+        }\n
+\n
+        Device (I2C5)\n
+        {\n
+            Name (LINK, "\\_SB.PCI0.I2C5")\n
+            Method (_PSC, 0, NotSerialized)  // _PSC: Power State Current\n
+            {\n
+                Return (GETD (SB15))\n
+            }\n
+\n
+            Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0\n
+            {\n
+                LPD0 (SB15)\n
+            }\n
+\n
+            Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3\n
+            {\n
+                LPD3 (SB15)\n
+            }\n
+        }\n
+\n
+end;
+
+into scope label _SB.PCI0.I2C0 replace_content begin
+
+            Name (_HID, "INT3442")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB10))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD0, SB00, SIR0))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD0))\n
+            }\n
+}\n
+end;
+
+into scope label _SB.PCI0.I2C1 replace_content begin
+
+            Name (_HID, "INT3443")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB11))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD1, SB01, SIR1))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD1))\n
+            }\n
+}\n
+end;
+
+into scope label _SB.PCI0.I2C2 replace_content begin
+
+            Name (_HID, "INT3444")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB12))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD2, SB02, SIR2))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD2))\n
+            }\n
+}\n
+end;
+into scope label _SB.PCI0.I2C3 replace_content begin
+
+            Name (_HID, "INT3445")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB13))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD3, SB03, SIR3))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD3))\n
+            }\n
+}\n
+end;
+
+into scope label _SB.PCI0.I2C4 replace_content begin
+
+            Name (_HID, "INT3446")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB14))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD4, SB04, SIR4))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD4))\n
+            }\n
+}\n
+end;
+
+into scope label _SB.PCI0.I2C5 replace_content begin
+
+            Name (_HID, "INT3447")  // _HID: Hardware ID\n
+            Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision\n
+            {\n
+                Return (LHRV (SB15))\n
+            }\n
+\n
+            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings\n
+            {\n
+                Return (LCRS (SMD5, SB05, SIR5))\n
+            }\n
+\n
+            Method (_STA, 0, NotSerialized)  // _STA: Status\n
+            {\n
+                Return (LSTA (SMD5))\n
+            }\n
+}\n
+end;

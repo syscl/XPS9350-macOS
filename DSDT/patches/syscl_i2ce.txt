@@ -1,0 +1,9 @@
+# GPI0 Status patch
+# Ensures that OS X can enumerate the GPI0 controller
+# Written and maintained by Alexandre Daoud
+
+into method label _STA parent_label GPI0 replace_content begin
+
+Return (0x0F)
+
+end;
