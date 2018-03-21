@@ -1,0 +1,5 @@
+# Windows 10 DSDT Patch for VoodooI2C
+# Allows I2C controllers and devices to be discovered by OS X.
+# Based off patches written by RehabMan
+
+into_all method code_regex If\s+\([\\]?_OSI\s+\(\"Windows\s2015\"\)\) replace_matched begin If(LOr(_OSI("Darwin"),_OSI("Windows 2015"))) end;
