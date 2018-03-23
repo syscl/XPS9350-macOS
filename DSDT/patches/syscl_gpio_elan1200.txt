@@ -1,21 +1,10 @@
 # GPIO Pinning for ELAN1200 by HackinDoge
 # Confirmed working on ASUS FX502VM-AH51
+# xps13 port patches test by P,need more request about 9350's Pin list
 
-into device label ETPD insert begin
+into device label TPD0 code_regex 0x0000\n\s+[}]\n\s+[}][)] replace_matched begin 0x47\n\}\n\}) end;
 
-Name (SBFG, ResourceTemplate ()\n
-    {\n
-        GpioInt (Level, ActiveLow, ExclusiveAndWake, PullDefault, 0x0000,\n
-            "\\_SB.PCI0.GPI0", 0x00, ResourceConsumer, ,\n
-            )\n
-            {   // Pin list\n
-                0x47\n
-            }\n
-    })\n
-    
-end;
-
-into method label _CRS parent_label ETPD replace_content begin
+into method label _CRS parent_label TPD0 replace_content begin
 
 Return (ConcatenateResTemplate (SBFB, SBFG))
 
