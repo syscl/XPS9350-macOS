@@ -64,6 +64,13 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-06-02
+
+- Resolved 10.13.5 and 10.13.4 CoreDisplay issue
+- Update Clover to EFI r4509
+- deploy clean up
+- Update kexts to latest
+
 2018-03-17
 
 - Upload GuC for graphics card for better performance
