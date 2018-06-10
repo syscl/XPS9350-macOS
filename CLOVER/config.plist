@@ -663,7 +663,7 @@
 	<key>SMBIOS</key>
 	<dict>
 		<key>ProductName</key>
-		<string>MacBookPro13,2</string>
+		<string>MacBookPro13,1</string>
 		<key>SerialNumber</key>
 		<string>FAKESERIAL</string>
 	</dict>
