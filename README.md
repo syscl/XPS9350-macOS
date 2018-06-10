@@ -64,6 +64,10 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-06-10
+
+- [EnableLidwake](https://github.com/syscl/EnableLidWake) for a more general lid wake issue fix
+
 2018-06-02
 
 - Resolved 10.13.5 and 10.13.4 CoreDisplay issue
