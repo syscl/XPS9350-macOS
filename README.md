@@ -64,6 +64,10 @@ This months I have ```2``` dues and ```2``` more ```midterm exams```(Only two we
 
 Change Log
 ----------------
+2018-07-30
+
+- Remove useless CDF (don't know how it sneaked into my repo) and updated IGFX to WhateverGreen
+
 2018-06-10
 
 - [EnableLidwake](https://github.com/syscl/EnableLidWake) for a more general lid wake issue fix
