@@ -185,7 +185,7 @@
 	<key>Boot</key>
 	<dict>
 		<key>Arguments</key>
-		<string>darkwake=0</string>
+		<string>darkwake=0 -cdfon</string>
 		<key>DefaultVolume</key>
 		<string>Macintosh HD</string>
 		<key>Legacy</key>
@@ -296,7 +296,7 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>MSR 0xE2 _xcpm_idle instant reboot(c) Pike R. Alpha</string>
+				<string>MSR 0xE2 _xcpm_idle instant reboot (c) Pike R. Alpha</string>
 				<key>Disabled</key>
 				<false/>
 				<key>Find</key>
