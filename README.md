@@ -55,5 +55,5 @@ Writing and supporting code is fun but it takes time. Please provide most descri
 Try to get rid of scripting procedure, use dynamic ACPI hot patch
 
 #### Change Log
-Change logs](https://github.com/syscl/XPS9350-macOS/blob/master/Changelog.md) for detail improvements
+[Change logs](https://github.com/syscl/XPS9350-macOS/blob/master/Changelog.md) for detail improvements
 
