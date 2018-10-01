@@ -3,7 +3,7 @@ macOS on DELL XPS13 (9350)
 ====================================
 This project targets at giving the relatively complete functional macOS for XPS13 9350. Before you start, there's a brief introduction of how to finish powering up macOS on your laptop:
 
-#### Preliminary
+#### Peculiarities
 Since the original WiFi module is not compatible with macOS, you need to buy a DW1830 or DW1560 module.
 Please follow this [guide](https://www.ifixit.com/Teardown/Dell+XPS+13+Teardown/36157) to swap it.
 
@@ -46,11 +46,6 @@ Reboot your macOS to see the change. If you have any problem about the script, t
 ```sh
 ./Deploy.sh -d
 ```
-
-#### Peculiarities
-- ```VoodooPS2Controller``` is recommended on macOS ```Sierra```(10.```12+```)
-- ```AppleSmartTouchPad``` users(recommend on 10.```11-```): for two finger scrolling you need to change the speed of the Scrolling once to get it work and also have to enable them in Trackpad preferences. 
-
 
 #### Contribution
 All suggestions and improvements are welcome, don't hesitate to pull request or open an issue if you want this project to be better than ever.
