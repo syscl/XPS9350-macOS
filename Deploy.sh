@@ -139,7 +139,7 @@ nHandoff=""
 # Audio variables
 #
 gResources_xml_zlib=("layout1" "Platforms")
-gExtensions_Repo=("/System/Library/Extensions" "/Library/Extensions")
+gExtensions_Repo=("/Library/Extensions" "/System/Library/Extensions")
 gInjector_Repo="/tmp/AppleHDA_ALC256.kext"
 gAppleHDA_Config="${gInjector_Repo}/Contents/Info.plist"
 doCommands=("${REPO}/tools/iasl" "/usr/libexec/plistbuddy -c" "perl -p -e 's/(\d*\.\d*)/9\1/'")
