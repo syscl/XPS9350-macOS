@@ -1139,9 +1139,9 @@ function _update_clover()
         _tidy_exec "rm -rf ${KEXT_DIR}/VoodooPS2Controller.kext" "Install ApplePS2SmartTouchPad"
       else
         #
-        # Use VoodooI2C, remove ApplePS2SmartTouchPad, VoodooPS2Controller.kext
+        # Use VoodooI2C, remove ApplePS2SmartTouchPad
         #
-        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext ${KEXT_DIR}/VoodooPS2Controller.kext" "Install VoodooI2C"
+        _tidy_exec "rm -rf ${KEXT_DIR}/ApplePS2SmartTouchPad.kext" "Install VoodooI2C"
     fi
 
     #
