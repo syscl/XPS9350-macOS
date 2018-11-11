@@ -1136,7 +1136,7 @@ function _update_clover()
         #
         # Use ApplePS2SmartTouchPad, remove VoodooPS2
         #
-        _tidy_exec "rm -rf ${KEXT_DIR}/VoodooPS2Controller.kext" "Install ApplePS2SmartTouchPad"
+        _tidy_exec "rm -rf ${KEXT_DIR}/VoodooPS2Controller.kext ; rm -rf ${KEXT_DIR}/VoodooI2C*.kext" "Install ApplePS2SmartTouchPad"
       else
         #
         # Use VoodooI2C, remove ApplePS2SmartTouchPad
@@ -2040,7 +2040,7 @@ function main()
         # Detect which SSDT for processor to be installed.
         #
         gCpuName=$(sysctl machdep.cpu.brand_string |sed -e "/.*) /s///" -e "/ CPU.*/s///")
-        _tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
+        #_tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-pr.aml" "Generate C-States and P-State for Intel ${BLUE}${gCpuName}${OFF}"
 #      else
         #
         # Full HWP power management credit syscl, dpassmor, Pike R. Alpha
@@ -2050,13 +2050,25 @@ function main()
         # X86PlatformPluginInjector method credit syscl
         #
 #_tidy_exec "sudo cp -RX "${REPO}/Kexts/X86PlatformPluginInjector/X86PlatformPluginInjector.kext" "${gExtensions_Repo[0]}"" "Install X86PlatformPluginInjector (c) syscl"
+	# ssdt for CPUFriend
+	_tidy_exec "cp "${prepare}"/CpuPm-${gCpuName}.aml "${compile}"/SSDT-CpuFriend.aml" "copy freqdata for Intel ${BLUE}${gCpuName}${OFF}"
     fi
+	
+	#install ssdt for alc256 codeccommander
+	_tidy_exec "cp "${prepare}"/SSDT-ALC256.aml "${compile}"/SSDT-ALC256.aml" "copy SSDT-ALC256"
+	#Misc
+	_tidy_exec "cp "${prepare}"/SSDT-Config.aml "${compile}"/SSDT-Config.aml" "copy SSDT-Config"
+	_tidy_exec "cp "${prepare}"/SSDT-Debug.aml "${compile}"/SSDT-Debug.aml" "copy SSDT-Debug"
+	_tidy_exec "cp "${prepare}"/SSDT-IGPU.aml "${compile}"/SSDT-IGPU.aml" "copy SSDT-IGPU"
+	_tidy_exec "cp "${prepare}"/SSDT-LPC.aml "${compile}"/SSDT-LPC.aml" "copy SSDT-LPC"
+	_tidy_exec "cp "${prepare}"/SSDT-TYPC.aml "${compile}"/SSDT-TYPC.aml" "copy SSDT-TYPC"
+	
 
     #
     # Install SsdtS3
     #
-    _PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
-    _tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Install SsdtS3 table"
+    #_PRINT_MSG "--->: ${BLUE}Installing SSDT-XPS13SKL.aml to ./DSDT/compile...${OFF}"
+    #_tidy_exec "cp "${prepare}"/SSDT-XPS13SKL.aml "${compile}"" "Install SsdtS3 table"
 
     #
     # Install ARPT
@@ -2073,12 +2085,12 @@ function main()
     #
     # Rename a High Sierra Kext to prevent BT Issue
     #
-    if [ "${isSierra}" -eq 0 ];
-      then
-        if [ -f "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" ]; then
-          _tidy_exec "sudo mv "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.bak"" "Rename AirPortBrcmNIC-MFG.kext..."
-        fi
-    fi
+    #if [ "${isSierra}" -eq 0 ];
+    #  then
+    #    if [ -f "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" ]; then
+    #      _tidy_exec "sudo mv "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.kext" "${gExtensions_Repo[0]}/AirPortBrcmNIC-MFG.bak"" "Rename AirPortBrcmNIC-MFG.kext..."
+    #    fi
+    #fi
     #
     # Clean up dynamic tables USB related tables
     #

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>15F34</string>
+	<string>17E202</string>
 	<key>CFBundleExecutable</key>
 	<string>BrcmPatchRAM2</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.7</string>
+	<string>2.2.10</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleSupportedPlatforms</key>
@@ -23,11 +23,11 @@
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.2.7</string>
+	<string>2.2.10</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>7D175</string>
+	<string>9E145</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
@@ -35,9 +35,9 @@
 	<key>DTSDKName</key>
 	<string>macosx10.11</string>
 	<key>DTXcode</key>
-	<string>0730</string>
+	<string>0930</string>
 	<key>DTXcodeBuild</key>
-	<string>7D175</string>
+	<string>9E145</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>0489_e032</key>
@@ -1699,7 +1699,7 @@
 		<key>com.apple.kpi.mach</key>
 		<string>8.0</string>
 		<key>com.no-one.BrcmFirmwareStore</key>
-		<string>2.2.7</string>
+		<string>2.2.10</string>
 	</dict>
 	<key>Source Code</key>
 	<string>https://github.com/RehabMan/BrcmPatchRAM.git</string>
