@@ -1913,7 +1913,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_gpio_elan1200"" "GPIO Pinning for ELAN1200 by HackinDoge"
 #
 # 
-#
+# 
     _tidy_exec "patch_acpi DSDT syscl "syscl_HDAS2HDEF"" "HDAS->HDEF"
     _tidy_exec "patch_acpi DSDT syscl "audio_HDEF-layout13"" "Inject Audio Info"
     _tidy_exec "patch_acpi DSDT graphics "graphics_Rename-GFX0"" "Rename GFX0 to IGPU"
@@ -2124,10 +2124,10 @@ function main()
     #
     # Install audio.
     #
-    if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
-        _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
-        _tidy_exec "install_audio" "Install audio"
-    fi
+    #if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
+    #    _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
+    #    _tidy_exec "install_audio" "Install audio"
+    #fi
 
     #
     # Fix HiDPI boot graphics issue
