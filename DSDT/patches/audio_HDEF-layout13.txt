@@ -31,7 +31,7 @@ Method (_DSM, 4, NotSerialized)\n
         "layout-id", \n
         Buffer (0x04)\n
         {\n
-            0x01, 0x00, 0x00, 0x00\n
+            0x0D, 0x00, 0x00, 0x00\n
         },\n
 
         "MaximumBootBeepVolume", \n
