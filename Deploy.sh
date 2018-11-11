@@ -1903,18 +1903,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syntax "rename_DSM"" "_DSM->XDSM"
     _tidy_exec "patch_acpi DSDT syscl "syscl_fixFieldLen"" "Fix word field length Dword->Qword credit syscl"
     _tidy_exec "patch_acpi DSDT syscl "system_OSYS"" "OS Check Fix"
-    if [[ ${gSelect_TouchPad_Drv} == 1 ]];
-      then
-        #
-        # Fix ApplePS2SmartTouchPad
-        #
-        _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys(F11/F12)"
-      else
-        #
-        # Fix VoodooPS2Controller
-        #
-        _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey_VoodooPS2"" "Fix brightness keys(F11/F12)"
-    fi
+    _tidy_exec "patch_acpi DSDT syscl "syscl_fixBrightnesskey"" "Fix brightness keys(F11/F12)"
 #
 # I2C patches
 #
@@ -1951,7 +1940,7 @@ function main()
     _tidy_exec "patch_acpi DSDT syscl "syscl_PXSX2ARPT"" "PXSX2ARPT with _PWR fix"
     _tidy_exec "patch_acpi DSDT syscl "syscl_USB"" "Correct USB(XHC) information and injection credit syscl"
 #    _tidy_exec "patch_acpi DSDT syscl "syscl_rmB0D4"" "Remove Device(B0D4)"
-    _tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
+    #_tidy_exec "patch_acpi DSDT syscl "rmWMI"" "Remove WMI(PNP0C14)"
     # RP09.PXSX -> RP09.SSD0
     _tidy_exec "patch_acpi DSDT syscl "syscl_SSD"" "Inject SSD device property credit syscl"
     #sed -ig 's/\.RP09\.PXSX/\.RP09\.SSD0/' "${REPO}"/DSDT/raw/DSDT.dsl

@@ -9,10 +9,12 @@ If (LEqual (Arg0, One))\n
 {\n
     Notify (LCD, 0x86)\n
     Notify (^^LPCB.PS2K, 0x10)\n
+    Notify (^^LPCB.PS2K, 0x0406)\n
 }\n
 If (And (Arg0, 0x02))\n
 {\n
     Notify (LCD, 0x87)\n
     Notify (^^LPCB.PS2K, 0x20)\n
+    Notify (^^LPCB.PS2K, 0x0405)\n
 }\n
 end;
