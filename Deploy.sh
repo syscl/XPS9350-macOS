@@ -1907,7 +1907,7 @@ function main()
 #
 # I2C patches
 #
-    _tidy_exec "patch_acpi DSDT syscl "syscl_win10patches"" "Windows 10 DSDT Patch for VoodooI2C"
+    _tidy_exec "patch_acpi DSDT syscl "syscl_Win10I2C"" "Windows 10 DSDT Patch for VoodooI2C"
     _tidy_exec "patch_acpi DSDT syscl "syscl_i2c"" "Skylake controller patches for VoodooI2C"
     _tidy_exec "patch_acpi DSDT syscl "syscl_i2ce"" "GPI0 Status patch"
     _tidy_exec "patch_acpi DSDT syscl "syscl_gpio_elan1200"" "GPIO Pinning for ELAN1200 by HackinDoge"
