@@ -2136,10 +2136,11 @@ function main()
     #
     # Install audio.
     #
-    #if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
+    if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
     #    _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
     #    _tidy_exec "install_audio" "Install audio"
-    #fi
+    	_tidy_exec "sudo cp -RX "${REPO}/Kexts/audio/CodecCommander.kext" "${gExtensions_Repo[0]}"" "Fix headphone static issue"
+    fi
 
     #
     # Fix HiDPI boot graphics issue
