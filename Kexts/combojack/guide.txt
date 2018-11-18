@@ -1,0 +1,6 @@
+ 更换声音方案，如果你目前是旧的ALCPlugFix方案，升级方法如下：
+
+1. 移除Clover/kexts/Other下面的CodecCommander，把ComboJack文件夹的VerbStub.kext放进去
+2. 执行两条命令 sudo rm /Library/LaunchAgents/good.win.ALCPlugFix.plist 和 sudo rm /usr/bin/ALCPlugFix
+3. 根据教程安装ComboJack，重启
+4. 插入耳机的时候，VerbStub.kext会询问你插入的是耳机还是耳塞

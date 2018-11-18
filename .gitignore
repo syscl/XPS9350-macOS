@@ -1,0 +1,16 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+#DSDT
+DSDT/compile/
+DSDT/raw/
+DSDT/precompile/
+

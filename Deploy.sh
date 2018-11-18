@@ -428,13 +428,18 @@ function install_audio()
       _del $extensions/AppleHDA_ALC256.kext
       _del $extensions/CodecCommander.kext
     done
-
+	
+	_del /Library/LaunchAgents/com.XPS.ComboJack.plist
+	_del /usr/local/sbin/ComboJack
+	
     if [ $gMINOR_VER -ge $gDelimitation_OSVer ];
       then
         #
         # 10.12+
         #
-        _install_AppleHDA_Injector
+        #_install_AppleHDA_Injector
+		#install combo-jack
+		bash ${REPO}/Kexts/combojack/ComboJack_Installer/install.sh
     fi
 }
 
@@ -2137,9 +2142,9 @@ function main()
     # Install audio.
     #
     if [[ ${gDisableRebuildnAudioInst} == ${kBASHReturnFailure} ]]; then
-    #    _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
-    #    _tidy_exec "install_audio" "Install audio"
-    	_tidy_exec "sudo cp -RX "${REPO}/Kexts/audio/CodecCommander.kext" "${gExtensions_Repo[0]}"" "Fix headphone static issue"
+        _PRINT_MSG "--->: ${BLUE}Installing audio...${OFF}"
+        _tidy_exec "install_audio" "Install audio"
+    #	_tidy_exec "sudo cp -RX "${REPO}/Kexts/audio/CodecCommander.kext" "${gExtensions_Repo[0]}"" "Fix headphone static issue"
     fi
 
     #
