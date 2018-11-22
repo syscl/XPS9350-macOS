@@ -27,7 +27,12 @@
 
 #include <IOKit/pci/IOPCIDevice.h>
 
-#define DebugLog(args...) do { IOLog("VerbStub: " args); } while (0)
+#ifdef DEBUG
+#	define DebugLog(args...) do { IOLog("VerbStub: " args); } while (0)
+#else
+#	define DebugLog(args...)
+#endif
+
 #define AlwaysLog(args...) do { IOLog("VerbStub: " args); } while (0)
 
 #define kCodecProfile               "Codec Profile"

@@ -267,7 +267,7 @@ void VerbStubUserClient::stop(IOService * provider)
 IOReturn VerbStubUserClient::externalMethod(uint32_t selector, IOExternalMethodArguments* arguments,
                                               IOExternalMethodDispatch* dispatch, OSObject* target, void* reference)
 {
-    IOLog("%s[%p]::%s(%d, %p, %p, %p, %p)\n", getName(), this, __FUNCTION__, selector, arguments, dispatch, target, reference);
+    DebugLog("%s[%p]::%s(%d, %p, %p, %p, %p)\n", getName(), this, __FUNCTION__, selector, arguments, dispatch, target, reference);
     
     if (selector < (uint32_t)kClientNumMethods)
     {
