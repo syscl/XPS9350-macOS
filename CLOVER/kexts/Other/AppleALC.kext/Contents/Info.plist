@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>17D102</string>
+	<string>18B75</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.3</string>
+	<string>1.3.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleSupportedPlatforms</key>
@@ -25,21 +25,21 @@
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.3.3</string>
+	<string>1.3.4</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>9F2000</string>
+	<string>10B61</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>17E189</string>
+	<string>18B71</string>
 	<key>DTSDKName</key>
-	<string>macosx10.13</string>
+	<string>macosx10.14</string>
 	<key>DTXcode</key>
-	<string>0941</string>
+	<string>1010</string>
 	<key>DTXcodeBuild</key>
-	<string>9F2000</string>
+	<string>10B61</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>HDA Hardware Config Resource</key>
@@ -1224,6 +1224,32 @@
 					AwAAAA==
 					</data>
 					<key>Codec</key>
+					<string>ALC255 for Asus X441UA-WX096D by Andres ZeroCross</string>
+					<key>CodecID</key>
+					<integer>283902549</integer>
+					<key>ConfigData</key>
+					<data>
+					AZcc8AGXHRABlx6BAZcfAgGnHDABpx0BAace
+					oAGnH5ABtxwQAbcdAQG3HhcBtx+QAhccIAIX
+					HRACFx4hAhcfAgG3DAICFwwC
+					</data>
+					<key>FuncGroup</key>
+					<integer>1</integer>
+					<key>LayoutID</key>
+					<integer>21</integer>
+					<key>WakeConfigData</key>
+					<data>
+					AbcMAg==
+					</data>
+					<key>WakeVerbReinit</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>AFGLowPowerState</key>
+					<data>
+					AwAAAA==
+					</data>
+					<key>Codec</key>
 					<string>ALC255 for Asus X556UA m-dudarev</string>
 					<key>CodecID</key>
 					<integer>283902549</integer>
@@ -1365,9 +1391,13 @@
 					<integer>283902550</integer>
 					<key>ConfigData</key>
 					<data>
-					ASccEAEnHQABJx6mAScfkAFHHCABRx0AAUce
+					ASccEAEnHQABJx6gAScfkAFHHCABRx0AAUce
 					FwFHH5ABlxwwAZcdEAGXHosBlx8CAhccUAIX
-					HRACFx4rAhcfAgFHDAI=
+					HRACFx4rAhcfAgE3HPABNx0AATceAAE3H0AB
+					hxzwAYcdAAGHHgABhx9AAacc8AGnHQABpx4A
+					AacfQAG3HPABtx0AAbceAAG3H0AB1xzwAdcd
+					AAHXHgAB1x9AAecc8AHnHQAB5x4AAecfQAFH
+					DAI=
 					</data>
 					<key>FuncGroup</key>
 					<integer>1</integer>
@@ -6382,6 +6412,33 @@
 					AwAAAA==
 					</data>
 					<key>CodecID</key>
+					<integer>283906592</integer>
+					<key>CodecName</key>
+					<string>fleaplus - ALC1220 for MSI WT75</string>
+					<key>ConfigData</key>
+					<data>
+					AbccIAG3HQEBtx4XAbcfkAG3DAIBhxxAAYcd
+					EAGHHqEBhx8BAZccQQGXHRQBlx6BAZcfAQGn
+					HE8Bpx0QAacegQGnHwEBJxxQAScdAQEnHmAB
+					Jx+Q
+					</data>
+					<key>FuncGroup</key>
+					<integer>1</integer>
+					<key>LayoutID</key>
+					<integer>15</integer>
+					<key>WakeConfigData</key>
+					<data>
+					AUcMAg==
+					</data>
+					<key>WakeVerbReinit</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>AFGLowPowerState</key>
+					<data>
+					AwAAAA==
+					</data>
+					<key>CodecID</key>
 					<integer>283906408</integer>
 					<key>CodecName</key>
 					<string>Toleda -  Realtek ALC S1220A</string>
@@ -6518,14 +6575,34 @@
 					AwAAAA==
 					</data>
 					<key>Codec</key>
+					<string>Asus VivoBook Pro 15 CX8150 by Andres ZeroCross</string>
+					<key>CodecID</key>
+					<integer>351346646</integer>
+					<key>ConfigData</key>
+					<data>
+					AWccQAFnHRABZx4hAWcfBAGXHDABlx0QAZce
+					gQGXHwQBpxwgAacdAQGnHqABpx+QAdccEAHX
+					HQEB1x4XAdcfkAFnDAIB1wwC
+					</data>
+					<key>FuncGroup</key>
+					<integer>1</integer>
+					<key>LayoutID</key>
+					<integer>21</integer>
+				</dict>
+				<dict>
+					<key>AFGLowPowerState</key>
+					<data>
+					AwAAAA==
+					</data>
+					<key>Codec</key>
 					<string>Mirone - Conexant CX8200</string>
 					<key>CodecID</key>
 					<integer>351346696</integer>
 					<key>ConfigData</key>
 					<data>
 					AXccEAF3HQABdx4XAXcfkAGnHCABpx0AAace
-					oAGnH5ABlxwwAZcdEAGXHosBlx8BAWccQAFn
-					HRABZx4rAWcfAQF3DAIBZwwC
+					oAGnH5ABlxwwAZcdEAGXHosBlx8BAdccQAHX
+					HRAB1x4rAdcfAQF3DAIB1wwC
 					</data>
 					<key>FuncGroup</key>
 					<integer>1</integer>
@@ -7637,6 +7714,28 @@
 					<integer>1</integer>
 					<key>LayoutID</key>
 					<integer>3</integer>
+				</dict>
+				<dict>
+					<key>AFGLowPowerState</key>
+					<data>
+					AwAAAA==
+					</data>
+					<key>Codec</key>
+					<string>Goldfish64 - STAC9200 for Dell Precision 390</string>
+					<key>CodecID</key>
+					<integer>2206496400</integer>
+					<key>ConfigData</key>
+					<data>
+					AIcc8ACHHQAAhx4AAIcfQACXHPAAlx0AAJce
+					AACXH0AA1xwQANcdEADXHiEA1x8CAOccIADn
+					HQEA5x4QAOcfkAD3HDAA9x0BAPceoAD3H5AB
+					BxxAAQcdEAEHHoEBBx8CARcc8AEXHQABFx4A
+					ARcfQAEnHPABJx0AASceAAEnH0A=
+					</data>
+					<key>FuncGroup</key>
+					<integer>1</integer>
+					<key>LayoutID</key>
+					<integer>11</integer>
 				</dict>
 				<dict>
 					<key>AFGLowPowerState</key>

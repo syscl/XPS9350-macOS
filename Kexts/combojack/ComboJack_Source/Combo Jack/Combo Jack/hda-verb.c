@@ -29,6 +29,7 @@
 #include <mach/mach_port.h>
 #include <mach/mach_interface.h>
 #include <mach/mach_init.h>
+#include <sys/stat.h>
 #include <IOKit/IOMessage.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
@@ -134,7 +135,7 @@ uint32_t connectiontype = 0;
 bool run = true;
 bool awake = false;
 io_connect_t  root_port;
-
+struct stat consoleinfo;
 //
 // Open connection to IOService
 //
@@ -517,20 +518,33 @@ uint32_t CFPopUpMenu()
     uint32_t status;
     
     //Note or Plain?
-    CFUserNotificationDisplayAlert
-    (
-        0, // CFTimeInterval timeout
-        kCFUserNotificationNoteAlertLevel, // CFOptionFlags flags
-        NULL, // CFURLRef iconURL (file location URL)
-        NULL, // CFURLRef soundURL (unused)
-        NULL, // CFURLRef localizationURL
-        CFSTR("Combo Jack Notification"), // CFStringRef alertHeader
-        CFSTR("What did you just plug in? (Press ESC to cancel)"), // CFStringRef alertMessage
-        CFSTR("Headphones"), // CFStringRef defaultButtonTitle
-        CFSTR("Line-In"), // CFStringRef alternateButtonTitle
-        CFSTR("Headset"), // CFStringRef otherButtonTitle
-        &responsecode // CFOptionFlags *responseFlags
-     );
+	while(true)
+	{
+		//struct stat info;
+		stat("/dev/console", &consoleinfo);
+		if (!consoleinfo.st_uid)
+		{
+			sleep(1);
+			if ((VerbCommand(HDA_VERB(REALTEK_HP_OUT, AC_VERB_GET_PIN_SENSE, 0x00)) & 0x80000000) != 0x80000000)
+				return unplugged();
+			continue;
+		}
+		CFUserNotificationDisplayAlert(
+        	0, // CFTimeInterval timeout
+        	kCFUserNotificationNoteAlertLevel, // CFOptionFlags flags
+        	NULL, // CFURLRef iconURL (file location URL)
+        	NULL, // CFURLRef soundURL (unused)
+        	NULL, // CFURLRef localizationURL
+        	CFSTR("Combo Jack Notification"), // CFStringRef alertHeader
+        	CFSTR("What did you just plug in? (Press ESC to cancel)"), // CFStringRef alertMessage
+        	CFSTR("Headphones"), // CFStringRef defaultButtonTitle
+        	CFSTR("Line-In"), // CFStringRef alternateButtonTitle
+        	CFSTR("Headset"), // CFStringRef otherButtonTitle
+        	&responsecode // CFOptionFlags *responseFlags
+     	);
+		break;
+	}
+    	
 
     /* Responses are of this format:
      
