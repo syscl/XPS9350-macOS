@@ -335,13 +335,13 @@ static uint32_t headphones()
 //
 // Line-In Settings
 //
-
+/*
 static uint32_t linein()
 {
     fprintf(stderr, "Jack Status: line-in device plugged in.\n");
 	
-	//alc288
-	/*
+	//alc288 alc_headset_mode_mic_in
+	//
     UPDATE_COEF(0x4f, 0x000c, 0x0);
     //set 0x21 pin_w 0 here
     VerbCommand(HDA_VERB(0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, 0)); // Disable headphone output
@@ -350,7 +350,7 @@ static uint32_t linein()
     UPDATE_COEF(0x4f, 0xfcc0, 0xc400); //Set to TRS type 
     UPDATE_COEF(0x66, 0x0008, 0x0008);
     UPDATE_COEF(0x67, 0x2000, 0x2000);
-	*/
+	//
 	
 	//alc256
 	VerbCommand(HDA_VERB(0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, 0)); // Disable headphone output
@@ -368,6 +368,7 @@ static uint32_t linein()
     
     return 0; // Success
 }
+*/
 
 //
 // Headset: CTIA (iPhone-style plug)
@@ -538,7 +539,8 @@ uint32_t CFPopUpMenu()
         	CFSTR("Combo Jack Notification"), // CFStringRef alertHeader
         	CFSTR("What did you just plug in? (Press ESC to cancel)"), // CFStringRef alertMessage
         	CFSTR("Headphones"), // CFStringRef defaultButtonTitle
-        	CFSTR("Line-In"), // CFStringRef alternateButtonTitle
+        	//CFSTR("Line-In"), // CFStringRef alternateButtonTitle
+        	CFSTR("Cancel"), // CFStringRef alternateButtonTitle
         	CFSTR("Headset"), // CFStringRef otherButtonTitle
         	&responsecode // CFOptionFlags *responseFlags
      	);
@@ -562,8 +564,11 @@ uint32_t CFPopUpMenu()
             status = headphones();
             break;
         case kCFUserNotificationAlternateResponse:
-            fprintf(stderr, "Line-In selected.\n"); // %lu\n", kCFUserNotificationAlternateResponse);
-            status = linein();
+            //fprintf(stderr, "Line-In selected.\n"); // %lu\n", kCFUserNotificationAlternateResponse);
+            //status = linein();
+			//Cancel
+            fprintf(stderr, "Cancelled.\n");
+			status = 0; // Maintain current state
             break;
         case kCFUserNotificationOtherResponse:
             fprintf(stderr, "Headset selected.\n"); // %lu\n", kCFUserNotificationOtherResponse);
