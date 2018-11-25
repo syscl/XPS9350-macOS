@@ -135,6 +135,7 @@ uint32_t connectiontype = 0;
 bool run = true;
 bool awake = false;
 io_connect_t  root_port;
+io_object_t   notifierObject;
 struct stat consoleinfo;
 //
 // Open connection to IOService
@@ -222,6 +223,7 @@ void CloseServiceConnection()
 {
     // Done with the VerbStub IOService object, so we don't need to hold on to it anymore
     IOObjectRelease(VerbStubIOService);
+	IODeregisterForSystemPower(&notifierObject);
 }
 
 //
@@ -527,7 +529,9 @@ uint32_t CFPopUpMenu()
 		{
 			sleep(1);
 			if ((VerbCommand(HDA_VERB(REALTEK_HP_OUT, AC_VERB_GET_PIN_SENSE, 0x00)) & 0x80000000) != 0x80000000)
+			{
 				return unplugged();
+			}
 			continue;
 		}
 		CFUserNotificationDisplayAlert(
@@ -653,7 +657,6 @@ void MySleepCallBack( void * refCon, io_service_t service, natural_t messageType
 void watcher(void)
 {
     IONotificationPortRef  notifyPortRef;
-    io_object_t            notifierObject;
     void*                  refCon;
     root_port = IORegisterForSystemPower( refCon, &notifyPortRef, MySleepCallBack, &notifierObject );
     if ( root_port == 0 )
