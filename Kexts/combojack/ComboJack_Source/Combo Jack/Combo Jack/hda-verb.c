@@ -534,6 +534,7 @@ uint32_t CFPopUpMenu()
 			}
 			continue;
 		}
+		if (awake) awake = false;
 		CFUserNotificationDisplayAlert(
         	0, // CFTimeInterval timeout
         	kCFUserNotificationNoteAlertLevel, // CFOptionFlags flags
@@ -763,7 +764,7 @@ int main()
                 }
             }
         }
-        if (awake) awake = false;
+        //if (awake) awake = false;
         sleep(1); // Sleep delay (seconds): use usleep for microseconds if fine-grained control is needed
     }
 
