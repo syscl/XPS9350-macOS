@@ -1,0 +1,409 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CB3C1C3F1F08A6B500F26D79 /* hda-verb.c in Sources */ = {isa = PBXBuildFile; fileRef = CB3C1C3E1F08A6B500F26D79 /* hda-verb.c */; };
+		CB3C1C581F0967CA00F26D79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3C1C561F08AA4300F26D79 /* IOKit.framework */; };
+		CB3C1C5A1F0967D200F26D79 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3C1C521F08AA3600F26D79 /* CoreFoundation.framework */; };
+		CB3C1C7A1F0979D900F26D79 /* VerbStub.hpp in Headers */ = {isa = PBXBuildFile; fileRef = CB3C1C791F0979D900F26D79 /* VerbStub.hpp */; };
+		CB3C1C7C1F0979D900F26D79 /* VerbStub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB3C1C7B1F0979D900F26D79 /* VerbStub.cpp */; };
+		CB3C1C831F0979E900F26D79 /* IntelHDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CB3C1C811F0979E900F26D79 /* IntelHDA.cpp */; };
+		CB3C1C841F0979E900F26D79 /* IntelHDA.h in Headers */ = {isa = PBXBuildFile; fileRef = CB3C1C821F0979E900F26D79 /* IntelHDA.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CB3C1C341F08A67000F26D79 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CB3C1C361F08A67000F26D79 /* hda-verb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "hda-verb"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB3C1C3D1F08A6B500F26D79 /* hda_hwdep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hda_hwdep.h; sourceTree = "<group>"; };
+		CB3C1C3E1F08A6B500F26D79 /* hda-verb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "hda-verb.c"; sourceTree = "<group>"; };
+		CB3C1C521F08AA3600F26D79 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		CB3C1C541F08AA3D00F26D79 /* Kernel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kernel.framework; path = System/Library/Frameworks/Kernel.framework; sourceTree = SDKROOT; };
+		CB3C1C561F08AA4300F26D79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		CB3C1C771F0979D800F26D79 /* VerbStub.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VerbStub.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB3C1C791F0979D900F26D79 /* VerbStub.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VerbStub.hpp; sourceTree = "<group>"; };
+		CB3C1C7B1F0979D900F26D79 /* VerbStub.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VerbStub.cpp; sourceTree = "<group>"; };
+		CB3C1C7D1F0979D900F26D79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB3C1C811F0979E900F26D79 /* IntelHDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IntelHDA.cpp; sourceTree = "<group>"; };
+		CB3C1C821F0979E900F26D79 /* IntelHDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntelHDA.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CB3C1C331F08A67000F26D79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB3C1C5A1F0967D200F26D79 /* CoreFoundation.framework in Frameworks */,
+				CB3C1C581F0967CA00F26D79 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB3C1C731F0979D800F26D79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CB3C1C071F08A20200F26D79 = {
+			isa = PBXGroup;
+			children = (
+				CB3C1C371F08A67100F26D79 /* hda_verb */,
+				CB3C1C781F0979D900F26D79 /* VerbStub */,
+				CB3C1C121F08A20200F26D79 /* Products */,
+				CB3C1C511F08AA3600F26D79 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		CB3C1C121F08A20200F26D79 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB3C1C361F08A67000F26D79 /* hda-verb */,
+				CB3C1C771F0979D800F26D79 /* VerbStub.kext */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CB3C1C371F08A67100F26D79 /* hda_verb */ = {
+			isa = PBXGroup;
+			children = (
+				CB3C1C3D1F08A6B500F26D79 /* hda_hwdep.h */,
+				CB3C1C3E1F08A6B500F26D79 /* hda-verb.c */,
+			);
+			name = hda_verb;
+			path = "hda-verb";
+			sourceTree = "<group>";
+		};
+		CB3C1C511F08AA3600F26D79 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CB3C1C561F08AA4300F26D79 /* IOKit.framework */,
+				CB3C1C541F08AA3D00F26D79 /* Kernel.framework */,
+				CB3C1C521F08AA3600F26D79 /* CoreFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CB3C1C781F0979D900F26D79 /* VerbStub */ = {
+			isa = PBXGroup;
+			children = (
+				CB3C1C811F0979E900F26D79 /* IntelHDA.cpp */,
+				CB3C1C821F0979E900F26D79 /* IntelHDA.h */,
+				CB3C1C791F0979D900F26D79 /* VerbStub.hpp */,
+				CB3C1C7B1F0979D900F26D79 /* VerbStub.cpp */,
+				CB3C1C7D1F0979D900F26D79 /* Info.plist */,
+			);
+			path = VerbStub;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CB3C1C741F0979D800F26D79 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB3C1C7A1F0979D900F26D79 /* VerbStub.hpp in Headers */,
+				CB3C1C841F0979E900F26D79 /* IntelHDA.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		CB3C1C351F08A67000F26D79 /* hda-verb */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB3C1C3A1F08A67100F26D79 /* Build configuration list for PBXNativeTarget "hda-verb" */;
+			buildPhases = (
+				CB3C1C321F08A67000F26D79 /* Sources */,
+				CB3C1C331F08A67000F26D79 /* Frameworks */,
+				CB3C1C341F08A67000F26D79 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "hda-verb";
+			productName = "hda-verb";
+			productReference = CB3C1C361F08A67000F26D79 /* hda-verb */;
+			productType = "com.apple.product-type.tool";
+		};
+		CB3C1C761F0979D800F26D79 /* VerbStub */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB3C1C7E1F0979D900F26D79 /* Build configuration list for PBXNativeTarget "VerbStub" */;
+			buildPhases = (
+				CB3C1C721F0979D800F26D79 /* Sources */,
+				CB3C1C731F0979D800F26D79 /* Frameworks */,
+				CB3C1C741F0979D800F26D79 /* Headers */,
+				CB3C1C751F0979D800F26D79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VerbStub;
+			productName = VerbStub;
+			productReference = CB3C1C771F0979D800F26D79 /* VerbStub.kext */;
+			productType = "com.apple.product-type.kernel-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CB3C1C081F08A20200F26D79 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = VerbStub;
+				TargetAttributes = {
+					CB3C1C351F08A67000F26D79 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+					CB3C1C761F0979D800F26D79 = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CB3C1C0B1F08A20200F26D79 /* Build configuration list for PBXProject "VerbStub" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CB3C1C071F08A20200F26D79;
+			productRefGroup = CB3C1C121F08A20200F26D79 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB3C1C351F08A67000F26D79 /* hda-verb */,
+				CB3C1C761F0979D800F26D79 /* VerbStub */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CB3C1C751F0979D800F26D79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CB3C1C321F08A67000F26D79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB3C1C3F1F08A6B500F26D79 /* hda-verb.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB3C1C721F0979D800F26D79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB3C1C831F0979E900F26D79 /* IntelHDA.cpp in Sources */,
+				CB3C1C7C1F0979D900F26D79 /* VerbStub.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CB3C1C171F08A20200F26D79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CB3C1C181F08A20200F26D79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CB3C1C3B1F08A67100F26D79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		CB3C1C3C1F08A67100F26D79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		CB3C1C7F1F0979D900F26D79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0.3;
+				INFOPLIST_FILE = VerbStub/Info.plist;
+				MODULE_NAME = com.XPS.VerbStub;
+				MODULE_VERSION = 1.0.3;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = XPS.VerbStub;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Debug;
+		};
+		CB3C1C801F0979D900F26D79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0.3;
+				INFOPLIST_FILE = VerbStub/Info.plist;
+				MODULE_NAME = com.XPS.VerbStub;
+				MODULE_VERSION = 1.0.3;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = XPS.VerbStub;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB3C1C0B1F08A20200F26D79 /* Build configuration list for PBXProject "VerbStub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB3C1C171F08A20200F26D79 /* Debug */,
+				CB3C1C181F08A20200F26D79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB3C1C3A1F08A67100F26D79 /* Build configuration list for PBXNativeTarget "hda-verb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB3C1C3B1F08A67100F26D79 /* Debug */,
+				CB3C1C3C1F08A67100F26D79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB3C1C7E1F0979D900F26D79 /* Build configuration list for PBXNativeTarget "VerbStub" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB3C1C7F1F0979D900F26D79 /* Debug */,
+				CB3C1C801F0979D900F26D79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CB3C1C081F08A20200F26D79 /* Project object */;
+}

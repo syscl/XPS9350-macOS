@@ -1,0 +1,53 @@
+#audio_HDEF-layout1.txt
+#Modified for XPS 13 (Skylake/Kabylake)
+#credit Mirone for his DTGP method
+#credit syscl change DTGP method to pure _DSM
+
+#Inject Audio info
+into method label _DSM parent_label HDEF remove_entry;
+into device label HDEF insert
+begin
+Method (_DSM, 4, NotSerialized)\n
+{\n
+    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }\n
+    Return (Package()\n
+    {\n
+        "AAPL,slot-name", \n
+        "Built In", \n
+        "name", \n
+        "Realtek Audio Controller", \n
+        "model", \n
+        Buffer (0x20)\n
+        {\n
+            "Realtek ALC3246 Audio Controller"\n
+        },\n
+
+        "device_type", \n
+        Buffer (0x11)\n
+        {\n
+            "Audio Controller"\n
+        },\n
+
+        "layout-id", \n
+        Buffer (0x04)\n
+        {\n
+            0x0D, 0x00, 0x00, 0x00\n
+        },\n
+
+        "MaximumBootBeepVolume", \n
+        Buffer (One)\n
+        {\n
+            0x01\n
+        },\n
+
+        "PinConfigurations", \n
+        Buffer (Zero) {},\n
+        "hda-gfx",\n
+        Buffer (0x0A)\n
+        {\n
+            "onboard-1"\n
+        }\n
+    })\n
+}\n
+end;
+

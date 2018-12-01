@@ -1,0 +1,5 @@
+ 更换声音方案，升级方法如下：
+
+1. 删除 CodecCommander.kext，把ComboJack_Installer文件夹的VerbStub.kext放进Clover/kexts/Other
+2. 终端运行 ComboJack_Installer/install.sh，重启
+3. 插入耳机的时候，VerbStub.kext会询问你插入的是耳机还是耳塞
