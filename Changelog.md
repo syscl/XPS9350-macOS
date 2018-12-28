@@ -1,5 +1,9 @@
 M3800-macOS Changelog
 =======================
+2018-12-07
+
+- Enable native/true multitouch gestures on latest PS2 controller credit @kprinssu
+
 2018-10-01
 
 - Updated EnableLidwake to 4.0.1
