@@ -16,18 +16,6 @@
 		CB3C1C841F0979E900F26D79 /* IntelHDA.h in Headers */ = {isa = PBXBuildFile; fileRef = CB3C1C821F0979E900F26D79 /* IntelHDA.h */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		CB3C1C341F08A67000F26D79 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		CB3C1C361F08A67000F26D79 /* hda-verb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "hda-verb"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3C1C3D1F08A6B500F26D79 /* hda_hwdep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hda_hwdep.h; sourceTree = "<group>"; };
@@ -135,7 +123,7 @@
 			buildPhases = (
 				CB3C1C321F08A67000F26D79 /* Sources */,
 				CB3C1C331F08A67000F26D79 /* Frameworks */,
-				CB3C1C341F08A67000F26D79 /* CopyFiles */,
+				3DF6155721AAD4BA0057F150 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -154,6 +142,7 @@
 				CB3C1C731F0979D800F26D79 /* Frameworks */,
 				CB3C1C741F0979D800F26D79 /* Headers */,
 				CB3C1C751F0979D800F26D79 /* Resources */,
+				3DF6155821AAD4DB0057F150 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -210,6 +199,43 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3DF6155721AAD4BA0057F150 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"${TARGET_BUILD_DIR}\"\ncp -f hda-verb ../../../ComboJack_Installer/\n";
+		};
+		3DF6155821AAD4DB0057F150 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"${TARGET_BUILD_DIR}\"\ncp -rf VerbStub.kext ../../../ComboJack_Installer/\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CB3C1C321F08A67000F26D79 /* Sources */ = {

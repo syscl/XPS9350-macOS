@@ -1,0 +1,19 @@
+{
+    "zh_CN": {
+        "dialogTitle" : "耳机接入通知",
+        "dialogMsg" : "请选择接入的设备类型（按ESC键取消）",
+        "btnHeadphone" : "耳机",
+        "btnLinein" : "线路输入",
+        "btnHeadset" : "耳麦",
+        "btnCancel" : "取消"
+    },
+
+        "en_US": {
+                "dialogTitle" : "Combo Jack Notification",
+                "dialogMsg" : "What did you just plug in? (Press ESC to cancel)",
+                "btnHeadphone" : "Headphones",
+                "btnLinein" : "Line-In",
+                "btnHeadset" : "Headset",
+                "btnCancel" : "Cancel"
+        }
+}
